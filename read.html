@@ -4383,10 +4383,11 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
   var INVITE="I’ve been reading Everything That Glows — a free book, in twelve chapters, on the idea that the world is, underneath, made of information. Beautiful, and easier to get into than you’d think.";
   var btn=document.getElementById("menubtn"), sheet=document.getElementById("menusheet");
   if(!btn||!sheet)return;
-  var toast=document.getElementById("mtoast"), toastT=null;
+  var toast=document.getElementById("mtoast"), toastT=null, toastF=null;
   function showToast(msg){ if(!toast)return; toast.textContent=msg; toast.style.display="block";
-    requestAnimationFrame(function(){toast.classList.add("show");});
-    if(toastT)clearTimeout(toastT); toastT=setTimeout(function(){toast.classList.remove("show");setTimeout(function(){toast.style.display="none";},400);},2800); }
+    toast.offsetHeight; toast.classList.add("show");
+    if(toastT)clearTimeout(toastT); if(toastF)clearTimeout(toastF);
+    toastT=setTimeout(function(){toast.classList.remove("show");toastF=setTimeout(function(){toast.style.display="none";},400);},2800); }
 
   function openMenu(){ sheet.hidden=false; requestAnimationFrame(function(){sheet.classList.add("show");}); btn.setAttribute("aria-expanded","true");
     syncSound(); document.addEventListener("keydown",onKey); document.addEventListener("click",onOutside,true); }

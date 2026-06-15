@@ -683,10 +683,10 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
   var btn=document.getElementById("sharebtn"); if(!btn)return;
   var SITE="https://everythingthatglows.com/";
   var INVITE="Everything That Glows — a free book, in twelve chapters, on the idea that the world is, underneath, made of information. Beautiful, and easier to get into than you’d think.";
-  var toast=document.getElementById("shtoast"), t=null;
+  var toast=document.getElementById("shtoast"), t=null, ft=null;
   function showToast(m){ if(!toast)return; toast.textContent=m; toast.style.display="block";
-    requestAnimationFrame(function(){toast.classList.add("show");}); if(t)clearTimeout(t);
-    t=setTimeout(function(){toast.classList.remove("show");setTimeout(function(){toast.style.display="none";},400);},2800); }
+    toast.offsetHeight; toast.classList.add("show"); if(t)clearTimeout(t); if(ft)clearTimeout(ft);
+    t=setTimeout(function(){toast.classList.remove("show");ft=setTimeout(function(){toast.style.display="none";},400);},2800); }
   btn.addEventListener("click",function(){
     var data={title:"Everything That Glows",text:INVITE,url:SITE};
     if(navigator.share){navigator.share(data).catch(function(){});return;}

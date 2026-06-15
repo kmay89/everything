@@ -15,6 +15,12 @@ manager, and no dependencies.
 - `index.html` — the landing page (~21 KB): prism hero, the free-to-read premise, the twelve
   chapters (each linking into the book), an About, a "Support the work" panel, and a footer.
 - `read.html` — the whole book and its reader (~1.7 MB). The canonical book artifact.
+  The reader has a settings panel ("Aa" in the topbar) for theme (auto/light/dark), text
+  size, and line spacing — all persisted in `localStorage` (`et-theme`, `et-textsize`,
+  `et-leading`) and applied pre-paint by a small head script to avoid flashes. It also shows
+  an ambient "minutes to next chapter" pill and a gentle welcome-back toast on return.
+- `privacy.html` — privacy & cookies policy (no data collected, no cookies); contact
+  errerlabs@gmail.com.
 - `og-image.png` — the 1200×630 Open Graph share card (the prism, on-brand).
 - `README.md` — repo-facing description, written in the book's voice.
 - `netlify.toml` — static deploy config: publishes the root (no build command),

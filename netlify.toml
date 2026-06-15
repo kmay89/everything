@@ -5,6 +5,13 @@
   command = ""
 
 # Always revalidate the HTML so readers get the latest landing page and book.
+# Netlify matches header rules against the request path, so "/" needs its own
+# rule in addition to "/index.html".
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
 [[headers]]
   for = "/index.html"
   [headers.values]

@@ -9,7 +9,10 @@
 <meta name="theme-color" content="#16161a" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23fbfaf7'/%3E%3Cpath d='M16 6 L8 24 L24 24 Z' fill='none' stroke='%2334346b' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cline x1='2' y1='17' x2='12' y2='17' stroke='%231b1b1f' stroke-width='1.4'/%3E%3Cpath d='M20 20 L30 12 L30 28 Z' fill='url(%23g)'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23d65a5a'/%3Cstop offset='.5' stop-color='%233fae9f'/%3Cstop offset='1' stop-color='%235757c8'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E">
 <link rel="canonical" href="https://everythingthatglows.com/">
+<meta name="author" content="Karl Meves">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Everything That Glows">
+<meta property="og:locale" content="en_US">
 <meta property="og:title" content="Everything That Glows">
 <meta property="og:description" content="A free popular-science book in twelve chapters on the deepest idea in modern physics: that information is physical. Read the whole thing in your browser.">
 <meta property="og:url" content="https://everythingthatglows.com/">
@@ -187,10 +190,174 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
 .ch-min{flex:0 0 auto;align-self:center;font-family:var(--sans);font-size:.72rem;letter-spacing:.04em;
   color:var(--faint);white-space:nowrap;font-variant-numeric:tabular-nums}
 #resumenote{color:var(--muted)}
+
+/* skip link */
+.skip{position:fixed;left:.6rem;top:.6rem;z-index:60;transform:translateY(-160%);
+  background:var(--accent);color:var(--paper);font-family:var(--sans);font-size:.85rem;
+  padding:.6rem .9rem;border-radius:8px;text-decoration:none;transition:transform .15s ease}
+.skip:focus{transform:none;outline:2px solid var(--accent-bright);outline-offset:2px}
+
+/* FAQ */
+.faq h2{font-family:var(--sans);font-size:.78rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--faint);font-weight:600;margin:0 0 1.6rem;text-align:center}
+.faq details{border-top:1px solid var(--rule);padding:.2rem 0}
+.faq details:last-of-type{border-bottom:1px solid var(--rule)}
+.faq summary{cursor:pointer;list-style:none;padding:1rem .2rem;font-size:1.1rem;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--accent);font-family:var(--sans);font-weight:400;font-size:1.3rem}
+.faq details[open] summary::after{content:"–"}
+.faq summary:focus-visible{outline:2px solid var(--accent-bright);outline-offset:2px;border-radius:6px}
+.faq p{margin:0 .2rem 1rem;color:var(--muted);font-size:1.04rem;line-height:1.6}
+
+/* chapters are a preview now, not links */
+.ch .ch-row{display:flex;align-items:baseline;gap:1rem;padding:1rem .3rem;color:var(--ink)}
+.chapters .ch-note{text-align:center;font-family:var(--sans);font-size:.78rem;letter-spacing:.04em;
+  color:var(--faint);margin:0 0 1.4rem}
+
+/* "how to read this" reopen link */
+.howto{background:none;border:0;cursor:pointer;color:var(--faint);font-family:var(--sans);
+  font-size:.74rem;letter-spacing:.04em;text-decoration:underline;text-underline-offset:3px;padding:0}
+.howto:hover{color:var(--accent)}
+
+/* ===== theatrical entry / orientation ===== */
+.enter{position:fixed;inset:0;z-index:80;background:var(--paper);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:3rem 1.5rem;text-align:center;overflow-y:auto}
+.enter[hidden]{display:none}
+.enter-inner{max-width:34rem;width:100%;position:relative}
+.enter-prism{width:min(116px,28vw);height:auto;margin:0 auto 1.5rem;display:block;opacity:.95}
+.enter-panel{display:none}
+.enter-panel.active{display:block;animation:enter-fade .7s ease}
+@keyframes enter-fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.enter .eb{font-family:var(--sans);font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;margin:0 0 1rem}
+.enter h2{font-family:var(--serif);font-size:clamp(1.8rem,6vw,2.7rem);line-height:1.1;letter-spacing:-.02em;
+  font-weight:600;margin:.2rem 0 1rem;color:var(--ink)}
+.enter p{font-size:1.12rem;line-height:1.6;color:var(--muted);margin:0 auto 1rem;max-width:30rem}
+.enter .hint{font-family:var(--sans);font-size:.82rem;color:var(--faint)}
+.enter-actions{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin:1.7rem 0 0}
+.enter .sound-state{font-family:var(--sans);font-size:.82rem;color:var(--accent);margin:.7rem 0 0;min-height:1.2em}
+.enter-install{font-family:var(--sans);font-size:.82rem;color:var(--faint);margin:1rem 0 0}
+.enter-dots{display:flex;gap:.5rem;justify-content:center;margin:2.1rem 0 0}
+.enter-dots span{width:.5rem;height:.5rem;border-radius:50%;background:var(--rule);transition:background .25s,transform .25s}
+.enter-dots span.on{background:var(--accent);transform:scale(1.25)}
+.enter-skip{position:fixed;top:max(1rem,env(safe-area-inset-top));right:max(1rem,env(safe-area-inset-right));
+  background:none;border:0;cursor:pointer;font-family:var(--sans);font-size:.72rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint)}
+.enter-skip:hover{color:var(--accent)}
+.enter-skip:focus-visible,.enter .btn:focus-visible,.howto:focus-visible{outline:2px solid var(--accent-bright);outline-offset:3px}
+@media (prefers-reduced-motion: reduce){.enter-panel.active{animation:none}}
+@media print{.enter{display:none}}
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://everythingthatglows.com/#website",
+      "name": "Everything That Glows",
+      "url": "https://everythingthatglows.com/",
+      "inLanguage": "en",
+      "author": { "@type": "Person", "name": "Karl Meves" }
+    },
+    {
+      "@type": "Book",
+      "@id": "https://everythingthatglows.com/#book",
+      "name": "Everything That Glows",
+      "url": "https://everythingthatglows.com/",
+      "image": "https://everythingthatglows.com/og-image.png",
+      "inLanguage": "en",
+      "bookFormat": "https://schema.org/EBook",
+      "isAccessibleForFree": true,
+      "isFamilyFriendly": true,
+      "genre": ["Popular science", "Physics", "Information theory"],
+      "description": "A free book in twelve chapters arguing that the world is, underneath, made of information.",
+      "author": { "@type": "Person", "name": "Karl Meves" },
+      "copyrightYear": 2026,
+      "copyrightHolder": { "@type": "Person", "name": "Karl Meves" },
+      "publisher": { "@type": "Person", "name": "Karl Meves" },
+      "workExample": {
+        "@type": "Book",
+        "@id": "https://everythingthatglows.com/read.html",
+        "url": "https://everythingthatglows.com/read.html",
+        "bookFormat": "https://schema.org/EBook",
+        "inLanguage": "en",
+        "isAccessibleForFree": true,
+        "potentialAction": { "@type": "ReadAction", "target": "https://everythingthatglows.com/read.html" }
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://everythingthatglows.com/#faq",
+      "mainEntity": [
+        { "@type": "Question", "name": "Is the book really free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The entire book is free to read online, with no paywall and no sign-up." } },
+        { "@type": "Question", "name": "Do I need an account?", "acceptedAnswer": { "@type": "Answer", "text": "No account, no email, nothing is collected. Just open it and read." } },
+        { "@type": "Question", "name": "Can I read it offline?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The site is a Progressive Web App: once loaded it works offline, and you can install it to your phone or desktop home screen." } },
+        { "@type": "Question", "name": "What is the book about?", "acceptedAnswer": { "@type": "Answer", "text": "In twelve chapters it argues that the world is, underneath, made of information, tracing one idea through heat, memory, life, gravity, matter, measurement, number, and more." } }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
+<a class="skip" href="#chapters">Skip to the chapters</a>
 <button id="themetoggle" class="themetoggle" type="button" aria-label="Switch colour theme" title="Theme: Auto, Light, or Dark"><span class="tt-ico" aria-hidden="true">&#9680;</span><span id="tt-label">Auto</span></button>
+
+<audio id="welcometone" src="welcome.mp3" preload="none"></audio>
+<div id="enter" class="enter" role="dialog" aria-modal="true" aria-label="Welcome, and how to read this" hidden>
+  <button class="enter-skip" type="button" data-enter-skip>Skip &#8594;</button>
+  <div class="enter-inner">
+    <svg class="enter-prism" viewBox="0 0 360 130" role="img" aria-label="A prism splitting light into a spectrum.">
+      <defs><linearGradient id="es" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#d65a5a"/><stop offset="33%" stop-color="#e0c15a"/>
+        <stop offset="60%" stop-color="#3fae9f"/><stop offset="100%" stop-color="#6b5bd0"/></linearGradient></defs>
+      <path d="M176,88 L352,46 L352,118 Z" fill="url(#es)" opacity="0.92"/>
+      <path d="M150,26 L116,100 L184,100 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" style="color:var(--accent)"/>
+      <line x1="14" y1="72" x2="130" y2="72" stroke="currentColor" stroke-width="2" style="color:var(--accent)"/>
+    </svg>
+
+    <section class="enter-panel" data-panel="0">
+      <p class="eb">Welcome</p>
+      <h2>Everything That Glows</h2>
+      <p>This is a book about the deepest idea in modern physics &mdash; that the world is, underneath, made of information. It is written for the curious, not the credentialed. There is no prerequisite but attention.</p>
+      <p class="hint">Read it slowly. It was made to be lived in, not rushed.</p>
+      <div class="enter-actions"><button class="btn btn-primary" type="button" data-next>Continue &#8594;</button></div>
+    </section>
+
+    <section class="enter-panel" data-panel="1">
+      <p class="eb">A gentle beginning</p>
+      <h2>Will you read with sound?</h2>
+      <p>A soft welcome tone now, and &mdash; later, if you like &mdash; quiet notes tuned to simple whole-number ratios as you read. All optional, and off until you ask. You can change it anytime.</p>
+      <div class="enter-actions">
+        <button class="btn btn-primary" type="button" data-sound-on>Turn on sound</button>
+        <button class="btn btn-ghost" type="button" data-sound-off>Continue in silence</button>
+      </div>
+      <p class="sound-state" data-sound-state aria-live="polite"></p>
+    </section>
+
+    <section class="enter-panel" data-panel="2">
+      <p class="eb">Your place is kept</p>
+      <h2>It remembers where you are</h2>
+      <p>Stop whenever you like; the book quietly holds your place and brings you back. Tap to flag any passage and return to it later. Your progress, your marks, and your reflections live on this device alone, and are never sent anywhere.</p>
+      <div class="enter-actions"><button class="btn btn-primary" type="button" data-next>Continue &#8594;</button></div>
+    </section>
+
+    <section class="enter-panel" data-panel="3">
+      <p class="eb">Made for long reading</p>
+      <h2>Make it yours, and keep it close</h2>
+      <p>From the &ldquo;Aa&rdquo; menu as you read, choose light or dark, the size of the type, the spacing of the lines, even a more legible typeface &mdash; whatever lets you forget the screen and stay in the words.</p>
+      <p class="enter-install" data-install-text>Tip: add Everything That Glows to your home screen to open it like an app and read it fully offline.</p>
+      <div class="enter-actions">
+        <button class="btn btn-ghost" type="button" data-install hidden>Add to home screen</button>
+        <button class="btn btn-primary" type="button" data-begin-final>Begin at the beginning &#8594;</button>
+      </div>
+    </section>
+
+    <div class="enter-dots" aria-hidden="true"></div>
+  </div>
+</div>
 <main>
 
   <header class="hero cover wrap">
@@ -227,11 +394,11 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
     <p class="lede">Why the world that glows, remembers, lives, falls, holds, reflects, works, and counts is, underneath, made of information.</p>
     <div class="cta-row">
       <a class="btn btn-primary" id="resume" href="read.html" hidden>Continue reading</a>
-      <a class="btn btn-primary" id="beginbtn" href="read.html">Begin reading</a>
-      <a class="btn btn-ghost" href="#chapters">See the chapters</a>
+      <a class="btn btn-primary" id="beginbtn" href="read.html" data-begin>Begin reading</a>
+      <a class="btn btn-ghost" href="#chapters">Look ahead</a>
     </div>
     <p class="free-note" id="resumenote" hidden></p>
-    <p class="free-note">The whole book, in your browser. No paywall, no sign-up.</p>
+    <p class="free-note">The whole book, in your browser. No paywall, no sign-up. &middot; <button type="button" class="howto" data-howto>How to read this</button></p>
   </header>
 
   <hr class="section-rule">
@@ -246,106 +413,95 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
 
   <section class="chapters wrap" id="chapters">
     <h2>The twelve chapters</h2>
+    <p class="ch-note">The book is one continuous story, read from the beginning. Here is the path ahead.</p>
     <ol class="ch-list">
       <li class="ch">
-        <a href="read.html#ch-glows">
+        <div class="ch-row">
           <span class="ch-ord">I</span>
           <span class="ch-body"><span class="ch-title">Everything That Glows</span>
           <span class="ch-sub">How a question about heat became a question about everything</span></span><span class="ch-min">~56 min</span>
-          <span class="ch-go" aria-hidden="true">&#8594;</span>
-        </a>
+        </div>
       </li>
       <li class="ch">
-        <a href="read.html#ch-remembers">
+        <div class="ch-row">
           <span class="ch-ord">II</span>
           <span class="ch-body"><span class="ch-title">Everything That Remembers</span>
           <span class="ch-sub">How a question about forgetting became a question about what can be known</span></span><span class="ch-min">~70 min</span>
-          <span class="ch-go" aria-hidden="true">&#8594;</span>
-        </a>
+        </div>
       </li>
       <li class="ch">
-        <a href="read.html#ch-lives">
+        <div class="ch-row">
           <span class="ch-ord">III</span>
           <span class="ch-body"><span class="ch-title">Everything That Lives</span>
           <span class="ch-sub">How a question about handedness became a question about what life is</span></span><span class="ch-min">~55 min</span>
-          <span class="ch-go" aria-hidden="true">&#8594;</span>
-        </a>
+        </div>
       </li>
       <li class="ch">
-        <a href="read.html#ch-falls">
+        <div class="ch-row">
           <span class="ch-ord">IV</span>
           <span class="ch-body"><span class="ch-title">Everything That Falls</span>
           <span class="ch-sub">How a question about falling became a question about the shape of space and time</span></span><span class="ch-min">~54 min</span>
-          <span class="ch-go" aria-hidden="true">&#8594;</span>
-        </a>
+        </div>
       </li>
       <li class="ch">
-        <a href="read.html#ch-holds">
+        <div class="ch-row">
           <span class="ch-ord">V</span>
           <span class="ch-body"><span class="ch-title">Everything That Holds</span>
           <span class="ch-sub">How a question about why anything is solid became a question about what a particle is</span></span><span class="ch-min">~33 min</span>
-          <span class="ch-go" aria-hidden="true">&#8594;</span>
-        </a>
+        </div>
       </li>
       <li class="ch">
-        <a href="read.html#ch-reflects">
+        <div class="ch-row">
           <span class="ch-ord">VI</span>
           <span class="ch-body"><span class="ch-title">Everything That Reflects</span>
           <span class="ch-sub">How a question about a mirror became a question about when anything becomes real</span></span><span class="ch-min">~32 min</span>
-          <span class="ch-go" aria-hidden="true">&#8594;</span>
-        </a>
+        </div>
       </li>
       <li class="ch">
-        <a href="read.html#ch-works">
+        <div class="ch-row">
           <span class="ch-ord">VII</span>
           <span class="ch-body"><span class="ch-title">Everything That Works</span>
           <span class="ch-sub">How a question about effort became a question about what everything costs</span></span><span class="ch-min">~58 min</span>
-          <span class="ch-go" aria-hidden="true">&#8594;</span>
-        </a>
+        </div>
       </li>
       <li class="ch">
-        <a href="read.html#ch-counts">
+        <div class="ch-row">
           <span class="ch-ord">VIII</span>
           <span class="ch-body"><span class="ch-title">Everything That Counts</span>
           <span class="ch-sub">How a question about whether numbers are real became a question about which truths we find, which we make, and why both can be lost</span></span><span class="ch-min">~28 min</span>
-          <span class="ch-go" aria-hidden="true">&#8594;</span>
-        </a>
+        </div>
       </li>
       <li class="ch">
-        <a href="read.html#ch-guests">
+        <div class="ch-row">
           <span class="ch-ord">IX</span>
           <span class="ch-body"><span class="ch-title">The Two Uninvited Guests</span>
           <span class="ch-sub">On the secret kinship of π and <em>e</em>, and how turning, growing, and the laws of nature come to be written with the same two letters</span></span><span class="ch-min">~34 min</span>
-          <span class="ch-go" aria-hidden="true">&#8594;</span>
-        </a>
+        </div>
       </li>
       <li class="ch">
-        <a href="read.html#ch-music">
+        <div class="ch-row">
           <span class="ch-ord">X</span>
           <span class="ch-body"><span class="ch-title">The Music No One Composed</span>
           <span class="ch-sub">How the prime numbers turned out to be a chord, and why no one knows what is playing it</span></span><span class="ch-min">~42 min</span>
-          <span class="ch-go" aria-hidden="true">&#8594;</span>
-        </a>
+        </div>
       </li>
       <li class="ch">
-        <a href="read.html#ch-made-world">
+        <div class="ch-row">
           <span class="ch-ord">XI</span>
           <span class="ch-body"><span class="ch-title">The Made World</span>
           <span class="ch-sub">What engineering is, where it comes from, and why understanding it is part of understanding the real</span></span><span class="ch-min">~38 min</span>
-          <span class="ch-go" aria-hidden="true">&#8594;</span>
-        </a>
+        </div>
       </li>
       <li class="ch">
-        <a href="read.html#ch-light">
+        <div class="ch-row">
           <span class="ch-ord">XII</span>
           <span class="ch-body"><span class="ch-title">While the Light Lasts</span>
           <span class="ch-sub">What the longest studies of human life have found about what a life is for, and why the vastness of the universe makes the kitchen table matter more, not less</span></span><span class="ch-min">~28 min</span>
-          <span class="ch-go" aria-hidden="true">&#8594;</span>
-        </a>
+        </div>
       </li>
     </ol>
     <div class="cta-row">
-      <a class="btn btn-primary" href="read.html">Start at the beginning</a>
+      <button class="btn btn-primary" type="button" data-begin>Begin at the beginning</button>
     </div>
   </section>
 
@@ -355,6 +511,28 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
     <h2>About</h2>
     <p>I am not a physicist. I am someone who could never stop asking how the world works, and who found out, slowly, that the asking is open to anyone. I wrote this book to share that, and to argue that the deepest ideas in science belong to everyone willing to look.</p>
     <p style="color:var(--faint);font-family:var(--sans);font-size:.86rem;letter-spacing:.02em">&#8212; Karl Meves</p>
+  </section>
+
+  <hr class="section-rule">
+
+  <section class="faq wrap" id="faq">
+    <h2>Questions</h2>
+    <details>
+      <summary>Is the book really free?</summary>
+      <p>Yes. The entire book is free to read online, with no paywall and no sign-up.</p>
+    </details>
+    <details>
+      <summary>Do I need an account?</summary>
+      <p>No account, no email, nothing is collected. Just open it and read. Your place is remembered only in your own browser.</p>
+    </details>
+    <details>
+      <summary>Can I read it offline?</summary>
+      <p>Yes. The site is a Progressive Web App: once loaded it works offline, and you can install it to your phone or desktop home screen.</p>
+    </details>
+    <details>
+      <summary>What is the book about?</summary>
+      <p>In twelve chapters it argues that the world is, underneath, made of information &mdash; tracing one idea through heat, memory, life, gravity, matter, measurement, number, and more.</p>
+    </details>
   </section>
 
   <hr class="section-rule">
@@ -413,5 +591,78 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
 })();
 </script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
+<script>
+/* ---- theatrical entry / orientation ---- */
+(function(){
+  var enter=document.getElementById("enter"); if(!enter)return;
+  var panels=[].slice.call(enter.querySelectorAll(".enter-panel"));
+  var dotsWrap=enter.querySelector(".enter-dots");
+  var tone=document.getElementById("welcometone");
+  var cur=0, lastFocus=null;
+  function lget(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function lset(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+
+  panels.forEach(function(_,i){var s=document.createElement("span");if(i===0)s.className="on";dotsWrap.appendChild(s);});
+  var dots=[].slice.call(dotsWrap.children);
+
+  function show(i){
+    cur=Math.max(0,Math.min(panels.length-1,i));
+    panels.forEach(function(p,k){p.classList.toggle("active",k===cur);});
+    dots.forEach(function(dt,k){dt.classList.toggle("on",k===cur);});
+    var h=panels[cur].querySelector("h2"); if(h){h.setAttribute("tabindex","-1");try{h.focus({preventScroll:true});}catch(e){}}
+  }
+  function open(start){
+    lastFocus=document.activeElement;
+    enter.hidden=false; document.body.style.overflow="hidden";
+    show(start||0);
+    document.addEventListener("keydown",onKey,true);
+  }
+  function close(markSeen){
+    if(markSeen)lset("et-onboarded","1");
+    enter.hidden=true; document.body.style.overflow="";
+    document.removeEventListener("keydown",onKey,true);
+    if(tone){try{tone.pause();}catch(e){}}
+    if(lastFocus&&lastFocus.focus){try{lastFocus.focus();}catch(e){}}
+  }
+  function onKey(e){
+    if(e.key==="Escape"){e.preventDefault();close(true);return;}
+    if(e.key==="Tab"){
+      var f=Array.prototype.filter.call(
+        enter.querySelectorAll('a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])'),
+        function(el){return el.offsetWidth>0||el.offsetHeight>0;});
+      if(!f.length)return; var first=f[0],last=f[f.length-1];
+      if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+      else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+    }
+  }
+
+  var stateEl=enter.querySelector("[data-sound-state]");
+  enter.querySelector("[data-sound-on]").addEventListener("click",function(){
+    lset("sound","on");
+    if(tone){try{tone.volume=0.7;tone.currentTime=0;var p=tone.play();if(p&&p.catch)p.catch(function(){});}catch(e){}}
+    if(stateEl)stateEl.textContent="Sound on. Let the journey begin.";
+    setTimeout(function(){show(cur+1);},900);
+  });
+  enter.querySelector("[data-sound-off]").addEventListener("click",function(){ lset("sound","off"); show(cur+1); });
+
+  Array.prototype.forEach.call(enter.querySelectorAll("[data-next]"),function(b){b.addEventListener("click",function(){show(cur+1);});});
+  enter.querySelector("[data-enter-skip]").addEventListener("click",function(){close(true);});
+  enter.querySelector("[data-begin-final]").addEventListener("click",function(){close(true);location.href="read.html#top";});
+
+  var deferred=null, installBtn=enter.querySelector("[data-install]");
+  window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferred=e;if(installBtn)installBtn.hidden=false;});
+  if(installBtn)installBtn.addEventListener("click",function(){if(deferred){deferred.prompt();deferred=null;installBtn.hidden=true;}});
+
+  function onboarded(){return lget("et-onboarded")==="1";}
+  Array.prototype.forEach.call(document.querySelectorAll("[data-begin]"),function(b){
+    b.addEventListener("click",function(e){ e.preventDefault(); if(onboarded())location.href="read.html#top"; else open(0); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-howto]"),function(b){
+    b.addEventListener("click",function(){open(0);});
+  });
+
+  if(!onboarded()) open(0);
+})();
+</script>
 </body>
 </html>

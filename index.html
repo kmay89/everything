@@ -629,7 +629,7 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
     if(e.key==="Tab"){
       var f=Array.prototype.filter.call(
         enter.querySelectorAll('a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])'),
-        function(el){return el.offsetParent!==null;});
+        function(el){return el.offsetWidth>0||el.offsetHeight>0;});
       if(!f.length)return; var first=f[0],last=f[f.length-1];
       if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
       else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}

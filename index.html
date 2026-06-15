@@ -20,6 +20,11 @@
 <meta name="twitter:title" content="Everything That Glows">
 <meta name="twitter:description" content="A free popular-science book in twelve chapters on the deepest idea in modern physics: that information is physical. Read the whole thing in your browser.">
 <meta name="twitter:image" content="https://everythingthatglows.com/og-image.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Glows">
+<meta name="mobile-web-app-capable" content="yes">
 <script>
 /* Apply the saved theme before first paint (shared with the reader). */
 (function(){try{var t=localStorage.getItem("et-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();
@@ -177,6 +182,11 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
 .themetoggle:focus-visible{outline:2px solid var(--accent-bright);outline-offset:2px}
 .themetoggle .tt-ico{font-size:.9rem;line-height:1}
 @media print{.themetoggle{display:none}}
+
+/* per-chapter reading time + resume */
+.ch-min{flex:0 0 auto;align-self:center;font-family:var(--sans);font-size:.72rem;letter-spacing:.04em;
+  color:var(--faint);white-space:nowrap;font-variant-numeric:tabular-nums}
+#resumenote{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -216,9 +226,11 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
     <span class="cover-rule" aria-hidden="true"></span>
     <p class="lede">Why the world that glows, remembers, lives, falls, holds, reflects, works, and counts is, underneath, made of information.</p>
     <div class="cta-row">
-      <a class="btn btn-primary" href="read.html">Begin reading</a>
+      <a class="btn btn-primary" id="resume" href="read.html" hidden>Continue reading</a>
+      <a class="btn btn-primary" id="beginbtn" href="read.html">Begin reading</a>
       <a class="btn btn-ghost" href="#chapters">See the chapters</a>
     </div>
+    <p class="free-note" id="resumenote" hidden></p>
     <p class="free-note">The whole book, in your browser. No paywall, no sign-up.</p>
   </header>
 
@@ -239,7 +251,7 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
         <a href="read.html#ch-glows">
           <span class="ch-ord">I</span>
           <span class="ch-body"><span class="ch-title">Everything That Glows</span>
-          <span class="ch-sub">How a question about heat became a question about everything</span></span>
+          <span class="ch-sub">How a question about heat became a question about everything</span></span><span class="ch-min">~56 min</span>
           <span class="ch-go" aria-hidden="true">&#8594;</span>
         </a>
       </li>
@@ -247,7 +259,7 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
         <a href="read.html#ch-remembers">
           <span class="ch-ord">II</span>
           <span class="ch-body"><span class="ch-title">Everything That Remembers</span>
-          <span class="ch-sub">How a question about forgetting became a question about what can be known</span></span>
+          <span class="ch-sub">How a question about forgetting became a question about what can be known</span></span><span class="ch-min">~70 min</span>
           <span class="ch-go" aria-hidden="true">&#8594;</span>
         </a>
       </li>
@@ -255,7 +267,7 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
         <a href="read.html#ch-lives">
           <span class="ch-ord">III</span>
           <span class="ch-body"><span class="ch-title">Everything That Lives</span>
-          <span class="ch-sub">How a question about handedness became a question about what life is</span></span>
+          <span class="ch-sub">How a question about handedness became a question about what life is</span></span><span class="ch-min">~55 min</span>
           <span class="ch-go" aria-hidden="true">&#8594;</span>
         </a>
       </li>
@@ -263,7 +275,7 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
         <a href="read.html#ch-falls">
           <span class="ch-ord">IV</span>
           <span class="ch-body"><span class="ch-title">Everything That Falls</span>
-          <span class="ch-sub">How a question about falling became a question about the shape of space and time</span></span>
+          <span class="ch-sub">How a question about falling became a question about the shape of space and time</span></span><span class="ch-min">~54 min</span>
           <span class="ch-go" aria-hidden="true">&#8594;</span>
         </a>
       </li>
@@ -271,7 +283,7 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
         <a href="read.html#ch-holds">
           <span class="ch-ord">V</span>
           <span class="ch-body"><span class="ch-title">Everything That Holds</span>
-          <span class="ch-sub">How a question about why anything is solid became a question about what a particle is</span></span>
+          <span class="ch-sub">How a question about why anything is solid became a question about what a particle is</span></span><span class="ch-min">~33 min</span>
           <span class="ch-go" aria-hidden="true">&#8594;</span>
         </a>
       </li>
@@ -279,7 +291,7 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
         <a href="read.html#ch-reflects">
           <span class="ch-ord">VI</span>
           <span class="ch-body"><span class="ch-title">Everything That Reflects</span>
-          <span class="ch-sub">How a question about a mirror became a question about when anything becomes real</span></span>
+          <span class="ch-sub">How a question about a mirror became a question about when anything becomes real</span></span><span class="ch-min">~32 min</span>
           <span class="ch-go" aria-hidden="true">&#8594;</span>
         </a>
       </li>
@@ -287,7 +299,7 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
         <a href="read.html#ch-works">
           <span class="ch-ord">VII</span>
           <span class="ch-body"><span class="ch-title">Everything That Works</span>
-          <span class="ch-sub">How a question about effort became a question about what everything costs</span></span>
+          <span class="ch-sub">How a question about effort became a question about what everything costs</span></span><span class="ch-min">~58 min</span>
           <span class="ch-go" aria-hidden="true">&#8594;</span>
         </a>
       </li>
@@ -295,7 +307,7 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
         <a href="read.html#ch-counts">
           <span class="ch-ord">VIII</span>
           <span class="ch-body"><span class="ch-title">Everything That Counts</span>
-          <span class="ch-sub">How a question about whether numbers are real became a question about which truths we find, which we make, and why both can be lost</span></span>
+          <span class="ch-sub">How a question about whether numbers are real became a question about which truths we find, which we make, and why both can be lost</span></span><span class="ch-min">~28 min</span>
           <span class="ch-go" aria-hidden="true">&#8594;</span>
         </a>
       </li>
@@ -303,7 +315,7 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
         <a href="read.html#ch-guests">
           <span class="ch-ord">IX</span>
           <span class="ch-body"><span class="ch-title">The Two Uninvited Guests</span>
-          <span class="ch-sub">On the secret kinship of π and <em>e</em>, and how turning, growing, and the laws of nature come to be written with the same two letters</span></span>
+          <span class="ch-sub">On the secret kinship of π and <em>e</em>, and how turning, growing, and the laws of nature come to be written with the same two letters</span></span><span class="ch-min">~34 min</span>
           <span class="ch-go" aria-hidden="true">&#8594;</span>
         </a>
       </li>
@@ -311,7 +323,7 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
         <a href="read.html#ch-music">
           <span class="ch-ord">X</span>
           <span class="ch-body"><span class="ch-title">The Music No One Composed</span>
-          <span class="ch-sub">How the prime numbers turned out to be a chord, and why no one knows what is playing it</span></span>
+          <span class="ch-sub">How the prime numbers turned out to be a chord, and why no one knows what is playing it</span></span><span class="ch-min">~42 min</span>
           <span class="ch-go" aria-hidden="true">&#8594;</span>
         </a>
       </li>
@@ -319,7 +331,7 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
         <a href="read.html#ch-made-world">
           <span class="ch-ord">XI</span>
           <span class="ch-body"><span class="ch-title">The Made World</span>
-          <span class="ch-sub">What engineering is, where it comes from, and why understanding it is part of understanding the real</span></span>
+          <span class="ch-sub">What engineering is, where it comes from, and why understanding it is part of understanding the real</span></span><span class="ch-min">~38 min</span>
           <span class="ch-go" aria-hidden="true">&#8594;</span>
         </a>
       </li>
@@ -327,7 +339,7 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
         <a href="read.html#ch-light">
           <span class="ch-ord">XII</span>
           <span class="ch-body"><span class="ch-title">While the Light Lasts</span>
-          <span class="ch-sub">What the longest studies of human life have found about what a life is for, and why the vastness of the universe makes the kitchen table matter more, not less</span></span>
+          <span class="ch-sub">What the longest studies of human life have found about what a life is for, and why the vastness of the universe makes the kitchen table matter more, not less</span></span><span class="ch-min">~28 min</span>
           <span class="ch-go" aria-hidden="true">&#8594;</span>
         </a>
       </li>
@@ -378,5 +390,28 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
   btn.addEventListener("click",function(){ cur=order[(order.indexOf(cur)+1)%order.length]; set(cur); apply(cur); });
 })();
 </script>
+<script>
+/* Continue-reading: surface a resume button + overall progress from the reader's saved state. */
+(function(){
+  var WORDS={ "ch-glows":12297,"ch-remembers":15320,"ch-lives":12171,"ch-falls":11808,
+    "ch-holds":7162,"ch-reflects":7064,"ch-works":12725,"ch-counts":6245,
+    "ch-guests":7577,"ch-music":9341,"ch-made-world":8341,"ch-light":6128 };
+  function jget(k){try{var r=localStorage.getItem(k);return r?JSON.parse(r):null;}catch(e){return null;}}
+  var cur=jget("et-current"), prog=jget("et-progress")||{};
+  var resume=document.getElementById("resume"), begin=document.getElementById("beginbtn"), note=document.getElementById("resumenote");
+  if(!cur||!cur.id||!WORDS.hasOwnProperty(cur.id)) return;   /* never started: leave "Begin reading" */
+
+  resume.href="read.html#"+cur.id;
+  resume.textContent="Continue — "+(cur.title||"reading");
+  resume.hidden=false;
+  if(begin){ begin.textContent="Start over"; begin.classList.remove("btn-primary"); begin.classList.add("btn-ghost"); begin.href="read.html#top"; }
+
+  var totW=0, doneW=0;
+  for(var id in WORDS){ totW+=WORDS[id]; doneW += WORDS[id]*((prog[id]||0)/100); }
+  var pct=totW?Math.round(doneW/totW*100):0;
+  if(note && pct>0){ note.textContent = pct>=99 ? "You’ve read the whole book — welcome back any time." : ("You’re about "+pct+"% through the book."); note.hidden=false; }
+})();
+</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
 </body>
 </html>

@@ -33,8 +33,11 @@ self.addEventListener('fetch', (e) => {
     // Network-first: fresh pages online, cached copy offline.
     e.respondWith(
       fetch(req)
-        .then((res) => { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); return res; })
-        .catch(() => caches.match(req).then((r) => r || caches.match('/read.html') || caches.match('/index.html')))
+        .then((res) => {
+          if (res && res.status === 200) { const copy = res.clone(); e.waitUntil(caches.open(CACHE).then((c) => c.put(req, copy))); }
+          return res;
+        })
+        .catch(() => caches.match(req).then((r) => r || caches.match('/read.html').then((f) => f || caches.match('/index.html'))))
     );
     return;
   }
@@ -45,7 +48,8 @@ self.addEventListener('fetch', (e) => {
       const net = fetch(req)
         .then((res) => { if (res && res.status === 200) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); } return res; })
         .catch(() => cached);
-      return cached || net;
+      if (cached) { e.waitUntil(net); return cached; }
+      return net;
     })
   );
 });

@@ -407,7 +407,7 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
   if(begin){ begin.textContent="Start over"; begin.classList.remove("btn-primary"); begin.classList.add("btn-ghost"); begin.href="read.html#top"; }
 
   var totW=0, doneW=0;
-  for(var id in WORDS){ totW+=WORDS[id]; doneW += WORDS[id]*((prog[id]||0)/100); }
+  Object.keys(WORDS).forEach(function(id){ totW+=WORDS[id]; doneW += WORDS[id]*((prog[id]||0)/100); });
   var pct=totW?Math.round(doneW/totW*100):0;
   if(note && pct>0){ note.textContent = pct>=99 ? "You’ve read the whole book — welcome back any time." : ("You’re about "+pct+"% through the book."); note.hidden=false; }
 })();

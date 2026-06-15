@@ -3663,7 +3663,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
   Array.prototype.forEach.call(panel.querySelectorAll("[data-lead-opt]"),function(b){
     b.addEventListener("click",function(){ applyLead(b.getAttribute("data-lead-opt")); }); });
   (function(){ var v=parseFloat(load("et-leading")), name="normal";
-    if(!isNaN(v)){ for(var k in LEAD){ if(Math.abs(LEAD[k]-v)<0.02) name=k; } } applyLead(name); })();
+    if(!isNaN(v)){ Object.keys(LEAD).forEach(function(k){ if(Math.abs(LEAD[k]-v)<0.02) name=k; }); } applyLead(name); })();
 
   /* ----- welcome back ----- */
   (function(){

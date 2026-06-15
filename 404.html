@@ -55,6 +55,6 @@ p{color:var(--muted);font-size:1.15rem;line-height:1.6;margin:0 0 1.8rem}
       <a class="btn btn-ghost" href="/">Home</a>
     </div>
   </div>
-<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
 </body>
 </html>

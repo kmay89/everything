@@ -7,6 +7,11 @@
 <meta name="description" content="Everything That Glows — a free book in twelve chapters on the idea that information is physical. Adjustable type, light and dark themes, built for long reading.">
 <meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#16161a" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Glows">
+<meta name="mobile-web-app-capable" content="yes">
 <script>
 /* Apply saved reading preferences before first paint (no theme/size flash). */
 (function(){try{var d=document.documentElement,s=localStorage;
@@ -516,6 +521,48 @@ body{line-height:var(--reader-leading,1.72)}
   #welcome{transition:opacity .2s ease;transform:translateX(-50%)}
   #welcome.show{transform:translateX(-50%)}
   .setpanel{transition:opacity .12s ease;transform:none}}
+
+/* ===== contents per-chapter meta (time / progress) ===== */
+.toc-meta{margin-left:auto;flex:0 0 auto;padding-left:.8rem;font-family:var(--sans);
+  font-size:.72rem;letter-spacing:.04em;color:var(--faint);font-variant-numeric:tabular-nums}
+.toc-meta.part{color:var(--accent)}
+.toc-meta.done{color:var(--accent-bright);font-size:.95rem;line-height:1}
+
+/* ===== in-book search ===== */
+.searchpanel{position:fixed;z-index:46;top:3.2rem;right:max(.8rem,env(safe-area-inset-right));
+  width:min(26rem,calc(100vw - 1.6rem));background:var(--paper);border:1px solid var(--rule);
+  border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.2);padding:.9rem;opacity:0;transform:translateY(-6px);
+  transition:opacity .18s ease,transform .18s ease;font-family:var(--sans)}
+.searchpanel.show{opacity:1;transform:none}
+.searchpanel[hidden]{display:none}
+.sp-bar{display:flex;gap:.5rem;align-items:center}
+#searchinput{flex:1;font:inherit;font-size:.95rem;padding:.55rem .7rem;border:1px solid var(--rule);
+  border-radius:9px;background:var(--note-bg);color:var(--ink)}
+#searchinput:focus{outline:2px solid var(--accent);outline-offset:1px}
+.sp-close{background:none;border:0;cursor:pointer;color:var(--faint);font-size:1.3rem;line-height:1;padding:.2rem .4rem;border-radius:6px}
+.sp-close:hover{color:var(--accent)}
+.sp-hint{font-size:.72rem;color:var(--faint);margin:.7rem .2rem .1rem}
+.sp-results{list-style:none;margin:.4rem 0 0;padding:0;max-height:min(56vh,28rem);overflow:auto}
+.sp-results li{border-top:1px solid var(--rule)}
+.sp-results button{display:block;width:100%;text-align:left;background:none;border:0;cursor:pointer;padding:.6rem .3rem;font:inherit;color:inherit}
+.sp-results button:hover,.sp-results button:focus-visible{background:var(--note-bg);outline:none}
+.sp-ch{display:block;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:.2rem}
+.sp-sn{display:block;font-family:var(--serif);font-size:.92rem;line-height:1.45;color:var(--ink)}
+.sp-sn mark{background:var(--target);color:inherit;border-radius:2px;padding:0 .1em}
+.sp-none{font-family:var(--serif);font-size:.9rem;color:var(--muted);padding:.6rem .3rem}
+@keyframes search-flash{0%{background:var(--target)}100%{background:transparent}}
+.search-hit{animation:search-flash 2.2s ease}
+
+/* ===== copy-quote ===== */
+.copyquote{position:absolute;z-index:48;transform:translate(-50%,-118%);background:var(--accent);color:var(--paper);
+  border:0;border-radius:8px;cursor:pointer;font-family:var(--sans);font-size:.72rem;letter-spacing:.08em;
+  text-transform:uppercase;padding:.42rem .7rem;box-shadow:0 6px 20px rgba(0,0,0,.22);white-space:nowrap}
+.copyquote::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);
+  border:5px solid transparent;border-top-color:var(--accent)}
+.copyquote:hover{background:var(--accent-bright)}
+.copyquote[hidden]{display:none}
+@media print{.searchpanel,.copyquote,#searchbtn{display:none}}
+@media (prefers-reduced-motion: reduce){.searchpanel{transition:opacity .12s ease;transform:none}.search-hit{animation:none;background:var(--target)}}
 </style>
 </head>
 <body>
@@ -524,6 +571,7 @@ body{line-height:var(--reader-leading,1.72)}
   <span class="tb-title">Everything</span>
   <span id="nowreading" aria-hidden="true"></span>
   <div class="tools">
+    <button id="searchbtn" class="toolbtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="searchpanel" title="Search the book">Search</button>
     <button id="setbtn" class="toolbtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="setpanel" title="Reading settings: theme, text size, line spacing">Aa</button>
     <button id="soundtoggle" class="soundtoggle" type="button" aria-pressed="false"
       title="Soft tones tuned to simple whole-number ratios, synthesized live in your browser. Off by default.">
@@ -567,6 +615,15 @@ body{line-height:var(--reader-leading,1.72)}
 </div>
 <div id="chaptime" aria-hidden="true"></div>
 <div id="welcome" role="status"><span id="wc-text">Welcome back.</span><button id="wc-x" class="wc-x" type="button" aria-label="Dismiss">&#215;</button></div>
+<div id="searchpanel" class="searchpanel" role="dialog" aria-label="Search the book" hidden>
+  <div class="sp-bar">
+    <input id="searchinput" type="search" placeholder="Search the book&#8230;" autocomplete="off" spellcheck="false" aria-label="Search the book">
+    <button id="searchclose" class="sp-close" type="button" aria-label="Close search">&#215;</button>
+  </div>
+  <p id="searchhint" class="sp-hint">Type at least two letters to search all twelve chapters.</p>
+  <ul id="searchresults" class="sp-results"></ul>
+</div>
+<button id="copyquote" class="copyquote" type="button" hidden>Copy quote</button>
 <main class="wrap">
 
   <header class="titlepage cover" id="top">
@@ -3606,7 +3663,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
   Array.prototype.forEach.call(panel.querySelectorAll("[data-lead-opt]"),function(b){
     b.addEventListener("click",function(){ applyLead(b.getAttribute("data-lead-opt")); }); });
   (function(){ var v=parseFloat(load("et-leading")), name="normal";
-    if(!isNaN(v)){ for(var k in LEAD){ if(Math.abs(LEAD[k]-v)<0.02) name=k; } } applyLead(name); })();
+    if(!isNaN(v)){ Object.keys(LEAD).forEach(function(k){ if(Math.abs(LEAD[k]-v)<0.02) name=k; }); } applyLead(name); })();
 
   /* ----- welcome back ----- */
   (function(){
@@ -3637,5 +3694,155 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
   measureChapters();
 })();
 </script>
+<script>
+/* ---- progress, contents meta, search, copy-quote ---- */
+(function(){
+  var store=(function(){try{var k="__etp__";localStorage.setItem(k,"1");localStorage.removeItem(k);return localStorage;}catch(e){return null;}})();
+  function save(k,v){if(store){try{store.setItem(k,v);}catch(e){}}}
+  function load(k){if(store){try{return store.getItem(k);}catch(e){}}return null;}
+  function jload(k,dft){try{var r=load(k);return r?JSON.parse(r):dft;}catch(e){return dft;}}
+  function escHtml(s){return (s||"").replace(/[&<>]/g,function(c){return c==="&"?"&amp;":c==="<"?"&lt;":"&gt;";});}
+  var WPM=220, RM=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var chapters=[].slice.call(document.querySelectorAll("section.chapter")).map(function(el){
+    var h=el.querySelector("h1"), ord=el.querySelector(".ord");
+    return {el:el,id:el.id,title:h?h.textContent.trim():el.id,ord:ord?ord.textContent.trim():"",
+      words:((el.textContent||"").trim().match(/\S+/g)||[]).length,top:0,h:0};
+  });
+  function measure(){chapters.forEach(function(c){var r=c.el.getBoundingClientRect();c.top=r.top+window.pageYOffset;c.h=c.el.offsetHeight;});}
+  measure();
+
+  /* ----- progress + current chapter ----- */
+  var prog=jload("et-progress",{}) || {}, saveT=null;
+  function recordProgress(){
+    var mid=window.pageYOffset+window.innerHeight*0.5, cur=null;
+    for(var i=0;i<chapters.length;i++){var c=chapters[i];
+      if(mid>=c.top){
+        var f=(mid-c.top)/Math.max(c.h,1); f=f<0?0:f>1?1:f; var pct=Math.round(f*100);
+        if(!prog[c.id]||pct>prog[c.id])prog[c.id]=pct;
+        cur=c;
+      }
+    }
+    if(cur)save("et-current",JSON.stringify({id:cur.id,title:cur.title,ord:cur.ord}));
+    if(saveT)clearTimeout(saveT);
+    saveT=setTimeout(function(){save("et-progress",JSON.stringify(prog));renderTocMeta();},600);
+  }
+  var pTick=false;
+  window.addEventListener("scroll",function(){if(!pTick){pTick=true;requestAnimationFrame(function(){recordProgress();pTick=false;});}},{passive:true});
+  window.addEventListener("resize",function(){measure();});
+
+  /* ----- contents meta: time when unread, % / check as you read ----- */
+  function minsFor(c){return Math.max(1,Math.round(c.words/WPM));}
+  function renderTocMeta(){
+    chapters.forEach(function(c){
+      var link=document.querySelector('.toc-chap[href="#'+c.id+'"]'); if(!link)return;
+      var meta=link.querySelector(".toc-meta");
+      if(!meta){meta=document.createElement("span");meta.className="toc-meta";link.appendChild(meta);}
+      var p=prog[c.id]||0;
+      if(p>=92){meta.textContent="✓";meta.className="toc-meta done";meta.title="Finished";}
+      else if(p>0){meta.textContent=p+"%";meta.className="toc-meta part";meta.title="In progress";}
+      else{meta.textContent="~"+minsFor(c)+" min";meta.className="toc-meta";meta.title="Estimated reading time";}
+    });
+  }
+  renderTocMeta(); recordProgress();
+
+  /* ----- search ----- */
+  var sbtn=document.getElementById("searchbtn"), spanel=document.getElementById("searchpanel"),
+      sinput=document.getElementById("searchinput"), sresults=document.getElementById("searchresults"),
+      shint=document.getElementById("searchhint"), sclose=document.getElementById("searchclose");
+  var index=null;
+  function buildIndex(){
+    if(index)return;
+    index=[];
+    chapters.forEach(function(c){
+      var nodes=c.el.querySelectorAll("p, li, figcaption, h2");
+      for(var i=0;i<nodes.length;i++){
+        var t=(nodes[i].textContent||"").replace(/\s+/g," ").trim();
+        if(t.length>0)index.push({el:nodes[i],text:t,low:t.toLowerCase(),ctitle:c.title,cord:c.ord});
+      }
+    });
+  }
+  function openS(){spanel.hidden=false;buildIndex();requestAnimationFrame(function(){spanel.classList.add("show");sinput.focus();});
+    sbtn.setAttribute("aria-expanded","true");document.addEventListener("keydown",escS);}
+  function closeS(){spanel.classList.remove("show");sbtn.setAttribute("aria-expanded","false");
+    document.removeEventListener("keydown",escS);setTimeout(function(){spanel.hidden=true;},RM?0:180);}
+  function escS(e){if(e.key==="Escape"){closeS();sbtn.focus();}}
+  sbtn.addEventListener("click",function(){if(spanel.hidden)openS();else closeS();});
+  sclose.addEventListener("click",function(){closeS();sbtn.focus();});
+  function jumpTo(el){
+    closeS();
+    el.scrollIntoView({behavior:RM?"auto":"smooth",block:"center"});
+    el.classList.remove("search-hit"); void el.offsetWidth; el.classList.add("search-hit");
+    setTimeout(function(){el.classList.remove("search-hit");},2400);
+  }
+  function snippet(item,q){
+    var pos=item.low.indexOf(q), s=Math.max(0,pos-34), e=Math.min(item.text.length,pos+q.length+60);
+    var pre=(s>0?"…":"")+item.text.slice(s,pos);
+    var hit=item.text.slice(pos,pos+q.length);
+    var post=item.text.slice(pos+q.length,e)+(e<item.text.length?"…":"");
+    return escHtml(pre)+"<mark>"+escHtml(hit)+"</mark>"+escHtml(post);
+  }
+  var sT=null;
+  function runSearch(){
+    var q=sinput.value.trim().toLowerCase();
+    sresults.innerHTML="";
+    if(q.length<2){shint.style.display="";shint.textContent="Type at least two letters to search all twelve chapters.";return;}
+    shint.style.display="none";
+    var hits=[],cap=40;
+    for(var i=0;i<index.length && hits.length<cap;i++){if(index[i].low.indexOf(q)!==-1)hits.push(index[i]);}
+    if(!hits.length){var none=document.createElement("li");none.innerHTML='<p class="sp-none">No matches for &ldquo;'+escHtml(sinput.value.trim())+'&rdquo;.</p>';sresults.appendChild(none);return;}
+    hits.forEach(function(item){
+      var li=document.createElement("li"), b=document.createElement("button");
+      b.type="button";
+      b.innerHTML='<span class="sp-ch">'+escHtml(item.cord?item.cord+". ":"")+escHtml(item.ctitle)+'</span><span class="sp-sn">'+snippet(item,q)+'</span>';
+      b.addEventListener("click",function(){jumpTo(item.el);});
+      li.appendChild(b);sresults.appendChild(li);
+    });
+  }
+  sinput.addEventListener("input",function(){if(sT)clearTimeout(sT);sT=setTimeout(runSearch,120);});
+  sinput.addEventListener("keydown",function(e){if(e.key==="Enter"){var first=sresults.querySelector("button");if(first)first.click();}});
+
+  /* ----- copy quote ----- */
+  var cq=document.getElementById("copyquote"), held=null, cqT=null;
+  var main=document.querySelector("main");
+  function nearestId(node){var n=node&&node.nodeType===3?node.parentNode:node;
+    while(n&&n!==document.body){if(n.id)return n.id;n=n.parentNode;}return "";}
+  function nearestChapter(node){var n=node&&node.nodeType===3?node.parentNode:node;
+    while(n&&n!==document.body){if(n.classList&&n.classList.contains("chapter")){var h=n.querySelector("h1");return h?h.textContent.trim():"";}n=n.parentNode;}return "";}
+  function hideCq(){cq.hidden=true;held=null;}
+  function onSel(){
+    if(cqT)clearTimeout(cqT);
+    cqT=setTimeout(function(){
+      var sel=window.getSelection();
+      if(!sel||sel.isCollapsed||!sel.rangeCount){hideCq();return;}
+      var text=sel.toString().replace(/\s+/g," ").trim();
+      if(text.length<12||text.length>1800){hideCq();return;}
+      var node=sel.anchorNode;
+      if(!main||!node||!main.contains(node.nodeType===3?node.parentNode:node)){hideCq();return;}
+      var rect=sel.getRangeAt(0).getBoundingClientRect();
+      if(!rect||(!rect.width&&!rect.height)){hideCq();return;}
+      held={text:text,id:nearestId(node),ctitle:nearestChapter(node)};
+      cq.textContent="Copy quote";
+      cq.style.left=(rect.left+rect.width/2+window.pageXOffset)+"px";
+      cq.style.top=(rect.top+window.pageYOffset)+"px";
+      cq.hidden=false;
+    },200);
+  }
+  document.addEventListener("selectionchange",onSel);
+  window.addEventListener("scroll",function(){if(!cq.hidden)hideCq();},{passive:true});
+  cq.addEventListener("mousedown",function(e){e.preventDefault();}); /* keep the selection */
+  cq.addEventListener("click",function(){
+    if(!held)return;
+    var url=location.origin+location.pathname+(held.id?("#"+held.id):"");
+    var attribution="— Everything That Glows"+(held.ctitle?(", "+held.ctitle):"");
+    var payload="“"+held.text+"”\n"+attribution+"\n"+url;
+    function done(){cq.textContent="Copied ✓";setTimeout(hideCq,1100);}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(payload).then(done,fallback);}
+    else fallback();
+    function fallback(){try{var ta=document.createElement("textarea");ta.value=payload;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done();}catch(e){cq.textContent="Copy failed";setTimeout(hideCq,1100);}}
+  });
+})();
+</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
 </body>
 </html>

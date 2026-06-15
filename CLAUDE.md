@@ -15,20 +15,29 @@ manager, and no dependencies.
 - `index.html` — the landing page (~21 KB): prism hero, the free-to-read premise, the twelve
   chapters (each linking into the book), an About, a "Support the work" panel, and a footer.
 - `read.html` — the whole book and its reader (~1.7 MB). The canonical book artifact.
-  The reader has a settings panel ("Aa" in the topbar) for theme (auto/light/dark), text
-  size, and line spacing — all persisted in `localStorage` (`et-theme`, `et-textsize`,
-  `et-leading`) and applied pre-paint by a small head script to avoid flashes. It also shows
-  an ambient "minutes to next chapter" pill and a gentle welcome-back toast on return.
+  Reader features: a settings panel ("Aa") for theme (auto/light/dark), text size, and line
+  spacing; in-book **Search**; an ambient "minutes to next chapter" pill; a welcome-back
+  toast; per-chapter time/progress in the Contents; and "Copy quote" on text selection.
+  Preferences and progress live in `localStorage` (`et-theme`, `et-textsize`, `et-leading`,
+  `et-progress`, `et-current`); theme/size are applied pre-paint by a small head script.
 - `privacy.html` — privacy & cookies policy (no data collected, no cookies); contact
   errerlabs@gmail.com.
+- `404.html` — themed not-found page (Netlify serves it automatically).
+- `manifest.webmanifest` + `sw.js` + `icon-*.png` / `apple-touch-icon.png` — PWA: installable,
+  offline-capable. `sw.js` precaches core files; network-first for HTML, cache-first for assets.
+  Bump the `CACHE` constant in `sw.js` when republishing so clients refresh.
 - `og-image.png` — the 1200×630 Open Graph share card (the prism, on-brand).
 - `README.md` — repo-facing description, written in the book's voice.
 - `netlify.toml` — static deploy config: publishes the root (no build command),
-  security headers + CSP for every response, cache rules, and the www→apex redirect.
+  security headers + CSP for every response, cache rules, the service-worker headers, and the
+  www→apex redirect.
 - `LICENSE` — proprietary, all rights reserved (the book is free to read, not to redistribute).
 - `THIRD-PARTY-NOTICES.md` — MIT/OFL notices for the bundled KaTeX CSS and math fonts.
 - `SECURITY.md` — how to report a vulnerability.
 - `robots.txt` / `sitemap.xml` — crawl + indexing hygiene.
+
+When regenerating the PWA icons (no image libraries are installed), use the stdlib PNG
+rasterizer approach (zlib + struct, supersampled) — see the session history for the script.
 
 ## Working notes
 

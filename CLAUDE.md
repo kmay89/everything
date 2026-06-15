@@ -12,8 +12,13 @@ manager, and no dependencies.
 
 ## Layout
 
-- `index.html` — the landing page (~21 KB): prism hero, the free-to-read premise, the twelve
-  chapters (each linking into the book), an About, a "Support the work" panel, and a footer.
+- `index.html` — the landing page: prism hero, the free-to-read premise, a theatrical
+  first-visit **orientation overlay** (`#enter`: purpose → optional sound → how progress/marks
+  work → make-it-yours/install → "Begin at the beginning"), the twelve chapters as a
+  **non-clickable preview** (no deep links — readers funnel into the book and navigate via its
+  Contents), an FAQ, an About, a "Support the work" panel, and a footer. The orientation shows
+  once (`et-onboarded`) and is reopenable via "How to read this".
+- `welcome.mp3` — a ~29s welcome tone played when the reader opts into sound during orientation.
 - `read.html` — the whole book and its reader (~1.7 MB). The canonical book artifact.
   Reader features: a settings panel ("Aa") for theme (auto/light/dark), text size, line
   spacing, and **typeface** (serif/sans); in-book **Search**; an ambient "minutes to next

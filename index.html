@@ -20,6 +20,10 @@
 <meta name="twitter:title" content="Everything That Glows">
 <meta name="twitter:description" content="A free popular-science book in twelve chapters on the deepest idea in modern physics: that information is physical. Read the whole thing in your browser.">
 <meta name="twitter:image" content="https://everythingthatglows.com/og-image.png">
+<script>
+/* Apply the saved theme before first paint (shared with the reader). */
+(function(){try{var t=localStorage.getItem("et-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();
+</script>
 <style>
 :root{
   --paper:#fbfaf7; --ink:#1b1b1f; --muted:#5f5d57; --faint:#8a877e;
@@ -31,6 +35,10 @@
   :root{--paper:#16161a;--ink:#e9e7e0;--muted:#a6a39a;--faint:#7d7a72;
     --rule:#2c2c33;--accent:#a9a9f0;--accent-bright:#c5c5ff;--note-bg:#1f1f25;}
 }
+html[data-theme="light"]{--paper:#fbfaf7;--ink:#1b1b1f;--muted:#5f5d57;--faint:#8a877e;
+  --rule:#e3e0d6;--accent:#34346b;--accent-bright:#5757c8;--note-bg:#f3f1ea;}
+html[data-theme="dark"]{--paper:#16161a;--ink:#e9e7e0;--muted:#a6a39a;--faint:#7d7a72;
+  --rule:#2c2c33;--accent:#a9a9f0;--accent-bright:#c5c5ff;--note-bg:#1f1f25;}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
@@ -157,9 +165,22 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
   .ch a{gap:.7rem}
   .btn{width:100%;justify-content:center}
 }
+
+/* theme toggle (auto → light → dark) */
+.themetoggle{position:fixed;top:max(.8rem,env(safe-area-inset-top));right:max(.8rem,env(safe-area-inset-right));
+  z-index:40;display:inline-flex;align-items:center;gap:.42rem;cursor:pointer;
+  background:color-mix(in srgb,var(--paper) 86%,transparent);backdrop-filter:saturate(140%) blur(8px);
+  border:1px solid var(--rule);border-radius:999px;padding:.42rem .8rem;
+  font-family:var(--sans);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
+  transition:color .2s,border-color .2s}
+.themetoggle:hover{color:var(--accent);border-color:var(--accent)}
+.themetoggle:focus-visible{outline:2px solid var(--accent-bright);outline-offset:2px}
+.themetoggle .tt-ico{font-size:.9rem;line-height:1}
+@media print{.themetoggle{display:none}}
 </style>
 </head>
 <body>
+<button id="themetoggle" class="themetoggle" type="button" aria-label="Switch colour theme" title="Theme: Auto, Light, or Dark"><span class="tt-ico" aria-hidden="true">&#9680;</span><span id="tt-label">Auto</span></button>
 <main>
 
   <header class="hero cover wrap">
@@ -340,9 +361,22 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
     <p>A single self-contained page. No trackers, no ads, no accounts &mdash; nothing about your
     visit is collected, and your reading position is saved only in your own browser. It even
     reads offline once loaded.<br>
-    <a href="https://github.com/YOUR-USERNAME" target="_blank" rel="noopener">GitHub</a></p>
+    <a href="privacy.html">Privacy</a> &middot; <a href="mailto:errerlabs@gmail.com">Contact</a> &middot; <a href="https://github.com/YOUR-USERNAME" target="_blank" rel="noopener">GitHub</a></p>
   </footer>
 
 </main>
+<script>
+/* theme toggle: cycle auto → light → dark, shared with the reader via localStorage */
+(function(){
+  var d=document.documentElement, btn=document.getElementById("themetoggle"), lab=document.getElementById("tt-label");
+  var order=["auto","light","dark"];
+  function get(){try{return localStorage.getItem("et-theme")||"auto";}catch(e){return "auto";}}
+  function set(t){try{localStorage.setItem("et-theme",t);}catch(e){}}
+  function apply(t){ if(t==="light"||t==="dark") d.setAttribute("data-theme",t); else d.removeAttribute("data-theme");
+    if(lab) lab.textContent=t.charAt(0).toUpperCase()+t.slice(1); }
+  var cur=get(); apply(cur);
+  btn.addEventListener("click",function(){ cur=order[(order.indexOf(cur)+1)%order.length]; set(cur); apply(cur); });
+})();
+</script>
 </body>
 </html>

@@ -12,8 +12,8 @@ suspected vulnerability.
 1. **Preferred:** use GitHub's private vulnerability reporting for this
    repository (the **Security → Report a vulnerability** tab). This keeps the
    report confidential until a fix is ready.
-2. **Alternative:** email the maintainer. (Replace this line with your preferred
-   security contact address before publishing.)
+2. **Alternative:** email the maintainer at **errerlabs@gmail.com** with the
+   subject line `SECURITY` so it can be triaged quickly.
 
 When reporting, please include:
 

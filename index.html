@@ -9,7 +9,10 @@
 <meta name="theme-color" content="#16161a" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23fbfaf7'/%3E%3Cpath d='M16 6 L8 24 L24 24 Z' fill='none' stroke='%2334346b' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cline x1='2' y1='17' x2='12' y2='17' stroke='%231b1b1f' stroke-width='1.4'/%3E%3Cpath d='M20 20 L30 12 L30 28 Z' fill='url(%23g)'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23d65a5a'/%3Cstop offset='.5' stop-color='%233fae9f'/%3Cstop offset='1' stop-color='%235757c8'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E">
 <link rel="canonical" href="https://everythingthatglows.com/">
+<meta name="author" content="Karl Meves">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Everything That Glows">
+<meta property="og:locale" content="en_US">
 <meta property="og:title" content="Everything That Glows">
 <meta property="og:description" content="A free popular-science book in twelve chapters on the deepest idea in modern physics: that information is physical. Read the whole thing in your browser.">
 <meta property="og:url" content="https://everythingthatglows.com/">
@@ -187,9 +190,80 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
 .ch-min{flex:0 0 auto;align-self:center;font-family:var(--sans);font-size:.72rem;letter-spacing:.04em;
   color:var(--faint);white-space:nowrap;font-variant-numeric:tabular-nums}
 #resumenote{color:var(--muted)}
+
+/* skip link */
+.skip{position:fixed;left:.6rem;top:.6rem;z-index:60;transform:translateY(-160%);
+  background:var(--accent);color:var(--paper);font-family:var(--sans);font-size:.85rem;
+  padding:.6rem .9rem;border-radius:8px;text-decoration:none;transition:transform .15s ease}
+.skip:focus{transform:none;outline:2px solid var(--accent-bright);outline-offset:2px}
+
+/* FAQ */
+.faq h2{font-family:var(--sans);font-size:.78rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--faint);font-weight:600;margin:0 0 1.6rem;text-align:center}
+.faq details{border-top:1px solid var(--rule);padding:.2rem 0}
+.faq details:last-of-type{border-bottom:1px solid var(--rule)}
+.faq summary{cursor:pointer;list-style:none;padding:1rem .2rem;font-size:1.1rem;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--accent);font-family:var(--sans);font-weight:400;font-size:1.3rem}
+.faq details[open] summary::after{content:"–"}
+.faq summary:focus-visible{outline:2px solid var(--accent-bright);outline-offset:2px;border-radius:6px}
+.faq p{margin:0 .2rem 1rem;color:var(--muted);font-size:1.04rem;line-height:1.6}
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://everythingthatglows.com/#website",
+      "name": "Everything That Glows",
+      "url": "https://everythingthatglows.com/",
+      "inLanguage": "en",
+      "author": { "@type": "Person", "name": "Karl Meves" }
+    },
+    {
+      "@type": "Book",
+      "@id": "https://everythingthatglows.com/#book",
+      "name": "Everything That Glows",
+      "url": "https://everythingthatglows.com/",
+      "image": "https://everythingthatglows.com/og-image.png",
+      "inLanguage": "en",
+      "bookFormat": "https://schema.org/EBook",
+      "isAccessibleForFree": true,
+      "isFamilyFriendly": true,
+      "genre": ["Popular science", "Physics", "Information theory"],
+      "description": "A free book in twelve chapters arguing that the world is, underneath, made of information.",
+      "author": { "@type": "Person", "name": "Karl Meves" },
+      "copyrightYear": 2026,
+      "copyrightHolder": { "@type": "Person", "name": "Karl Meves" },
+      "publisher": { "@type": "Person", "name": "Karl Meves" },
+      "workExample": {
+        "@type": "Book",
+        "@id": "https://everythingthatglows.com/read.html",
+        "url": "https://everythingthatglows.com/read.html",
+        "bookFormat": "https://schema.org/EBook",
+        "inLanguage": "en",
+        "isAccessibleForFree": true,
+        "potentialAction": { "@type": "ReadAction", "target": "https://everythingthatglows.com/read.html" }
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://everythingthatglows.com/#faq",
+      "mainEntity": [
+        { "@type": "Question", "name": "Is the book really free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The entire book is free to read online, with no paywall and no sign-up." } },
+        { "@type": "Question", "name": "Do I need an account?", "acceptedAnswer": { "@type": "Answer", "text": "No account, no email, nothing is collected. Just open it and read." } },
+        { "@type": "Question", "name": "Can I read it offline?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The site is a Progressive Web App: once loaded it works offline, and you can install it to your phone or desktop home screen." } },
+        { "@type": "Question", "name": "What is the book about?", "acceptedAnswer": { "@type": "Answer", "text": "In twelve chapters it argues that the world is, underneath, made of information, tracing one idea through heat, memory, life, gravity, matter, measurement, number, and more." } }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
+<a class="skip" href="#chapters">Skip to the chapters</a>
 <button id="themetoggle" class="themetoggle" type="button" aria-label="Switch colour theme" title="Theme: Auto, Light, or Dark"><span class="tt-ico" aria-hidden="true">&#9680;</span><span id="tt-label">Auto</span></button>
 <main>
 
@@ -355,6 +429,28 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
     <h2>About</h2>
     <p>I am not a physicist. I am someone who could never stop asking how the world works, and who found out, slowly, that the asking is open to anyone. I wrote this book to share that, and to argue that the deepest ideas in science belong to everyone willing to look.</p>
     <p style="color:var(--faint);font-family:var(--sans);font-size:.86rem;letter-spacing:.02em">&#8212; Karl Meves</p>
+  </section>
+
+  <hr class="section-rule">
+
+  <section class="faq wrap">
+    <h2>Questions</h2>
+    <details>
+      <summary>Is the book really free?</summary>
+      <p>Yes. The entire book is free to read online, with no paywall and no sign-up.</p>
+    </details>
+    <details>
+      <summary>Do I need an account?</summary>
+      <p>No account, no email, nothing is collected. Just open it and read. Your place is remembered only in your own browser.</p>
+    </details>
+    <details>
+      <summary>Can I read it offline?</summary>
+      <p>Yes. The site is a Progressive Web App: once loaded it works offline, and you can install it to your phone or desktop home screen.</p>
+    </details>
+    <details>
+      <summary>What is the book about?</summary>
+      <p>In twelve chapters it argues that the world is, underneath, made of information &mdash; tracing one idea through heat, memory, life, gravity, matter, measurement, number, and more.</p>
+    </details>
   </section>
 
   <hr class="section-rule">

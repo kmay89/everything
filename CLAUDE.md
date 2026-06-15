@@ -15,11 +15,16 @@ manager, and no dependencies.
 - `index.html` — the landing page (~21 KB): prism hero, the free-to-read premise, the twelve
   chapters (each linking into the book), an About, a "Support the work" panel, and a footer.
 - `read.html` — the whole book and its reader (~1.7 MB). The canonical book artifact.
-  Reader features: a settings panel ("Aa") for theme (auto/light/dark), text size, and line
-  spacing; in-book **Search**; an ambient "minutes to next chapter" pill; a welcome-back
-  toast; per-chapter time/progress in the Contents; and "Copy quote" on text selection.
-  Preferences and progress live in `localStorage` (`et-theme`, `et-textsize`, `et-leading`,
-  `et-progress`, `et-current`); theme/size are applied pre-paint by a small head script.
+  Reader features: a settings panel ("Aa") for theme (auto/light/dark), text size, line
+  spacing, and **typeface** (serif/sans); in-book **Search**; an ambient "minutes to next
+  chapter" pill; a welcome-back toast; "Copy quote" on text selection; a skip link and
+  focus-trapped dialogs. A gentle engagement layer: a **Contents progress summary** (bar +
+  "N of 12 · ~time left" + milestone badges), an **end-of-chapter card** (encouragement,
+  optional saved reflection, "Mark as read", next-chapter link), and **milestone toasts** —
+  no streaks or pressure. State lives in `localStorage`: `et-theme`, `et-textsize`,
+  `et-leading`, `et-font`, `et-progress`/`et-current` (auto reading progress, written only by
+  the reader script), and the engagement-owned `et-read`, `et-notes`, `et-milestones`.
+  Theme/size/typeface are applied pre-paint by a small head script.
 - `privacy.html` — privacy & cookies policy (no data collected, no cookies); contact
   errerlabs@gmail.com.
 - `404.html` — themed not-found page (Netlify serves it automatically).

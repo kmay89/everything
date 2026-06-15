@@ -1,12 +1,14 @@
 <div align="center">
 
-# Everything
+# Everything That Glows
 
-**A book in twelve chapters**
+**A book in twelve chapters · free to read**
 
-*Why the world that glows, remembers, lives, falls, holds, reflects, works, and counts —
-that rhymes through π and e, rings with the music of the primes, stands as the made
-world, and is lived in while the light lasts — is, underneath, made of information.*
+*Why the world that glows, remembers, lives, falls, holds, reflects, works, and counts
+(that rhymes through π and e, rings with the music of the primes, stands as the made
+world, and is lived in while the light lasts) is, underneath, made of information.*
+
+[everythingthatglows.com](https://everythingthatglows.com/)
 
 </div>
 
@@ -14,14 +16,18 @@ world, and is lived in while the light lasts — is, underneath, made of informa
 
 Bring your hand close to a flame, and something arrives. For most of human history that
 warmth was taken at face value, and the conclusion drawn from it was reasonable, careful,
-and wrong. *Everything* is a book about how we found out — and about the single thread that
-runs beneath the heat, the atom, the cell, the falling apple, the prime numbers, and the
-mirror: that the world, underneath, is made of information.
+and wrong. *Everything That Glows* is a book about how we found out, and about the single
+thread that runs beneath the heat, the atom, the cell, the falling apple, the prime numbers,
+and the mirror: that the world, underneath, is made of information.
 
-This repository **is** the book. [`index.html`](index.html) is a single, self-contained
-file — every chapter, every source, the typeface, the cover animation, and the reading tools
-all live inside it. Open it in any modern browser and start reading. Nothing to install, no
-network required.
+This repository is the book's small static site:
+
+- [`index.html`](index.html) — the landing page: prism hero, the free-to-read premise, the
+  twelve chapters, an About, and a way to support the work.
+- [`read.html`](read.html) — the whole book in a single self-contained file: every chapter,
+  every source, the typeface, the cover animation, and the reading tools, all inside it.
+  Open it in any modern browser and start reading. Nothing to install, no network required.
+- [`og-image.png`](og-image.png) — the share card, so links unfurl with the prism.
 
 ## The twelve chapters
 
@@ -37,10 +43,10 @@ The first eight are named for what the world *does*; the last four for where the
 | VI | **Everything That Reflects** | the wave, measurement, and when *maybe* becomes *is* |
 | VII | **Everything That Works** | energy, fields, work, and the closed system |
 | VIII | **Everything That Counts** | number, and why mathematics is so unreasonably effective |
-| — | **The Two Uninvited Guests** | the constants that show up where you don't invite them |
-| — | **The Music No One Composed** | the primes, and the operator no one can find |
-| — | **The Made World** | engineering — making and knowing, taking turns |
-| — | **While the Light Lasts** | coming home: the body, play, and what the time is for |
+| IX | **The Two Uninvited Guests** | the constants that show up where you don't invite them |
+| X | **The Music No One Composed** | the primes, and the operator no one can find |
+| XI | **The Made World** | engineering: making and knowing, taking turns |
+| XII | **While the Light Lasts** | coming home: the body, play, and what the time is for |
 
 A **Combined Bibliography** unifies the references for all twelve chapters into a single,
 fact-checked list.
@@ -59,20 +65,21 @@ way:
 - **Dark mode** is honored automatically (`prefers-color-scheme`), and all motion respects
   `prefers-reduced-motion`.
 
-The cover is a prism splitting a beam of white light into a spectrum — the book's recurring
-image, and the source of its palette: a warm-paper page, ink-dark serif text, and a single
+The cover is a prism splitting a beam of white light into a spectrum: the book's recurring
+image, and the source of its palette of warm-paper page, ink-dark serif text, and a single
 rainbow rule running red through violet.
 
 ## Read it locally
 
-Because the book is one self-contained file, you can simply open it:
+Because each page is self-contained, you can simply open it:
 
 ```sh
-open index.html        # macOS
+open index.html        # macOS  (landing page; read.html for the book)
 xdg-open index.html    # Linux
 ```
 
-Or serve the folder if you prefer a local URL:
+Or serve the folder if you prefer a local URL (recommended — the resume-position and
+bookmark features persist properly over `http`):
 
 ```sh
 python3 -m http.server 8000
@@ -81,14 +88,17 @@ python3 -m http.server 8000
 
 ## Publishing
 
-The site is a static page and deploys as-is — no build step, no dependencies. The included
-[`netlify.toml`](netlify.toml) publishes the repository root directly. The same file works on
-any static host (GitHub Pages, Cloudflare Pages, etc.); just point the host at the root and
-serve `index.html`.
+The site is static and deploys as-is, with no build step and no dependencies. The included
+[`netlify.toml`](netlify.toml) publishes the repository root directly, and `index.html`
+becomes the homepage automatically. The same files work on any static host (GitHub Pages,
+Cloudflare Pages, etc.); just point the host at the root.
+
+Two placeholders in `index.html` are marked `YOUR-USERNAME` (the GitHub Sponsors donation
+button and the footer GitHub link); fill those in before going live.
 
 ## A note on the text
 
 The bracketed numbers refer to the numbered **Sources** list at the end of each chapter.
-Sources are primary — the original paper or book — wherever one exists, with
+Sources are primary (the original paper or book) wherever one exists, with
 authoritative-secondary sources used only for standard pedagogy or a developing
-interpretation, and marked as such. "Everything" is a working compilation title.
+interpretation, and marked as such.

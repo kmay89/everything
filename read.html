@@ -630,6 +630,81 @@ body{font-family:var(--reader-font)}
 
 /* larger tap targets on small screens */
 @media (max-width:640px){.toolbtn,.seg button,.set-size button{min-height:2.6em}}
+
+/* ===== milestone toast polish ===== */
+#milestone.show{animation:ms-pop .5s cubic-bezier(.2,.8,.3,1.2)}
+@keyframes ms-pop{0%{transform:translateX(-50%) translateY(14px) scale(.96)}100%{transform:translateX(-50%) translateY(0) scale(1)}}
+@media (prefers-reduced-motion: reduce){#milestone.show{animation:none}}
+
+/* the contents "view your journey" button */
+.ts-journey{margin:.95rem 0 0;background:none;border:0;cursor:pointer;padding:0;
+  font-family:var(--sans);font-size:.74rem;letter-spacing:.06em;color:var(--accent);font-weight:600;
+  text-decoration:underline;text-underline-offset:3px}
+.ts-journey:hover{color:var(--accent-bright)}
+.ts-journey:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ===== journey panel ===== */
+.journeypanel{position:fixed;inset:0;z-index:58;display:flex;align-items:center;justify-content:center;
+  padding:1.5rem;background:color-mix(in srgb,var(--ink) 38%,transparent);backdrop-filter:blur(3px);
+  opacity:0;transition:opacity .2s ease}
+.journeypanel.show{opacity:1}
+.journeypanel[hidden]{display:none}
+.jp-card{position:relative;width:min(30rem,100%);max-height:88vh;overflow-y:auto;background:var(--paper);
+  border:1px solid var(--rule);border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.3);
+  padding:1.8rem 1.6rem 1.6rem;text-align:center;font-family:var(--sans);
+  transform:translateY(8px);transition:transform .22s ease}
+.journeypanel.show .jp-card{transform:none}
+.jp-close{position:absolute;top:.7rem;right:.8rem;background:none;border:0;cursor:pointer;
+  color:var(--faint);font-size:1.4rem;line-height:1;padding:.2rem .4rem;border-radius:8px}
+.jp-close:hover{color:var(--accent)}
+.jp-eyebrow{font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 1rem}
+.jp-ring{display:flex;justify-content:center;margin:.2rem 0 1rem}
+.jp-ring svg{width:140px;height:140px}
+.jp-ring .ring-track{fill:none;stroke:color-mix(in srgb,var(--accent) 14%,transparent);stroke-width:9}
+.jp-ring .ring-prog{fill:none;stroke:url(#jpgrad);stroke-width:9;stroke-linecap:round;
+  transition:stroke-dashoffset .6s ease}
+.jp-ring .ring-num{font-family:var(--serif);font-size:1.7rem;font-weight:600;fill:var(--ink)}
+.jp-ring .ring-sub{font-family:var(--sans);font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;fill:var(--faint)}
+.jp-stats{font-size:.92rem;color:var(--muted);margin:0 auto 1.3rem;max-width:24rem;line-height:1.55}
+.jp-badges{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;text-align:left}
+.jp-badge{display:flex;align-items:center;gap:.55rem;border:1px solid var(--rule);border-radius:10px;padding:.6rem .7rem;
+  font-size:.78rem;color:var(--faint);background:var(--note-bg)}
+.jp-badge .jb-ico{display:inline-grid;place-items:center;width:1.5rem;height:1.5rem;flex:0 0 auto;border-radius:50%;
+  border:1px solid var(--rule);font-size:.8rem;color:var(--faint)}
+.jp-badge.got{color:var(--ink);border-color:color-mix(in srgb,var(--accent) 45%,var(--rule))}
+.jp-badge.got .jb-ico{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.jp-foot{font-size:.7rem;color:var(--faint);margin:1.2rem 0 0}
+@media (prefers-reduced-motion: reduce){.journeypanel,.jp-card,.jp-ring .ring-prog{transition:none}}
+@media (max-width:420px){.jp-badges{grid-template-columns:1fr}}
+
+/* ===== completion celebration ===== */
+.celebrate{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;
+  padding:1.5rem;background:var(--paper);opacity:0;transition:opacity .4s ease}
+.celebrate.show{opacity:1}
+.celebrate[hidden]{display:none}
+.cel-card{max-width:34rem;text-align:center}
+.cel-prism{width:min(150px,40vw);height:auto;margin:0 auto 1.6rem;display:block;
+  animation:cel-rise 1s cubic-bezier(.2,.7,.3,1) both}
+.celebrate h2{font-family:var(--serif);font-size:clamp(1.9rem,6vw,2.8rem);line-height:1.1;letter-spacing:-.02em;
+  font-weight:600;color:var(--ink);margin:.2rem 0 .9rem;animation:cel-rise 1s ease .15s both}
+.celebrate p{font-family:var(--serif);font-size:1.12rem;line-height:1.6;color:var(--muted);
+  max-width:30rem;margin:0 auto 1.6rem;animation:cel-rise 1s ease .3s both}
+.celebrate .jp-eyebrow{animation:cel-rise 1s ease .05s both}
+.cel-actions{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;animation:cel-rise 1s ease .45s both}
+.btn-cel{display:inline-flex;align-items:center;font-family:var(--sans);font-size:.8rem;letter-spacing:.1em;
+  text-transform:uppercase;font-weight:600;text-decoration:none;cursor:pointer;border-radius:999px;
+  padding:.8rem 1.4rem;border:1px solid var(--rule);background:none;color:var(--accent)}
+.btn-cel.primary{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+.btn-cel.primary:hover{background:var(--accent-bright);border-color:var(--accent-bright)}
+.btn-cel:hover{border-color:var(--accent)}
+@keyframes cel-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.celebrate,.cel-prism,.celebrate h2,.celebrate p,.celebrate .jp-eyebrow,.cel-actions{animation:none;transition:none}}
+@media print{.journeypanel,.celebrate{display:none}}
+
+/* end-of-chapter check animation + auto-size reflection */
+.chapter-end.done .ce-check{animation:ce-check-pop .45s cubic-bezier(.2,.8,.3,1.4)}
+@keyframes ce-check-pop{0%{transform:scale(.5)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion: reduce){.chapter-end.done .ce-check{animation:none}}
 </style>
 </head>
 <body>
@@ -687,6 +762,13 @@ body{font-family:var(--reader-font)}
       <button type="button" data-font-opt="sans">Sans</button>
     </div>
   </div>
+  <div class="set-row">
+    <span class="set-label">Reading mode</span>
+    <div class="seg" role="group" aria-label="Reading mode">
+      <button type="button" id="immersivebtn" aria-pressed="false">Immersive</button>
+      <button type="button" id="lockrotbtn" aria-pressed="false">Lock rotation</button>
+    </div>
+  </div>
 </div>
 <div id="chaptime" aria-hidden="true"></div>
 <div id="welcome" role="status"><span id="wc-text">Welcome back.</span><button id="wc-x" class="wc-x" type="button" aria-label="Dismiss">&#215;</button></div>
@@ -700,6 +782,35 @@ body{font-family:var(--reader-font)}
 </div>
 <button id="copyquote" class="copyquote" type="button" hidden>Copy quote</button>
 <div id="milestone" role="status"><span class="ms-ico" aria-hidden="true">✦</span><span id="ms-text"></span></div>
+<div id="journeypanel" class="journeypanel" role="dialog" aria-modal="true" aria-label="Your journey" hidden>
+  <div class="jp-card">
+    <button class="jp-close" type="button" data-jp-close aria-label="Close">&#215;</button>
+    <p class="jp-eyebrow">Your journey</p>
+    <div class="jp-ring" id="jp-ring"></div>
+    <p class="jp-stats" id="jp-stats"></p>
+    <div class="jp-badges" id="jp-badges"></div>
+    <p class="jp-foot">Everything here is yours alone, kept on this device.</p>
+  </div>
+</div>
+<div id="celebrate" class="celebrate" role="dialog" aria-modal="true" aria-label="You finished the book" hidden>
+  <div class="cel-card">
+    <svg class="cel-prism" viewBox="0 0 360 130" role="img" aria-label="A prism splitting light.">
+      <defs><linearGradient id="celg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#d65a5a"/><stop offset="33%" stop-color="#e0c15a"/>
+        <stop offset="60%" stop-color="#3fae9f"/><stop offset="100%" stop-color="#6b5bd0"/></linearGradient></defs>
+      <path d="M176,88 L352,46 L352,118 Z" fill="url(#celg)" opacity="0.95"/>
+      <path d="M150,26 L116,100 L184,100 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" style="color:var(--accent)"/>
+      <line x1="14" y1="72" x2="130" y2="72" stroke="currentColor" stroke-width="2" style="color:var(--accent)"/>
+    </svg>
+    <p class="jp-eyebrow">The end, and the beginning</p>
+    <h2>You&rsquo;ve read Everything That Glows</h2>
+    <p>Every chapter, finished. Thank you for the attention you brought to it &mdash; that closeness to the world is the whole of the method, and most of the reward.</p>
+    <div class="cel-actions">
+      <button class="btn-cel primary" type="button" data-cel-close>Return to the book</button>
+      <a class="btn-cel" href="index.html">Support the work</a>
+    </div>
+  </div>
+</div>
 <main class="wrap">
 
   <header class="titlepage cover" id="top">
@@ -3972,9 +4083,11 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
     if(!contents)return;
     summary=document.createElement("div"); summary.className="toc-summary";
     summary.innerHTML='<div class="ts-top"><span class="ts-count" id="ts-count"></span><span class="ts-left" id="ts-left"></span></div>'
-      +'<div class="ts-bar"><span class="ts-fill" id="ts-fill"></span></div><div class="ts-badges" id="ts-badges"></div>';
+      +'<div class="ts-bar"><span class="ts-fill" id="ts-fill"></span></div><div class="ts-badges" id="ts-badges"></div>'
+      +'<button type="button" class="ts-journey" id="ts-journey">View your journey ✦</button>';
     var h=contents.querySelector("h2");
     if(h)h.parentNode.insertBefore(summary,h.nextSibling); else contents.appendChild(summary);
+    var jb=summary.querySelector("#ts-journey"); if(jb)jb.addEventListener("click",openJourney);
   }
   function fmtLeft(mins){if(mins<=0)return "complete";var h=Math.floor(mins/60),m=mins%60;return (h?h+"h ":"")+m+"m left";}
   function updateSummary(pm){
@@ -4008,10 +4121,74 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
     if(msT)clearTimeout(msT); msT=setTimeout(function(){msEl.classList.remove("show");setTimeout(function(){msEl.style.display="none";},500);},4200);
   }
   function checkMilestones(pm){
-    var s=stateFrom(pm), got=jload("et-milestones",{})||{}, fresh=null;
-    MILES.forEach(function(m){if(m.test(s)&&!got[m.id]){got[m.id]=1;if(!fresh)fresh=m;}});
-    if(fresh){save("et-milestones",JSON.stringify(got));toastMilestone(fresh);}
+    var s=stateFrom(pm), got=jload("et-milestones",{})||{}, fresh=null, finished=false;
+    MILES.forEach(function(m){if(m.test(s)&&!got[m.id]){got[m.id]=1;if(m.id==="finish")finished=true;else if(!fresh)fresh=m;}});
+    if(finished||fresh)save("et-milestones",JSON.stringify(got));
+    if(finished)celebrate(); else if(fresh)toastMilestone(fresh);
   }
+
+  /* ----- journey panel ----- */
+  var jpEl=document.getElementById("journeypanel"), jpLastFocus=null;
+  function readStats(pm){var done=0,readW=0;chapters.forEach(function(c){if(isDone(c,pm))done++;readW+=c.words*(Math.max(pm[c.id]||0,readSet[c.id]?100:0)/100);});return{done:done,readW:readW};}
+  function reflectionCount(){var n=0;Object.keys(notes).forEach(function(k){if(notes[k]&&notes[k].trim())n++;});return n;}
+  function renderJourney(pm){
+    if(!jpEl||jpEl.hidden)return;
+    var st=readStats(pm), pct=TOTALW?Math.round(st.readW/TOTALW*100):0;
+    var C=2*Math.PI*52, off=C*(1-pct/100);
+    document.getElementById("jp-ring").innerHTML=
+      '<svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="jpgrad" x1="0" y1="0" x2="1" y2="1">'
+      +'<stop offset="0%" stop-color="var(--accent)"/><stop offset="100%" stop-color="var(--accent-bright)"/></linearGradient></defs>'
+      +'<circle class="ring-track" cx="60" cy="60" r="52"/>'
+      +'<circle class="ring-prog" cx="60" cy="60" r="52" transform="rotate(-90 60 60)" style="stroke-dasharray:'+C.toFixed(1)+';stroke-dashoffset:'+off.toFixed(1)+'"/>'
+      +'<text class="ring-num" x="60" y="58" text-anchor="middle" dominant-baseline="middle">'+pct+'%</text>'
+      +'<text class="ring-sub" x="60" y="80" text-anchor="middle">read</text></svg>';
+    var mins=Math.round(st.readW/WPM), hrs=mins/60;
+    var timeStr=hrs>=1?(hrs.toFixed(1)+" hours"):(mins+" minute"+(mins===1?"":"s"));
+    var refl=reflectionCount();
+    document.getElementById("jp-stats").innerHTML=
+      st.done+" of "+chapters.length+" chapters finished &middot; about "+timeStr+" of reading"
+      +(refl?(" &middot; "+refl+" reflection"+(refl>1?"s":"")+" kept"):"");
+    var badges=document.getElementById("jp-badges"); badges.innerHTML="";
+    var s=stateFrom(pm);
+    MILES.forEach(function(m){
+      var has=m.test(s);
+      var el=document.createElement("div"); el.className="jp-badge"+(has?" got":"");
+      el.innerHTML='<span class="jb-ico">'+(has?"✦":"·")+'</span><span>'+escHtml(m.label)+'</span>';
+      badges.appendChild(el);
+    });
+  }
+  function openJourney(){
+    if(!jpEl)return;
+    jpLastFocus=document.activeElement;
+    jpEl.hidden=false; renderJourney(progMap());
+    requestAnimationFrame(function(){jpEl.classList.add("show");});
+    var cb=jpEl.querySelector("[data-jp-close]"); if(cb)cb.focus();
+    document.addEventListener("keydown",jpKey);
+  }
+  function closeJourney(){
+    if(!jpEl)return;
+    jpEl.classList.remove("show"); document.removeEventListener("keydown",jpKey);
+    setTimeout(function(){jpEl.hidden=true;},200);
+    if(jpLastFocus&&jpLastFocus.focus){try{jpLastFocus.focus();}catch(e){}}
+  }
+  function jpKey(e){if(e.key==="Escape")closeJourney();}
+  if(jpEl){
+    Array.prototype.forEach.call(jpEl.querySelectorAll("[data-jp-close]"),function(b){b.addEventListener("click",closeJourney);});
+    jpEl.addEventListener("click",function(e){if(e.target===jpEl)closeJourney();});
+  }
+
+  /* ----- completion celebration ----- */
+  var celEl=document.getElementById("celebrate");
+  function celebrate(){
+    if(!celEl||load("et-celebrated")==="1")return;
+    save("et-celebrated","1");
+    celEl.hidden=false; requestAnimationFrame(function(){celEl.classList.add("show");});
+    var cb=celEl.querySelector("[data-cel-close]"); if(cb)cb.focus();
+    document.addEventListener("keydown",celKey);
+  }
+  function celClose(){ if(!celEl)return; celEl.classList.remove("show"); document.removeEventListener("keydown",celKey); setTimeout(function(){celEl.hidden=true;},400); }
+  function celKey(e){if(e.key==="Escape")celClose();}
+  if(celEl)Array.prototype.forEach.call(celEl.querySelectorAll("[data-cel-close]"),function(b){b.addEventListener("click",celClose);});
 
   /* ----- end-of-chapter cards ----- */
   var CHEERS=["Nicely done.","Great job.","Onward.","Well read.","That’s a chapter."];
@@ -4029,8 +4206,11 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         +'<div class="ce-actions"><button class="ce-btn" type="button" data-mark>Mark as read</button>'+nextHtml+'</div>'
         +'<p class="ce-progress" data-ceprog></p>';
       c.el.parentNode.insertBefore(card,c.el.nextSibling); c.card=card;
-      var ta=card.querySelector(".ce-reflect"); if(notes[c.id])ta.value=notes[c.id];
-      ta.addEventListener("input",function(){notes[c.id]=ta.value;save("et-notes",JSON.stringify(notes));});
+      var ta=card.querySelector(".ce-reflect");
+      function grow(){ta.style.height="auto";ta.style.height=Math.min(ta.scrollHeight,240)+"px";}
+      if(notes[c.id])ta.value=notes[c.id];
+      ta.addEventListener("input",function(){notes[c.id]=ta.value;save("et-notes",JSON.stringify(notes));grow();});
+      setTimeout(grow,0);
       card.querySelector("[data-mark]").addEventListener("click",function(){
         var pm=progMap();
         if((pm[c.id]||0)>=DONE)return;          /* already finished by reading */
@@ -4052,13 +4232,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
       c.card.querySelector("[data-ceprog]").textContent=done?("You’ve finished "+doneCount+" of "+chapters.length+" chapters."):"";
     });
   }
-  function refresh(){var pm=progMap();updateSummary(pm);refreshCards(pm);}
+  function refresh(){var pm=progMap();updateSummary(pm);refreshCards(pm);renderJourney(pm);}
 
   buildSummary(); buildCards(); refresh(); checkMilestones(progMap());
   var last=0;
   window.addEventListener("scroll",function(){var now=Date.now();if(now-last>450){last=now;var pm=progMap();updateSummary(pm);refreshCards(pm);checkMilestones(pm);}},{passive:true});
   window.addEventListener("resize",function(){measure();});
   window.addEventListener("load",function(){measure();setTimeout(refresh,300);});
+})();
+</script>
+<script>
+/* ---- reading mode: immersive (fullscreen) + best-effort rotation lock ---- */
+(function(){
+  var imb=document.getElementById("immersivebtn"), lrb=document.getElementById("lockrotbtn");
+  if(!imb||!lrb)return;
+  var el=document.documentElement;
+  function fsOn(){return document.fullscreenElement||document.webkitFullscreenElement;}
+  function reqFS(){var p; try{ p = el.requestFullscreen ? el.requestFullscreen() : (el.webkitRequestFullscreen?el.webkitRequestFullscreen():null);}catch(e){} return Promise.resolve(p).catch(function(){}); }
+  function exitFS(){ try{ if(document.exitFullscreen)return document.exitFullscreen().catch(function(){}); if(document.webkitExitFullscreen)document.webkitExitFullscreen(); }catch(e){} return Promise.resolve(); }
+  function syncFS(){ var on=!!fsOn(); imb.setAttribute("aria-pressed",on?"true":"false"); imb.textContent=on?"Exit immersive":"Immersive"; }
+  imb.addEventListener("click",function(){ if(fsOn())exitFS(); else reqFS(); });
+  document.addEventListener("fullscreenchange",syncFS);
+  document.addEventListener("webkitfullscreenchange",syncFS);
+  syncFS();
+
+  var so=window.screen&&screen.orientation, canLock=!!(so&&so.lock);
+  if(!canLock){ lrb.disabled=true; lrb.title="This device can’t lock rotation in-page — use your system rotation lock."; return; }
+  var locked=false;
+  function setLocked(v){ locked=v; lrb.setAttribute("aria-pressed",v?"true":"false"); lrb.textContent=v?"Rotation locked":"Lock rotation"; }
+  lrb.addEventListener("click",function(){
+    if(locked){ try{so.unlock();}catch(e){} setLocked(false); return; }
+    var apply=function(){ var t=(so.type||"").indexOf("landscape")===0?"landscape":"portrait";
+      so.lock(t).then(function(){setLocked(true);},function(){ lrb.title="Rotation lock needs fullscreen on this device — turn on Immersive first."; }); };
+    if(!fsOn()) reqFS().then(function(){ setTimeout(apply,200); }); else apply();
+  });
 })();
 </script>
 </body>

@@ -102,3 +102,20 @@ The bracketed numbers refer to the numbered **Sources** list at the end of each 
 Sources are primary (the original paper or book) wherever one exists, with
 authoritative-secondary sources used only for standard pedagogy or a developing
 interpretation, and marked as such.
+
+## License
+
+© 2026 Karl Meves. **All rights reserved.** The book is free to *read* online; it is not
+licensed for copying, redistribution, adaptation, or commercial use. See [`LICENSE`](LICENSE)
+for the full terms, and [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md) for the MIT/OFL
+notices covering the bundled KaTeX stylesheet and math fonts. For permissions beyond reading
+(republication, translation, audio, print, or any commercial use), contact the author.
+
+## Security & privacy
+
+The site collects nothing: no trackers, no analytics, no cookies, no accounts. The reader's
+position and bookmarks are stored only in their own browser (`localStorage`) and never leave
+the device. Responses are served with a strict Content-Security-Policy and the usual security
+headers (HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`,
+`Permissions-Policy`); see [`netlify.toml`](netlify.toml). To report a vulnerability, see
+[`SECURITY.md`](SECURITY.md).

@@ -17,7 +17,12 @@ manager, and no dependencies.
 - `read.html` — the whole book and its reader (~1.7 MB). The canonical book artifact.
 - `og-image.png` — the 1200×630 Open Graph share card (the prism, on-brand).
 - `README.md` — repo-facing description, written in the book's voice.
-- `netlify.toml` — static deploy config (publishes the root; no build command).
+- `netlify.toml` — static deploy config: publishes the root (no build command),
+  security headers + CSP for every response, cache rules, and the www→apex redirect.
+- `LICENSE` — proprietary, all rights reserved (the book is free to read, not to redistribute).
+- `THIRD-PARTY-NOTICES.md` — MIT/OFL notices for the bundled KaTeX CSS and math fonts.
+- `SECURITY.md` — how to report a vulnerability.
+- `robots.txt` / `sitemap.xml` — crawl + indexing hygiene.
 
 ## Working notes
 

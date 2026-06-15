@@ -1,0 +1,11 @@
+# Local tooling / OS cruft
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Netlify
+.netlify/

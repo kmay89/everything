@@ -1,0 +1,10 @@
+# "Everything" is a single self-contained static page — no build step.
+[build]
+  publish = "."
+  command = ""
+
+# Long-cache the embedded reader; it changes only when the book is recompiled.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

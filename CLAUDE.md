@@ -25,7 +25,10 @@ manager, and no dependencies.
 - `read.html` — the whole book and its reader (~1.7 MB). The canonical book artifact.
   The reader chrome is consolidated behind a single **Menu** button in the topbar (a
   `#menusheet` that proxies to the still-present feature controls: Contents, Search, Journey,
-  Flags, Display & text, Sound, Share, Support). **Share** uses the Web Share API (native
+  Flags, Display & text, Sound, Share, Read aloud, Support). **Read aloud** uses the Web Speech
+  API (`speechSynthesis`, on-device, no network): a player with play/pause/stop, a voice picker and
+  speed (persisted `et-voice`/`et-rate`), reading block-by-block from the viewport with the current
+  block highlighted, skipping citations and reading equations as "(equation)". **Share** uses the Web Share API (native
   sheet → iMessage on Apple) with a copy/mailto fallback; **selecting text** offers Copy, **Flag**
   (bookmark that exact paragraph), **Link** (deep link to it), or **Share as image**. Every
   paragraph gets a stable anchor (`<sectionId>-p<n>`) at load, so flags, jumps, and deep links are

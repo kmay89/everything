@@ -1,0 +1,16 @@
+{
+  "name": "etg-tools",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Build and integrity tooling for Everything That Glows (EPUB export + HTML checks). Not part of the published site.",
+  "scripts": {
+    "check": "node check-html.mjs",
+    "build:epub": "node build-epub.mjs",
+    "all": "node check-html.mjs && node build-epub.mjs"
+  },
+  "dependencies": {
+    "jsdom": "^24.1.0",
+    "mathjax-full": "^3.2.2"
+  }
+}

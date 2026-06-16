@@ -743,6 +743,51 @@ body{font-family:var(--reader-font)}
   transition:opacity .35s ease,transform .35s ease;max-width:calc(100vw - 1.4rem);text-align:center}
 #mtoast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media (prefers-reduced-motion: reduce){#mtoast{transition:opacity .2s ease;transform:translateX(-50%)}#mtoast.show{transform:translateX(-50%)}}
+
+/* ===== reflections across time ===== */
+.chapter-before{max-width:var(--measure);margin:1.6rem auto 0;padding:.9rem 1.1rem;border:1px dashed var(--rule);
+  border-radius:12px;background:color-mix(in srgb,var(--note-bg) 70%,transparent);font-family:var(--sans)}
+.chapter-before .cb-label{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 .5rem}
+.chapter-before .cb-reflect{display:block;width:100%;box-sizing:border-box;font:inherit;font-size:.95rem;
+  padding:.55rem .7rem;border:1px solid var(--rule);border-radius:8px;background:var(--paper);color:var(--ink);resize:vertical;min-height:2.4rem}
+.chapter-before .cb-reflect:focus{outline:2px solid var(--accent);outline-offset:1px}
+@media print{.chapter-before{display:none}}
+.chapter-end .ce-time{display:inline-block;margin:.95rem auto 0;background:none;border:0;cursor:pointer;
+  font-family:var(--sans);font-size:.74rem;letter-spacing:.04em;color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.chapter-end .ce-time:hover{color:var(--accent-bright)}
+
+.jp-link{display:inline-block;margin:1.1rem 0 0;background:none;border:0;cursor:pointer;font-family:var(--sans);
+  font-size:.78rem;letter-spacing:.04em;color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.jp-link:hover{color:var(--accent-bright)}
+
+/* across-time timeline panel */
+.timepanel{position:fixed;inset:0;z-index:59;display:flex;align-items:center;justify-content:center;padding:1.5rem;
+  background:color-mix(in srgb,var(--ink) 38%,transparent);backdrop-filter:blur(3px);opacity:0;transition:opacity .2s ease}
+.timepanel.show{opacity:1}
+.timepanel[hidden]{display:none}
+.tp-card{position:relative;width:min(34rem,100%);max-height:88vh;overflow-y:auto;background:var(--paper);
+  border:1px solid var(--rule);border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.3);padding:1.8rem 1.5rem 1.5rem;
+  font-family:var(--sans);transform:translateY(8px);transition:transform .22s ease}
+.timepanel.show .tp-card{transform:none}
+.tp-close{position:absolute;top:.7rem;right:.8rem;background:none;border:0;cursor:pointer;color:var(--faint);font-size:1.4rem;line-height:1;padding:.2rem .4rem;border-radius:8px}
+.tp-close:hover{color:var(--accent)}
+.tp-eyebrow{font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 .3rem;text-align:center}
+.tp-intro{font-size:.9rem;color:var(--muted);text-align:center;margin:0 auto 1.3rem;max-width:27rem;line-height:1.5}
+.tp-ch{border-top:1px solid var(--rule);padding:1.1rem 0}
+.tp-ch:first-of-type{border-top:0;padding-top:.2rem}
+.tp-ch-title{display:flex;align-items:center;gap:.55rem;font-family:var(--serif);font-size:1.12rem;color:var(--ink);margin:0 0 .7rem}
+.tp-dot{width:.6rem;height:.6rem;border-radius:50%;flex:0 0 auto}
+.tp-row{position:relative;padding:0 0 .9rem 1.1rem;border-left:2px solid var(--rule);margin-left:.3rem}
+.tp-row:last-child{padding-bottom:0}
+.tp-row::before{content:"";position:absolute;left:-5px;top:.3rem;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.tp-when{display:block;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:0 0 .15rem}
+.tp-kind{font-weight:600;color:var(--accent)}
+.tp-text{font-family:var(--serif);font-size:.96rem;line-height:1.5;color:var(--ink);margin:.1rem 0 0;white-space:pre-wrap}
+.tp-flag{font-family:var(--serif);font-size:.9rem;color:var(--muted);margin:.1rem 0 0;font-style:italic}
+.tp-empty{text-align:center;color:var(--muted);font-family:var(--serif);font-size:1.02rem;line-height:1.55;padding:1rem .4rem}
+.tp-foot{font-size:.7rem;color:var(--faint);margin:1.2rem 0 0;text-align:center}
+@media (prefers-reduced-motion: reduce){.timepanel,.tp-card{transition:none}}
+@media print{.timepanel{display:none}}
 </style>
 </head>
 <body>
@@ -772,6 +817,7 @@ body{font-family:var(--reader-font)}
     <button class="ms-item" type="button" data-act="contents"><span class="ms-i" aria-hidden="true">&#9776;</span><span class="ms-t">Contents</span></button>
     <button class="ms-item" type="button" data-act="search"><span class="ms-i" aria-hidden="true">&#8981;</span><span class="ms-t">Search the book</span></button>
     <button class="ms-item" type="button" data-act="journey"><span class="ms-i" aria-hidden="true">&#10022;</span><span class="ms-t">Your journey</span></button>
+    <button class="ms-item" type="button" data-act="time"><span class="ms-i" aria-hidden="true">&#8986;</span><span class="ms-t">Thoughts across time</span></button>
     <button class="ms-item" type="button" data-act="marks"><span class="ms-i" aria-hidden="true">&#9094;</span><span class="ms-t">Flags</span></button>
     <div class="ms-div"></div>
     <button class="ms-item" type="button" data-act="settings"><span class="ms-i" aria-hidden="true">Aa</span><span class="ms-t">Display &amp; text</span></button>
@@ -850,7 +896,17 @@ body{font-family:var(--reader-font)}
     <div class="jp-ring" id="jp-ring"></div>
     <p class="jp-stats" id="jp-stats"></p>
     <div class="jp-badges" id="jp-badges"></div>
+    <button class="jp-link" type="button" data-jp-time>See your thoughts across time &#10022;</button>
     <p class="jp-foot">Everything here is yours alone, kept on this device.</p>
+  </div>
+</div>
+<div id="timepanel" class="timepanel" role="dialog" aria-modal="true" aria-label="Your thoughts across time" hidden>
+  <div class="tp-card">
+    <button class="tp-close" type="button" data-tp-close aria-label="Close">&#215;</button>
+    <p class="tp-eyebrow">Across time</p>
+    <p class="tp-intro">How your thinking moves: what you expected <em>before</em>, what you flagged <em>while</em> reading, and what you understood <em>after</em>.</p>
+    <div class="tp-body"></div>
+    <p class="tp-foot">Private to this device. Jot a line before a chapter and reflect after to watch it grow.</p>
   </div>
 </div>
 <div id="celebrate" class="celebrate" role="dialog" aria-modal="true" aria-label="You finished the book" hidden>
@@ -4194,7 +4250,22 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
   measure();
   var TOTALW=chapters.reduce(function(a,c){return a+c.words;},0);
 
-  var readSet=jload("et-read",{})||{}, notes=jload("et-notes",{})||{};
+  var readSet=jload("et-read",{})||{};
+  /* reflections across time: { chId: {text, t} } for before and after */
+  var before=jload("et-before",{})||{};
+  var after=jload("et-after",null);
+  if(!after){ after={}; var legacy=jload("et-notes",{})||{};
+    Object.keys(legacy).forEach(function(k){ var v=legacy[k]; if(v&&(""+v).trim()) after[k]={text:""+v,t:null}; });
+    save("et-after",JSON.stringify(after)); }
+  function saveBefore(){ save("et-before",JSON.stringify(before)); }
+  function saveAfter(){ save("et-after",JSON.stringify(after)); }
+  function entryText(map,id){ return (map[id]&&map[id].text)?map[id].text:""; }
+  function setEntry(map,id,v){ map[id]={text:v,t:(map[id]&&map[id].t)||(v.trim()?Date.now():null)}; }
+  function relTime(t){ if(!t)return ""; var d=Date.now()-t,m=Math.round(d/60000);
+    if(m<1)return "just now"; if(m<60)return m+" min ago";
+    var h=Math.round(m/60); if(h<24)return h+" hr ago";
+    var days=Math.round(h/24); if(days<30)return days+" day"+(days>1?"s":"")+" ago";
+    try{return new Date(t).toLocaleDateString();}catch(e){return "";} }
   function progMap(){return jload("et-progress",{})||{};}
   function liveFrac(c){var mid=window.pageYOffset+window.innerHeight*0.5,f=(mid-c.top)/Math.max(c.h,1);return f<0?0:f>1?1:f;}
   function pctFor(c,pm){return Math.max(pm[c.id]||0, Math.round(liveFrac(c)*100), readSet[c.id]?100:0);}
@@ -4274,7 +4345,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
   /* ----- journey panel ----- */
   var jpEl=document.getElementById("journeypanel"), jpLastFocus=null;
   function readStats(pm){var done=0,readW=0;chapters.forEach(function(c){if(isDone(c,pm))done++;readW+=c.words*(Math.max(pm[c.id]||0,readSet[c.id]?100:0)/100);});return{done:done,readW:readW};}
-  function reflectionCount(){var n=0;Object.keys(notes).forEach(function(k){if(notes[k]&&notes[k].trim())n++;});return n;}
+  function reflectionCount(){var n=0;chapters.forEach(function(c){if(entryText(before,c.id).trim())n++;if(entryText(after,c.id).trim())n++;});return n;}
   function renderJourney(pm){
     if(!jpEl||jpEl.hidden)return;
     var st=readStats(pm), pct=TOTALW?Math.round(st.readW/TOTALW*100):0;
@@ -4345,16 +4416,18 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
       card.className="chapter-end"; card.setAttribute("data-for",c.id);
       card.innerHTML='<p class="ce-badge"><span class="ce-check">✓</span> Chapter '+(i+1)+' of '+chapters.length+'</p>'
         +'<p class="ce-head" data-cheer></p>'
-        +'<p class="ce-sub">A natural place to pause. If one idea stood out, jot it down — it’s saved only on this device.</p>'
-        +'<textarea class="ce-reflect" rows="1" placeholder="One idea worth keeping…" aria-label="Your reflection on this chapter"></textarea>'
+        +'<p class="ce-sub">A natural place to pause. What do you understand now that you didn’t before?</p>'
+        +'<textarea class="ce-reflect" rows="1" placeholder="After reading — how did your thinking change?" aria-label="Your reflection after this chapter"></textarea>'
         +'<div class="ce-actions"><button class="ce-btn" type="button" data-mark>Mark as read</button>'+nextHtml+'</div>'
+        +'<button class="ce-time" type="button" data-time>&#10022; See your thoughts across time</button>'
         +'<p class="ce-progress" data-ceprog></p>';
       c.el.parentNode.insertBefore(card,c.el.nextSibling); c.card=card;
       var ta=card.querySelector(".ce-reflect");
       function grow(){ta.style.height="auto";ta.style.height=Math.min(ta.scrollHeight,240)+"px";}
-      if(notes[c.id])ta.value=notes[c.id];
-      ta.addEventListener("input",function(){notes[c.id]=ta.value;save("et-notes",JSON.stringify(notes));grow();});
+      if(entryText(after,c.id))ta.value=entryText(after,c.id);
+      ta.addEventListener("input",function(){setEntry(after,c.id,ta.value);saveAfter();grow();});
       setTimeout(grow,0);
+      card.querySelector("[data-time]").addEventListener("click",function(){openTime();});
       card.querySelector("[data-mark]").addEventListener("click",function(){
         var pm=progMap();
         if((pm[c.id]||0)>=DONE)return;          /* already finished by reading */
@@ -4376,9 +4449,58 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
       c.card.querySelector("[data-ceprog]").textContent=done?("You’ve finished "+doneCount+" of "+chapters.length+" chapters."):"";
     });
   }
+  /* ----- before-you-read cards ----- */
+  function buildBeforeCards(){
+    chapters.forEach(function(c){
+      var head=c.el.querySelector(".chapter-head"); if(!head)return;
+      var box=document.createElement("aside"); box.className="chapter-before";
+      box.innerHTML='<p class="cb-label">Before you read — what do you already think?</p>'
+        +'<textarea class="cb-reflect" rows="1" placeholder="A guess, a question, an expectation…" aria-label="Your thoughts before this chapter"></textarea>';
+      head.insertAdjacentElement("afterend",box);
+      var ta=box.querySelector(".cb-reflect");
+      function grow(){ta.style.height="auto";ta.style.height=Math.min(ta.scrollHeight,200)+"px";}
+      if(entryText(before,c.id))ta.value=entryText(before,c.id);
+      ta.addEventListener("input",function(){setEntry(before,c.id,ta.value);saveBefore();grow();});
+      setTimeout(grow,0);
+    });
+  }
+
+  /* ----- thoughts across time (timeline) ----- */
+  var tpEl=document.getElementById("timepanel"), tpLast=null;
+  function buildTimelineHTML(){
+    var flags=jload("marks",[])||[]; if(!Array.isArray(flags))flags=[];
+    var any=false, html="";
+    chapters.forEach(function(c){
+      var b=entryText(before,c.id).trim(), a=entryText(after,c.id).trim();
+      var cf=flags.filter(function(m){return (m.c||"")===c.title;});
+      if(!b&&!a&&!cf.length)return;
+      any=true;
+      var hue=window.ETShare?ETShare.hueFor(c.idx):"#34346b";
+      html+='<div class="tp-ch"><p class="tp-ch-title"><span class="tp-dot" style="background:'+hue+'"></span>'+escHtml(c.title)+'</p>';
+      if(b){ html+='<div class="tp-row"><span class="tp-when"><span class="tp-kind">Before</span>'+(before[c.id].t?(" · "+relTime(before[c.id].t)):"")+'</span><p class="tp-text">'+escHtml(b)+'</p></div>'; }
+      if(cf.length){ html+='<div class="tp-row"><span class="tp-when"><span class="tp-kind">While reading</span> · '+cf.length+' flag'+(cf.length>1?"s":"")+'</span>';
+        cf.slice(0,3).forEach(function(m){ html+='<p class="tp-flag">“'+escHtml(m.s||"")+'”</p>'; }); html+='</div>'; }
+      if(a){ html+='<div class="tp-row"><span class="tp-when"><span class="tp-kind">After</span>'+(after[c.id].t?(" · "+relTime(after[c.id].t)):"")+'</span><p class="tp-text">'+escHtml(a)+'</p></div>'; }
+      html+='</div>';
+    });
+    if(!any) html='<p class="tp-empty">Your thoughts will gather here. Jot a line <em>before</em> a chapter, flag passages <em>while</em> you read, and reflect <em>after</em> — then watch your understanding move across time.</p>';
+    return html;
+  }
+  function renderTime(){ var b=tpEl&&tpEl.querySelector(".tp-body"); if(b)b.innerHTML=buildTimelineHTML(); }
+  function openTime(){ if(!tpEl)return; tpLast=document.activeElement; tpEl.hidden=false; renderTime();
+    requestAnimationFrame(function(){tpEl.classList.add("show");}); var cb=tpEl.querySelector("[data-tp-close]"); if(cb)cb.focus();
+    document.addEventListener("keydown",tpKey); }
+  function closeTime(){ if(!tpEl)return; tpEl.classList.remove("show"); document.removeEventListener("keydown",tpKey);
+    setTimeout(function(){tpEl.hidden=true;},200); if(tpLast&&tpLast.focus){try{tpLast.focus();}catch(e){}} }
+  function tpKey(e){ if(e.key==="Escape")closeTime(); }
+  if(tpEl){ Array.prototype.forEach.call(tpEl.querySelectorAll("[data-tp-close]"),function(b){b.addEventListener("click",closeTime);});
+    tpEl.addEventListener("click",function(e){if(e.target===tpEl)closeTime();}); }
+  window.ETShowTime=openTime;
+  if(jpEl){ var jt=jpEl.querySelector("[data-jp-time]"); if(jt)jt.addEventListener("click",function(){closeJourney();setTimeout(openTime,210);}); }
+
   function refresh(){var pm=progMap();updateSummary(pm);refreshCards(pm);renderJourney(pm);}
 
-  buildSummary(); buildCards(); refresh(); checkMilestones(progMap());
+  buildSummary(); buildBeforeCards(); buildCards(); refresh(); checkMilestones(progMap());
   var last=0;
   window.addEventListener("scroll",function(){var now=Date.now();if(now-last>450){last=now;var pm=progMap();updateSummary(pm);refreshCards(pm);checkMilestones(pm);}},{passive:true});
   window.addEventListener("resize",function(){measure();});
@@ -4458,6 +4580,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         else if(act==="settings")clickId("setbtn");
         else if(act==="marks")clickId("marksbtn");
         else if(act==="journey")clickId("ts-journey");
+        else if(act==="time"){ if(window.ETShowTime)window.ETShowTime(); }
         else if(act==="share")share();
       },190);
     });

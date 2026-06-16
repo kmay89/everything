@@ -840,6 +840,48 @@ body{font-family:var(--reader-font)}
 .cast-name.met{color:var(--ink);border-color:color-mix(in srgb,var(--accent) 45%,var(--rule))}
 .cast-name.met .cn-tick{color:var(--accent)}
 
+/* ===== reference / X-ray (people, ideas, where they appear) ===== */
+.ref-search{width:100%;font-family:var(--sans);font-size:.92rem;color:var(--ink);background:var(--note-bg);
+  border:1px solid var(--rule);border-radius:10px;padding:.6rem .8rem;margin:0 0 1rem}
+.ref-search:focus{outline:2px solid var(--accent-bright);outline-offset:1px;border-color:var(--accent)}
+.ref-group{border-top:1px solid var(--rule);padding:.9rem 0 .2rem}
+.ref-group:first-of-type{border-top:0;padding-top:.1rem}
+.ref-group h4{font-family:var(--sans);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);
+  font-weight:600;margin:0 0 .6rem}
+.ref-item{display:block;width:100%;text-align:left;background:none;border:0;border-radius:9px;cursor:pointer;
+  padding:.5rem .55rem;margin:0 0 .12rem;color:var(--ink);font-family:var(--serif)}
+.ref-item:hover{background:var(--note-bg)}
+.ref-item:focus-visible{outline:2px solid var(--accent-bright);outline-offset:1px}
+.ref-head{display:flex;align-items:baseline;justify-content:space-between;gap:.6rem}
+.ref-name{font-size:1.02rem;color:var(--ink)}
+.ref-name .ref-tick{color:var(--accent);font-size:.82rem;margin-right:.3rem}
+.ref-count{flex:0 0 auto;font-family:var(--sans);font-size:.68rem;letter-spacing:.04em;color:var(--faint);
+  white-space:nowrap}
+.ref-item[aria-expanded="true"]{background:var(--note-bg)}
+.ref-item[aria-expanded="true"] .ref-name{color:var(--accent)}
+.ref-detail{padding:.1rem .2rem .7rem 1.1rem;border-left:2px solid var(--rule);margin:.1rem 0 .6rem .5rem}
+.ref-detail[hidden]{display:none}
+.ref-blurb{font-family:var(--serif);font-size:.95rem;line-height:1.5;color:var(--ink);margin:.2rem 0 .7rem}
+.ref-occ{display:block;width:100%;text-align:left;background:none;border:0;cursor:pointer;padding:.4rem .5rem;
+  border-radius:8px;margin:0 0 .15rem;font-family:var(--serif);font-size:.86rem;line-height:1.4;color:var(--muted)}
+.ref-occ:hover{background:var(--paper);color:var(--ink)}
+.ref-occ:focus-visible{outline:2px solid var(--accent-bright);outline-offset:1px}
+.ref-occ .ro-ch{display:block;font-family:var(--sans);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 .12rem}
+.ref-occ mark{background:color-mix(in srgb,var(--target) 70%,transparent);color:inherit;border-radius:3px;padding:0 .1em}
+.ref-none{font-family:var(--serif);color:var(--muted);font-size:.95rem;text-align:center;padding:1.2rem .4rem}
+/* tappable person introductions in the prose */
+.prose strong.xref{cursor:pointer;text-decoration:underline dotted;
+  text-decoration-color:color-mix(in srgb,var(--accent) 45%,transparent);text-underline-offset:3px}
+.prose strong.xref:hover{text-decoration-color:var(--accent)}
+@media print{.prose strong.xref{text-decoration:none}}
+/* "what you hoped to find" row in the across-time panel */
+.tp-hopes{border:1px solid var(--rule);background:var(--note-bg);border-radius:12px;padding:.9rem 1rem;margin:0 0 1.2rem}
+.tp-hopes .tp-when{margin-bottom:.35rem}
+.tp-hopes .hope-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:.2rem 0 0}
+.tp-hopes .hope-tag{font-family:var(--sans);font-size:.74rem;border:1px solid var(--rule);border-radius:999px;
+  padding:.2rem .55rem;color:var(--ink);background:var(--paper)}
+
 /* ===== paragraph bookmarks: inline marker + wider select popover ===== */
 .copyquote{flex-wrap:wrap;max-width:min(21rem,calc(100vw - 1.2rem));justify-content:center}
 .prose p.flagged{position:relative}
@@ -931,6 +973,7 @@ body{font-family:var(--reader-font)}
     <button class="ms-item" type="button" data-act="journey"><span class="ms-i" aria-hidden="true">&#10022;</span><span class="ms-t">Your journey</span></button>
     <button class="ms-item" type="button" data-act="time"><span class="ms-i" aria-hidden="true">&#8986;</span><span class="ms-t">Thoughts across time</span></button>
     <button class="ms-item" type="button" data-act="cast"><span class="ms-i" aria-hidden="true">&#9733;</span><span class="ms-t">Minds you&rsquo;ve met</span></button>
+    <button class="ms-item" type="button" data-act="reference"><span class="ms-i" aria-hidden="true">&#9432;</span><span class="ms-t">Reference &amp; people</span></button>
     <button class="ms-item" type="button" data-act="speak"><span class="ms-i" aria-hidden="true">&#9836;</span><span class="ms-t">Read aloud</span></button>
     <button class="ms-item" type="button" data-act="marks"><span class="ms-i" aria-hidden="true">&#9094;</span><span class="ms-t">Flags</span></button>
     <div class="ms-div"></div>
@@ -962,6 +1005,7 @@ body{font-family:var(--reader-font)}
       <div><dt>/</dt><dd>Focus search</dd></div>
       <div><dt>g</dt><dd>Open Contents</dd></div>
       <div><dt>m</dt><dd>Open Flags</dd></div>
+      <div><dt>r</dt><dd>Reference &amp; people</dd></div>
       <div><dt>a</dt><dd>Open the Aa menu</dd></div>
       <div><dt>b</dt><dd>Flag the current spot</dd></div>
       <div><dt>j</dt><dd>Next section</dd></div>
@@ -1079,6 +1123,16 @@ body{font-family:var(--reader-font)}
     <p class="tp-intro">Every scientist and thinker checks off as you reach them in the book.</p>
     <div class="tp-body" id="cast-body"></div>
     <p class="tp-foot">A small map of the minds behind the ideas. Private to this device.</p>
+  </div>
+</div>
+<div id="refpanel" class="timepanel" role="dialog" aria-modal="true" aria-label="Reference: people and ideas" hidden>
+  <div class="tp-card">
+    <button class="tp-close" type="button" data-ref-close aria-label="Close">&#215;</button>
+    <p class="tp-eyebrow">Reference</p>
+    <p class="tp-intro">The people and ideas of the book, and where to find them. Tap a name to read where it appears, then jump straight to the passage.</p>
+    <input id="ref-search" class="ref-search" type="search" placeholder="Search people and ideas&hellip;" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Search people and ideas">
+    <div class="tp-body" id="ref-body"></div>
+    <p class="tp-foot">Built from the book on your device. Nothing leaves it.</p>
   </div>
 </div>
 <div id="celebrate" class="celebrate" role="dialog" aria-modal="true" aria-label="You finished the book" hidden>
@@ -4697,8 +4751,18 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
 
   /* ----- thoughts across time (timeline) ----- */
   var tpEl=document.getElementById("timepanel"), tpLast=null;
+  function hopesHTML(){
+    var h=jload("et-hopes",null); if(!h)return "";
+    var picks=(h.picks&&h.picks.length)?h.picks:[], text=(h.text||"").trim();
+    if(!picks.length&&!text)return "";
+    var out='<div class="tp-hopes"><span class="tp-when"><span class="tp-kind">What you hoped to find</span> Â· before you began</span>';
+    if(text) out+='<p class="tp-text">'+escHtml(text)+'</p>';
+    if(picks.length){ out+='<div class="hope-tags">'; picks.forEach(function(p){ var s=String(p); out+='<span class="hope-tag">'+escHtml(s.charAt(0).toUpperCase()+s.slice(1))+'</span>'; }); out+='</div>'; }
+    return out+'</div>';
+  }
   function buildTimelineHTML(){
     var flags=jload("marks",[])||[]; if(!Array.isArray(flags))flags=[];
+    var hopes=hopesHTML();
     var any=false, html="";
     chapters.forEach(function(c){
       var b=entryText(before,c.id).trim(), a=entryText(after,c.id).trim();
@@ -4713,8 +4777,8 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       if(a){ var as=stampOf(after[c.id]); html+='<div class="tp-row"><span class="tp-when"><span class="tp-kind">After</span>'+(as?(" Â· "+as):"")+'</span><p class="tp-text">'+escHtml(a)+'</p></div>'; }
       html+='</div>';
     });
-    if(!any) html='<p class="tp-empty">Your thoughts will gather here. Jot a line <em>before</em> a chapter, flag passages <em>while</em> you read, and reflect <em>after</em> â€” then watch your understanding move across time.</p>';
-    return html;
+    if(!any&&!hopes) html='<p class="tp-empty">Your thoughts will gather here. Jot a line <em>before</em> a chapter, flag passages <em>while</em> you read, and reflect <em>after</em> â€” then watch your understanding move across time.</p>';
+    return hopes+html;
   }
   function renderTime(){ var b=tpEl&&tpEl.querySelector(".tp-body"); if(b)b.innerHTML=buildTimelineHTML(); }
   function openTime(){ if(!tpEl)return; tpLast=document.activeElement; tpEl.hidden=false; renderTime();
@@ -4812,6 +4876,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
         else if(act==="journey")clickId("ts-journey");
         else if(act==="time"){ if(window.ETShowTime)window.ETShowTime(); }
         else if(act==="cast"){ if(window.ETShowCast)window.ETShowCast(); }
+        else if(act==="reference"){ if(window.ETShowReference)window.ETShowReference(); }
         else if(act==="keys"){ if(window.ETShowKeys)window.ETShowKeys(); }
         else if(act==="speak"){ if(window.ETReadAloud)window.ETReadAloud(); }
         else if(act==="share")share();
@@ -4894,7 +4959,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
   function saveMet(){try{localStorage.setItem("et-cast",JSON.stringify(met));}catch(e){}}
   var met=loadMet();
   function metCount(){var n=0;people.forEach(function(p){if(met[p.key])n++;});return n;}
-  window.ETCast={count:metCount,total:function(){return TOTAL;}};
+  window.ETCast={count:metCount,total:function(){return TOTAL;},roster:ROSTER};
 
   if("IntersectionObserver" in window){
     var io=new IntersectionObserver(function(es){
@@ -4932,6 +4997,203 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
 })();
 </script>
 <script>
+/* ---- reference / X-ray: people, ideas, and where they appear (on-device) ---- */
+(function(){
+  var panel=document.getElementById("refpanel"); if(!panel)return;
+  var body=document.getElementById("ref-body"), search=document.getElementById("ref-search");
+  if(!body) return;
+  var RM=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function esc(s){return (s||"").replace(/[&<>]/g,function(c){return c==="&"?"&amp;":c==="<"?"&lt;":"&gt;";});}
+  function norm(t){return (t||"").replace(/\s+/g," ").trim().replace(/[.,;:]+$/,"");}
+  function rxesc(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");}
+  function surOf(n){var p=n.split(" ");return p[p.length-1];}
+  function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s;}
+
+  /* People: the book's cast (shared with "Minds you've met"). A surname is also
+     matched on its own, except where it is a common word or shared by two people
+     (then only the full name is matched, to keep counts honest). */
+  var ROSTER=(window.ETCast&&window.ETCast.roster)?window.ETCast.roster:[];
+  var SURNAME_DENY={"May":1,"Cook":1,"Baker":1,"Ware":1,"Bell":1,"Wang":1,"Joule":1,"Le":1,"An":1};
+
+  /* Ideas: the recurring concepts. Blurbs are intentionally left blank for the
+     author to write in their own voice; until then each idea works as a concordance
+     (it shows where the idea appears). To add a one-line definition, fill the middle
+     string. Aliases (third field) are matched case-insensitively. */
+  var IDEAS=[
+    ["Information","",["information"]],
+    ["Entropy","",["entropy","entropic"]],
+    ["The second law of thermodynamics","",["second law of thermodynamics","second law"]],
+    ["Thermodynamics","",["thermodynamics","thermodynamic"]],
+    ["Heat","",["heat"]],
+    ["Energy","",["energy"]],
+    ["The bit","",["the bit","bits","binary digit"]],
+    ["Computation","",["computation","computational","computing"]],
+    ["The Turing machine","",["turing machine"]],
+    ["Algorithm","",["algorithm","algorithms","algorithmic"]],
+    ["The halting problem","",["halting problem"]],
+    ["P versus NP","",["p versus np","p vs np","np-complete","np-completeness"]],
+    ["Landauer's principle","",["landauer's principle","landauer principle","landauer's limit"]],
+    ["The cell","",["the cell","living cell","cells"]],
+    ["DNA","",["dna"]],
+    ["The genetic code","",["genetic code"]],
+    ["Chirality","",["chirality","chiral","handedness"]],
+    ["Gravity","",["gravity","gravitation","gravitational"]],
+    ["Spacetime","",["spacetime","space-time"]],
+    ["General relativity","",["general relativity"]],
+    ["The black hole","",["black hole","black holes"]],
+    ["The atom","",["the atom","atoms","atomic"]],
+    ["The periodic table","",["periodic table"]],
+    ["Quantum mechanics","",["quantum mechanics","quantum theory","quantum"]],
+    ["The wave function","",["wave function","wavefunction"]],
+    ["Measurement","",["measurement"]],
+    ["The qubit","",["qubit","qubits"]],
+    ["Symmetry","",["symmetry","symmetries"]],
+    ["Noether's theorem","",["noether's theorem"]],
+    ["The electromagnetic field","",["electromagnetic field"]],
+    ["The prime numbers","",["prime number","prime numbers","the primes"]],
+    ["The Riemann hypothesis","",["riemann hypothesis"]],
+    ["Pi","",["Ï€"]],
+    ["Euler's number","",["euler's number"]]
+  ];
+
+  var surCount={};
+  ROSTER.forEach(function(n){ var s=surOf(n); surCount[s]=(surCount[s]||0)+1; });
+  var people=ROSTER.map(function(n,i){
+    var sur=surOf(n), tokens=[n];
+    if(sur.length>=4 && !SURNAME_DENY[sur] && surCount[sur]===1 && sur!==n) tokens.push(sur);
+    return {id:"p"+i,name:n,kind:"person",blurb:"",tokens:tokens,places:[]};
+  });
+  var ideas=IDEAS.map(function(d,i){ return {id:"i"+i,name:d[0],kind:"idea",blurb:d[1]||"",tokens:d[2],places:[]}; });
+  var byId={}; people.concat(ideas).forEach(function(e){byId[e.id]=e;});
+
+  var pMap={}, pTokens=[];
+  people.forEach(function(e){ e.tokens.forEach(function(t){ pMap[t]=e; pTokens.push(t); }); });
+  pTokens.sort(function(a,b){return b.length-a.length;});
+  var iMap={}, iTokens=[];
+  ideas.forEach(function(e){ e.tokens.forEach(function(t){ iMap[t.toLowerCase()]=e; iTokens.push(t); }); });
+  iTokens.sort(function(a,b){return b.length-a.length;});
+  var pRe=null,iRe=null;
+  try{
+    if(pTokens.length) pRe=new RegExp("(?<![A-Za-z])("+pTokens.map(rxesc).join("|")+")(?![A-Za-z])","g");
+    if(iTokens.length) iRe=new RegExp("(?<![A-Za-z])("+iTokens.map(rxesc).join("|")+")(?![A-Za-z])","gi");
+  }catch(e){ pRe=iRe=null; }
+
+  var secs=[].slice.call(document.querySelectorAll("section.chapter"));
+  function secIndex(s){return secs.indexOf(s);}
+  function secTitle(s){var h=s.querySelector("h1");return h?h.textContent.trim():"";}
+
+  var built=false;
+  function build(){
+    if(built)return; built=true;
+    var blocks=document.querySelectorAll(".prose p, .prose li");
+    for(var b=0;b<blocks.length;b++){
+      var el=blocks[b], txt=el.textContent; if(!txt)continue;
+      var sec=el.closest?el.closest("section.chapter"):null;
+      var ci=sec?secIndex(sec):999, title=sec?secTitle(sec):"";
+      var seen={}, m, e;
+      if(pRe){ pRe.lastIndex=0; while((m=pRe.exec(txt))){ e=pMap[m[1]]; if(e&&!seen[e.id]){seen[e.id]=1; e.places.push({el:el,ci:ci,title:title,hit:m[1]});} } }
+      if(iRe){ iRe.lastIndex=0; while((m=iRe.exec(txt))){ e=iMap[m[1].toLowerCase()]; if(e&&!seen[e.id]){seen[e.id]=1; e.places.push({el:el,ci:ci,title:title,hit:m[1]});} } }
+    }
+  }
+
+  function snippet(text,hit){
+    var idx=text.toLowerCase().indexOf((hit||"").toLowerCase()); if(idx<0){ idx=0; hit=""; }
+    var start=Math.max(0,idx-45), end=Math.min(text.length,idx+hit.length+60);
+    var pre=(start>0?"â€¦":"")+text.slice(start,idx);
+    var mid=text.slice(idx,idx+hit.length);
+    var post=text.slice(idx+hit.length,end)+(end<text.length?"â€¦":"");
+    return esc(pre)+(mid?"<mark>"+esc(mid)+"</mark>":"")+esc(post);
+  }
+
+  var openId=null;
+  function matchq(e,q){ return !q || e.name.toLowerCase().indexOf(q)>=0; }
+  function group(label,arr){
+    var h='<div class="ref-group"><h4>'+esc(label)+' &middot; '+arr.length+'</h4>';
+    arr.forEach(function(e){
+      var exp=(openId===e.id), n=e.places.length;
+      h+='<button class="ref-item" type="button" data-id="'+e.id+'" aria-expanded="'+(exp?"true":"false")+'" aria-controls="rd-'+e.id+'">'
+        +'<span class="ref-head"><span class="ref-name"><span class="ref-tick" aria-hidden="true">'+(exp?"â–¾":"â–¸")+'</span>'+esc(e.name)+'</span>'
+        +'<span class="ref-count">'+n+' place'+(n===1?"":"s")+'</span></span></button>'
+        +'<div class="ref-detail" id="rd-'+e.id+'"'+(exp?"":" hidden")+'>';
+      if(exp){
+        if(e.blurb) h+='<p class="ref-blurb">'+esc(e.blurb)+'</p>';
+        e.places.slice(0,12).forEach(function(pl,k){
+          h+='<button class="ref-occ" type="button" data-id="'+e.id+'" data-k="'+k+'"><span class="ro-ch">'+esc(pl.title)+'</span>'+snippet(pl.el.textContent,pl.hit)+'</button>';
+        });
+        if(n>12) h+='<p class="ref-blurb" style="color:var(--faint);font-size:.82rem;margin:.3rem 0 0">and '+(n-12)+' more (refine with the search above)</p>';
+      }
+      h+='</div>';
+    });
+    return h+'</div>';
+  }
+  function render(){
+    build();
+    var q=(search&&search.value||"").trim().toLowerCase();
+    var ppl=people.filter(function(e){return e.places.length&&matchq(e,q);})
+      .sort(function(a,b){return surOf(a.name).localeCompare(surOf(b.name))||a.name.localeCompare(b.name);});
+    var ids=ideas.filter(function(e){return e.places.length&&matchq(e,q);});
+    if(!ppl.length&&!ids.length){ body.innerHTML='<p class="ref-none">Nothing matches &ldquo;'+esc(q)+'&rdquo;.</p>'; return; }
+    var html="";
+    if(ppl.length) html+=group("People",ppl);
+    if(ids.length) html+=group("Ideas",ids);
+    body.innerHTML=html;
+  }
+
+  function jump(el){
+    closePanel();
+    setTimeout(function(){
+      el.scrollIntoView({behavior:RM?"auto":"smooth",block:"center"});
+      el.classList.remove("search-hit"); void el.offsetWidth; el.classList.add("search-hit");
+      setTimeout(function(){el.classList.remove("search-hit");},2400);
+    },210);
+  }
+
+  body.addEventListener("click",function(ev){
+    var occ=ev.target.closest&&ev.target.closest(".ref-occ");
+    if(occ){ var e=byId[occ.getAttribute("data-id")], k=+occ.getAttribute("data-k"); var pl=e&&e.places[k]; if(pl&&pl.el)jump(pl.el); return; }
+    var item=ev.target.closest&&ev.target.closest(".ref-item");
+    if(item){ var id=item.getAttribute("data-id"); openId=(openId===id?null:id); render();
+      if(openId){ var it=body.querySelector('.ref-item[data-id="'+openId+'"]'); if(it)it.scrollIntoView({block:"nearest"}); } }
+  });
+
+  var lastF=null;
+  function openPanel(focusId){
+    build(); lastF=document.activeElement; if(focusId)openId=focusId;
+    panel.hidden=false; render();
+    requestAnimationFrame(function(){panel.classList.add("show");});
+    setTimeout(function(){
+      if(focusId){ var it=body.querySelector('.ref-item[data-id="'+focusId+'"]'); if(it){ it.scrollIntoView({block:"center"}); try{it.focus();}catch(e){} return; } }
+      var c=panel.querySelector("[data-ref-close]"); if(c)c.focus();
+    },0);
+    document.addEventListener("keydown",key);
+  }
+  function closePanel(){ panel.classList.remove("show"); document.removeEventListener("keydown",key);
+    setTimeout(function(){panel.hidden=true;},200); if(lastF&&lastF.focus){try{lastF.focus();}catch(e){}} }
+  function key(e){ if(e.key==="Escape")closePanel(); }
+
+  if(search) search.addEventListener("input",render);
+  Array.prototype.forEach.call(panel.querySelectorAll("[data-ref-close]"),function(b){b.addEventListener("click",closePanel);});
+  panel.addEventListener("click",function(e){if(e.target===panel)closePanel();});
+  window.ETShowReference=function(){ openPanel(); };
+
+  /* Make each person's bold introduction in the prose tappable: it looks up that
+     person in the reference panel. Mouse/touch enhancement; the Menu is the keyboard route. */
+  (function(){
+    var set={}; people.forEach(function(e){set[e.name]=e;});
+    var strongs=document.querySelectorAll("section.chapter .prose strong"), done={};
+    for(var i=0;i<strongs.length;i++){
+      var s=strongs[i], e=set[norm(s.textContent)];
+      if(e&&!done[e.id]){ done[e.id]=1; s.classList.add("xref"); s.setAttribute("data-ref-id",e.id); s.setAttribute("title","Look up "+e.name);
+        s.addEventListener("click",function(ev){
+          var sel=window.getSelection&&window.getSelection(); if(sel&&!sel.isCollapsed)return;
+          ev.preventDefault(); openPanel(this.getAttribute("data-ref-id"));
+        });
+      }
+    }
+  })();
+})();
+</script>
+<script>
 /* ---- keyboard shortcuts (desktop) ---- */
 (function(){
   var panel=document.getElementById("keyspanel");
@@ -4964,6 +5226,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
     if(k==="/"){ e.preventDefault(); openSearch(); }
     else if(k==="g"){ e.preventDefault(); var c=document.getElementById("contents"); if(c)c.scrollIntoView({behavior:RM?"auto":"smooth",block:"start"}); }
     else if(k==="m"){ e.preventDefault(); clickId("marksbtn"); }
+    else if(k==="r"){ e.preventDefault(); if(window.ETShowReference)window.ETShowReference(); }
     else if(k==="a"){ e.preventDefault(); clickId("setbtn"); }
     else if(k==="b"){ e.preventDefault(); clickId("markadd"); }
     else if(k==="j"){ e.preventDefault(); gotoSection(1); }
@@ -4977,7 +5240,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
   var bmd=document.getElementById("mp-export-md"), bjson=document.getElementById("mp-export-json"),
       bimp=document.getElementById("mp-import"), fin=document.getElementById("mp-import-file");
   if(!bmd||!bjson||!bimp||!fin) return;
-  var KEYS=["marks","pos","sound","et-theme","et-textsize","et-leading","et-font","et-progress","et-current","et-read","et-before","et-after","et-notes","et-milestones","et-celebrated","et-cast","et-onboarded","et-tools-intro","et-tools-nudge","et-flag-used"];
+  var KEYS=["marks","pos","sound","et-theme","et-textsize","et-leading","et-font","et-progress","et-current","et-read","et-before","et-after","et-notes","et-milestones","et-celebrated","et-cast","et-hopes","et-voice","et-rate","et-onboarded","et-tools-intro","et-tools-nudge","et-flag-used"];
   function g(k){try{return localStorage.getItem(k);}catch(e){return null;}}
   function j(k,dft){try{var r=g(k);return r?JSON.parse(r):dft;}catch(e){return dft;}}
   function dl(name,text,type){ var b=new Blob([text],{type:type||"text/plain"}), a=document.createElement("a");

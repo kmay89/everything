@@ -747,10 +747,13 @@ body{font-family:var(--reader-font)}
 /* ===== reflections across time ===== */
 .chapter-before{max-width:var(--measure);margin:1.6rem auto 0;padding:.9rem 1.1rem;border:1px dashed var(--rule);
   border-radius:12px;background:color-mix(in srgb,var(--note-bg) 70%,transparent);font-family:var(--sans)}
-.chapter-before .cb-label{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 .5rem}
+.chapter-before .cb-label{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 .45rem}
+.chapter-before .cb-prompt{font-family:var(--serif);font-size:1.04rem;line-height:1.5;color:var(--ink);margin:0 0 .65rem}
 .chapter-before .cb-reflect{display:block;width:100%;box-sizing:border-box;font:inherit;font-size:.95rem;
   padding:.55rem .7rem;border:1px solid var(--rule);border-radius:8px;background:var(--paper);color:var(--ink);resize:vertical;min-height:2.4rem}
 .chapter-before .cb-reflect:focus{outline:2px solid var(--accent);outline-offset:1px}
+.chapter-before .cb-hint{margin:.5rem 0 0;font-size:.7rem;line-height:1.4;color:var(--faint)}
+.chapter-before .cb-saved{color:var(--accent)}
 @media print{.chapter-before{display:none}}
 .chapter-end .ce-time{display:inline-block;margin:.95rem auto 0;background:none;border:0;cursor:pointer;
   font-family:var(--sans);font-size:.74rem;letter-spacing:.04em;color:var(--accent);text-decoration:underline;text-underline-offset:3px}
@@ -4255,17 +4258,41 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
   var before=jload("et-before",{})||{};
   var after=jload("et-after",null);
   if(!after){ after={}; var legacy=jload("et-notes",{})||{};
-    Object.keys(legacy).forEach(function(k){ var v=legacy[k]; if(v&&(""+v).trim()) after[k]={text:""+v,t:null}; });
+    Object.keys(legacy).forEach(function(k){ var v=legacy[k]; if(v&&(""+v).trim()) after[k]={text:""+v,created:null,updated:null}; });
     save("et-after",JSON.stringify(after)); }
+  /* upgrade older {text,t} entries to {text,created,updated} so stamps survive across sessions */
+  function migrateStamps(map){ var ch=false; Object.keys(map).forEach(function(k){ var e=map[k];
+    if(e&&typeof e==="object"&&!("created" in e)){ e.created=e.t||null; e.updated=e.t||null; delete e.t; ch=true; } }); return ch; }
+  if(migrateStamps(before)) save("et-before",JSON.stringify(before));
+  if(migrateStamps(after)) save("et-after",JSON.stringify(after));
   function saveBefore(){ save("et-before",JSON.stringify(before)); }
   function saveAfter(){ save("et-after",JSON.stringify(after)); }
   function entryText(map,id){ return (map[id]&&map[id].text)?map[id].text:""; }
-  function setEntry(map,id,v){ map[id]={text:v,t:(map[id]&&map[id].t)||(v.trim()?Date.now():null)}; }
+  function setEntry(map,id,v){ var prev=map[id]||{}, now=Date.now(), has=!!v.trim();
+    map[id]={text:v, created: prev.created || (has?now:null), updated: has?now:(prev.updated||null)}; }
   function relTime(t){ if(!t)return ""; var d=Date.now()-t,m=Math.round(d/60000);
     if(m<1)return "just now"; if(m<60)return m+" min ago";
     var h=Math.round(m/60); if(h<24)return h+" hr ago";
     var days=Math.round(h/24); if(days<30)return days+" day"+(days>1?"s":"")+" ago";
     try{return new Date(t).toLocaleDateString();}catch(e){return "";} }
+  function stampOf(e){ if(!e)return ""; var c=e.created||e.t; if(!c)return ""; var s=relTime(c);
+    if(e.updated&&e.updated!==c) s+=" · edited "+relTime(e.updated); return s; }
+  /* per-chapter starter prompts — modelling how science begins: a question, an observation, or something to learn */
+  var PROMPTS={
+    "ch-glows":"What do you think heat actually is — a substance that flows, or something else? A guess is the first move in science.",
+    "ch-remembers":"What does it mean for a machine to “remember”? Where do you imagine a memory physically lives?",
+    "ch-lives":"What, to you, separates something alive from something not? Try to name it before the chapter does.",
+    "ch-falls":"Why do things fall? Notice your first instinct — even Aristotle’s was careful, and wrong.",
+    "ch-holds":"Why is a solid solid? Picture what you think is going on inside it.",
+    "ch-reflects":"When you look in a mirror, what do you think is actually happening? What would you like to understand about it?",
+    "ch-works":"What does it really mean to do “work,” and what do you think energy is?",
+    "ch-counts":"Is mathematics discovered or invented? Note where you stand before the argument.",
+    "ch-guests":"Where have you met π or e before? What would you like to know about why they turn up everywhere?",
+    "ch-music":"What do you find strange or beautiful about the prime numbers? An observation is plenty.",
+    "ch-made-world":"Look at one made thing near you. What question would you ask of whoever built it?",
+    "ch-light":"Before the last chapter: what do you hope a book about the universe might say about a single life?"
+  };
+  var PROMPT_DEFAULT="What do you already think, expect, or want to learn?";
   function progMap(){return jload("et-progress",{})||{};}
   function liveFrac(c){var mid=window.pageYOffset+window.innerHeight*0.5,f=(mid-c.top)/Math.max(c.h,1);return f<0?0:f>1?1:f;}
   function pctFor(c,pm){return Math.max(pm[c.id]||0, Math.round(liveFrac(c)*100), readSet[c.id]?100:0);}
@@ -4454,13 +4481,16 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
     chapters.forEach(function(c){
       var head=c.el.querySelector(".chapter-head"); if(!head)return;
       var box=document.createElement("aside"); box.className="chapter-before";
-      box.innerHTML='<p class="cb-label">Before you read — what do you already think?</p>'
-        +'<textarea class="cb-reflect" rows="1" placeholder="A guess, a question, an expectation…" aria-label="Your thoughts before this chapter"></textarea>';
+      box.innerHTML='<p class="cb-label">Before you read</p>'
+        +'<p class="cb-prompt">'+escHtml(PROMPTS[c.id]||PROMPT_DEFAULT)+'</p>'
+        +'<textarea class="cb-reflect" rows="1" placeholder="Your guess, question, or what you hope to learn…" aria-label="Your thoughts before this chapter"></textarea>'
+        +'<p class="cb-hint"><span class="cb-saved" hidden>Saved on this device.</span><span class="cb-meta">A question, an observation, or something you want to learn — that is how science begins.</span></p>';
       head.insertAdjacentElement("afterend",box);
-      var ta=box.querySelector(".cb-reflect");
+      var ta=box.querySelector(".cb-reflect"), savedEl=box.querySelector(".cb-saved"), metaEl=box.querySelector(".cb-meta");
       function grow(){ta.style.height="auto";ta.style.height=Math.min(ta.scrollHeight,200)+"px";}
-      if(entryText(before,c.id))ta.value=entryText(before,c.id);
-      ta.addEventListener("input",function(){setEntry(before,c.id,ta.value);saveBefore();grow();});
+      function showSaved(){ if(savedEl){savedEl.hidden=false;} if(metaEl){metaEl.style.display="none";} }
+      if(entryText(before,c.id)){ta.value=entryText(before,c.id);showSaved();}
+      ta.addEventListener("input",function(){setEntry(before,c.id,ta.value);saveBefore();grow(); if(ta.value.trim())showSaved(); });
       setTimeout(grow,0);
     });
   }
@@ -4477,10 +4507,10 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
       any=true;
       var hue=window.ETShare?ETShare.hueFor(c.idx):"#34346b";
       html+='<div class="tp-ch"><p class="tp-ch-title"><span class="tp-dot" style="background:'+hue+'"></span>'+escHtml(c.title)+'</p>';
-      if(b){ html+='<div class="tp-row"><span class="tp-when"><span class="tp-kind">Before</span>'+(before[c.id].t?(" · "+relTime(before[c.id].t)):"")+'</span><p class="tp-text">'+escHtml(b)+'</p></div>'; }
+      if(b){ var bs=stampOf(before[c.id]); html+='<div class="tp-row"><span class="tp-when"><span class="tp-kind">Before</span>'+(bs?(" · "+bs):"")+'</span><p class="tp-text">'+escHtml(b)+'</p></div>'; }
       if(cf.length){ html+='<div class="tp-row"><span class="tp-when"><span class="tp-kind">While reading</span> · '+cf.length+' flag'+(cf.length>1?"s":"")+'</span>';
         cf.slice(0,3).forEach(function(m){ html+='<p class="tp-flag">“'+escHtml(m.s||"")+'”</p>'; }); html+='</div>'; }
-      if(a){ html+='<div class="tp-row"><span class="tp-when"><span class="tp-kind">After</span>'+(after[c.id].t?(" · "+relTime(after[c.id].t)):"")+'</span><p class="tp-text">'+escHtml(a)+'</p></div>'; }
+      if(a){ var as=stampOf(after[c.id]); html+='<div class="tp-row"><span class="tp-when"><span class="tp-kind">After</span>'+(as?(" · "+as):"")+'</span><p class="tp-text">'+escHtml(a)+'</p></div>'; }
       html+='</div>';
     });
     if(!any) html='<p class="tp-empty">Your thoughts will gather here. Jot a line <em>before</em> a chapter, flag passages <em>while</em> you read, and reflect <em>after</em> — then watch your understanding move across time.</p>';

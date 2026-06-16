@@ -137,8 +137,7 @@ main hr.section-rule:nth-of-type(2){border-top-color:color-mix(in srgb,#e0894a 5
 main hr.section-rule:nth-of-type(3){border-top-color:color-mix(in srgb,#e0c15a 55%,var(--rule))}
 main hr.section-rule:nth-of-type(4){border-top-color:color-mix(in srgb,#3fae9f 55%,var(--rule))}
 main hr.section-rule:nth-of-type(5){border-top-color:color-mix(in srgb,#4a90d9 55%,var(--rule))}
-main hr.section-rule:nth-of-type(6){border-top-color:color-mix(in srgb,#5757c8 55%,var(--rule))}
-main hr.section-rule:nth-of-type(7){border-top-color:color-mix(in srgb,#6b5bd0 55%,var(--rule))}
+main hr.section-rule:nth-of-type(6){border-top-color:color-mix(in srgb,#6b5bd0 55%,var(--rule))}
 .premise p{margin:0 0 1.3rem;font-size:1.06rem;line-height:1.75}
 .premise p:last-child{margin-bottom:0}
 .lead-line{font-size:1.42rem;line-height:1.5;color:var(--ink)!important;margin-bottom:1.5rem!important}
@@ -291,16 +290,14 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
 /* ===== heat + entropy ambience, and spectrum in the scroll ===== */
 /* a warm glow rising from the top (heat) over a faint thermal grain (entropy) */
 #ambient{position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(135% 70% at 50% -18%, color-mix(in srgb,#e0894a 13%,transparent), transparent 58%),
-             radial-gradient(120% 60% at 85% 8%, color-mix(in srgb,#d65a5a 7%,transparent), transparent 55%)}
-#ambient::after{content:"";position:absolute;inset:0;opacity:.04;mix-blend-mode:multiply;
+  --amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-blend:multiply;
+  background:radial-gradient(135% 70% at 50% -18%, color-mix(in srgb,#e0894a var(--amb-g1),transparent), transparent 58%),
+             radial-gradient(120% 60% at 85% 8%, color-mix(in srgb,#d65a5a var(--amb-g2),transparent), transparent 55%)}
+#ambient::after{content:"";position:absolute;inset:0;opacity:var(--amb-op);mix-blend-mode:var(--amb-blend);
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-@media (prefers-color-scheme: dark){
-  #ambient{background:radial-gradient(135% 70% at 50% -18%, color-mix(in srgb,#e0894a 16%,transparent), transparent 56%),
-             radial-gradient(120% 60% at 85% 8%, color-mix(in srgb,#d65a5a 10%,transparent), transparent 55%)}
-  #ambient::after{opacity:.06;mix-blend-mode:screen}
-}
-html[data-theme="dark"] #ambient::after{opacity:.06;mix-blend-mode:screen}
+@media (prefers-color-scheme: dark){#ambient{--amb-g1:16%;--amb-g2:10%;--amb-op:.06;--amb-blend:screen}}
+html[data-theme="dark"] #ambient{--amb-g1:16%;--amb-g2:10%;--amb-op:.06;--amb-blend:screen}
+html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-blend:multiply}
 @media print{#ambient,#scrollspectrum{display:none}}
 
 /* the spectrum draws itself across the top as you scroll the page */
@@ -785,7 +782,7 @@ html[data-theme="dark"] #ambient::after{opacity:.06;mix-blend-mode:screen}
   var bar=document.querySelector("#scrollspectrum span"); if(!bar)return;
   var ticking=false;
   function upd(){ var h=document.documentElement, max=(h.scrollHeight-h.clientHeight)||1;
-    var p=(window.pageYOffset||h.scrollTop)/max; p=p<0?0:p>1?1:p; bar.style.width=(p*100).toFixed(2)+"%"; ticking=false; }
+    var p=(window.scrollY||h.scrollTop)/max; p=p<0?0:p>1?1:p; bar.style.width=(p*100).toFixed(2)+"%"; ticking=false; }
   function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(upd); } }
   window.addEventListener("scroll",onScroll,{passive:true});
   window.addEventListener("resize",onScroll);

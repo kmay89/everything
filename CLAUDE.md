@@ -36,14 +36,17 @@ manager, and no dependencies.
   focus-trapped dialogs. A gentle engagement layer: a **Contents progress summary** (bar +
   "N of 12 · ~time left" + milestone badges), an **end-of-chapter card** (encouragement,
   optional saved reflection, "Mark as read", next-chapter link), and **milestone toasts** —
-  no streaks or pressure. A **Your journey** panel (progress ring, time read, reflections
-  count, milestone badges) opens from the Contents summary, and finishing all twelve triggers
-  a one-time **completion celebration**. A **Reading mode** row offers **Immersive** (fullscreen)
+  no streaks or pressure. A **reflections-across-time** layer captures a **Before** note at each
+  chapter's start, flags as the in-the-moment layer, and the timestamped end-of-chapter **After**
+  reflection; a **"Thoughts across time"** timeline (menu + Your journey) shows the arc per chapter.
+  A **Your journey** panel (progress ring, time read, reflections count, milestone badges) opens
+  from the Contents summary, and finishing all twelve triggers a one-time **completion celebration**. A **Reading mode** row offers **Immersive** (fullscreen)
   and a best-effort **Lock rotation** (Screen Orientation API; disabled where unsupported, e.g.
   iOS). State lives in `localStorage`: `et-theme`, `et-textsize`, `et-leading`, `et-font`,
   `et-progress`/`et-current` (auto reading progress, written only by the reader script), and the
-  engagement-owned `et-read`, `et-notes`, `et-milestones`, `et-celebrated`. Theme/size/typeface
-  are applied pre-paint by a small head script.
+  engagement-owned `et-read`, `et-before`/`et-after` (timestamped reflections; migrated from the
+  legacy `et-notes`), `et-milestones`, `et-celebrated`. Theme/size/typeface are applied pre-paint
+  by a small head script.
 - `privacy.html` — privacy & cookies policy (no data collected, no cookies); contact
   errerlabs@gmail.com.
 - `404.html` — themed not-found page (Netlify serves it automatically).

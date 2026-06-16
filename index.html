@@ -248,6 +248,15 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
 .enter-skip:focus-visible,.enter .btn:focus-visible,.howto:focus-visible{outline:2px solid var(--accent-bright);outline-offset:3px}
 @media (prefers-reduced-motion: reduce){.enter-panel.active{animation:none}}
 @media print{.enter{display:none}}
+
+/* share */
+.support-btns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin-top:.3rem}
+#shtoast{position:fixed;left:50%;bottom:max(1rem,env(safe-area-inset-bottom));transform:translateX(-50%) translateY(14px);
+  z-index:60;display:none;background:var(--accent);color:var(--paper);border-radius:12px;padding:.7rem 1rem;
+  font-family:var(--sans);font-size:.82rem;box-shadow:0 12px 36px rgba(0,0,0,.24);opacity:0;
+  transition:opacity .35s ease,transform .35s ease;max-width:calc(100vw - 1.4rem);text-align:center}
+#shtoast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion: reduce){#shtoast{transition:opacity .2s ease;transform:translateX(-50%)}#shtoast.show{transform:translateX(-50%)}}
 </style>
 <script type="application/ld+json">
 {
@@ -540,8 +549,11 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
   <section class="support wrap">
     <h2>Support the work</h2>
     <div class="panel">
-      <p>The book is free, and it will stay free. If reading it gave you something and you would like to give something back, you can support the work directly. It helps me keep writing, and keep it open for the next reader.</p>
-      <a class="btn btn-primary" href="https://github.com/sponsors/YOUR-USERNAME" target="_blank" rel="noopener">Support on GitHub &#8594;</a>
+      <p>The book is free, and it will stay free. If reading it gave you something and you would like to give something back, you can support the work directly &mdash; or simply share it with someone curious. Either keeps it open for the next reader.</p>
+      <div class="support-btns">
+        <a class="btn btn-primary" href="https://github.com/sponsors/YOUR-USERNAME" target="_blank" rel="noopener">Support on GitHub &#8594;</a>
+        <button class="btn btn-ghost" type="button" id="sharebtn">Share this book</button>
+      </div>
     </div>
   </section>
 
@@ -662,6 +674,26 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
   });
 
   if(!onboarded()) open(0);
+})();
+</script>
+<div id="shtoast" role="status"></div>
+<script>
+/* ---- share the book ---- */
+(function(){
+  var btn=document.getElementById("sharebtn"); if(!btn)return;
+  var SITE="https://everythingthatglows.com/";
+  var INVITE="Everything That Glows — a free book, in twelve chapters, on the idea that the world is, underneath, made of information. Beautiful, and easier to get into than you’d think.";
+  var toast=document.getElementById("shtoast"), t=null, ft=null;
+  function showToast(m){ if(!toast)return; toast.textContent=m; toast.style.display="block";
+    toast.offsetHeight; toast.classList.add("show"); if(t)clearTimeout(t); if(ft)clearTimeout(ft);
+    t=setTimeout(function(){toast.classList.remove("show");ft=setTimeout(function(){toast.style.display="none";},400);},2800); }
+  btn.addEventListener("click",function(){
+    var data={title:"Everything That Glows",text:INVITE,url:SITE};
+    if(navigator.share){navigator.share(data).catch(function(){});return;}
+    var payload=INVITE+" "+SITE;
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(payload).then(function(){showToast("Invitation copied — paste it into Messages.");},mail);} else mail();
+    function mail(){location.href="mailto:?subject="+encodeURIComponent("Everything That Glows")+"&body="+encodeURIComponent(payload);}
+  });
 })();
 </script>
 </body>

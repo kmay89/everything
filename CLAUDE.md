@@ -20,6 +20,12 @@ manager, and no dependencies.
   once (`et-onboarded`) and is reopenable via "How to read this".
 - `welcome.mp3` — a ~29s welcome tone played when the reader opts into sound during orientation.
 - `read.html` — the whole book and its reader (~1.7 MB). The canonical book artifact.
+  The reader chrome is consolidated behind a single **Menu** button in the topbar (a
+  `#menusheet` that proxies to the still-present feature controls: Contents, Search, Journey,
+  Flags, Display & text, Sound, Share, Support). **Share** uses the Web Share API (native
+  sheet → iMessage on Apple) with a copy/mailto fallback; **selecting text** offers Copy or
+  **Share as image** (an on-brand quote card rendered on a `<canvas>`, shared as a PNG file
+  where supported, else downloaded).
   Reader features: a settings panel ("Aa") for theme (auto/light/dark), text size, line
   spacing, and **typeface** (serif/sans); in-book **Search**; an ambient "minutes to next
   chapter" pill; a welcome-back toast; "Copy quote" on text selection; a skip link and

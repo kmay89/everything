@@ -555,12 +555,14 @@ body{line-height:var(--reader-leading,1.72)}
 .search-hit{animation:search-flash 2.2s ease}
 
 /* ===== copy-quote ===== */
-.copyquote{position:absolute;z-index:48;transform:translate(-50%,-118%);background:var(--accent);color:var(--paper);
-  border:0;border-radius:8px;cursor:pointer;font-family:var(--sans);font-size:.72rem;letter-spacing:.08em;
-  text-transform:uppercase;padding:.42rem .7rem;box-shadow:0 6px 20px rgba(0,0,0,.22);white-space:nowrap}
+.copyquote{position:absolute;z-index:48;transform:translate(-50%,-118%);display:flex;gap:1px;
+  border-radius:9px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.22)}
+.copyquote button{background:var(--accent);color:var(--paper);border:0;cursor:pointer;
+  font-family:var(--sans);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;
+  padding:.5rem .8rem;white-space:nowrap}
+.copyquote button:hover{background:var(--accent-bright)}
 .copyquote::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);
   border:5px solid transparent;border-top-color:var(--accent)}
-.copyquote:hover{background:var(--accent-bright)}
 .copyquote[hidden]{display:none}
 @media print{.searchpanel,.copyquote,#searchbtn{display:none}}
 @media (prefers-reduced-motion: reduce){.searchpanel{transition:opacity .12s ease;transform:none}.search-hit{animation:none;background:var(--target)}}
@@ -705,6 +707,40 @@ body{font-family:var(--reader-font)}
 .chapter-end.done .ce-check{animation:ce-check-pop .45s cubic-bezier(.2,.8,.3,1.4)}
 @keyframes ce-check-pop{0%{transform:scale(.5)}100%{transform:scale(1)}}
 @media (prefers-reduced-motion: reduce){.chapter-end.done .ce-check{animation:none}}
+
+/* ===== consolidated reading menu ===== */
+.topbar .tools{display:none}
+.menubtn{display:inline-flex;align-items:center;gap:.5rem;background:none;border:1px solid var(--rule);
+  border-radius:999px;padding:.32rem .8rem;cursor:pointer;font-family:var(--sans);font-size:.7rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--faint);transition:color .2s,border-color .2s}
+.menubtn:hover{color:var(--accent);border-color:var(--accent)}
+.menubtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.menubtn .mb-ico{font-size:.95rem;line-height:1}
+.menusheet{position:fixed;z-index:47;top:3.05rem;right:max(.7rem,env(safe-area-inset-right));
+  width:min(18.5rem,calc(100vw - 1.4rem));background:var(--paper);border:1px solid var(--rule);
+  border-radius:14px;box-shadow:0 16px 48px rgba(0,0,0,.22);padding:.5rem;opacity:0;transform:translateY(-6px);
+  transition:opacity .18s ease,transform .18s ease;font-family:var(--sans)}
+.menusheet.show{opacity:1;transform:none}
+.menusheet[hidden]{display:none}
+.ms-card{position:relative}
+.ms-x{position:absolute;top:-.1rem;right:-.1rem;background:none;border:0;cursor:pointer;color:var(--faint);font-size:1.2rem;line-height:1;padding:.3rem .45rem;border-radius:8px}
+.ms-x:hover{color:var(--accent)}
+.ms-h{font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:var(--faint);margin:.4rem .6rem .5rem;font-weight:600}
+.ms-item{display:flex;align-items:center;gap:.8rem;width:100%;background:none;border:0;cursor:pointer;
+  text-align:left;padding:.7rem .6rem;border-radius:9px;font:inherit;font-size:.92rem;color:var(--ink);text-decoration:none}
+.ms-item:hover,.ms-item:focus-visible{background:var(--note-bg);outline:none}
+.ms-i{display:inline-grid;place-items:center;width:1.7rem;flex:0 0 auto;color:var(--accent);font-size:1rem}
+.ms-t{flex:1}
+.ms-meta{font-size:.7rem;color:var(--faint);text-transform:uppercase;letter-spacing:.1em}
+.ms-div{height:1px;background:var(--rule);margin:.35rem .55rem}
+@media (prefers-reduced-motion: reduce){.menusheet{transition:opacity .12s ease;transform:none}}
+@media print{.menusheet,.menubtn{display:none}}
+#mtoast{position:fixed;left:50%;bottom:max(1rem,env(safe-area-inset-bottom));transform:translateX(-50%) translateY(14px);
+  z-index:60;display:none;background:var(--accent);color:var(--paper);border-radius:12px;padding:.7rem 1rem;
+  font-family:var(--sans);font-size:.82rem;box-shadow:0 12px 36px rgba(0,0,0,.24);opacity:0;
+  transition:opacity .35s ease,transform .35s ease;max-width:calc(100vw - 1.4rem);text-align:center}
+#mtoast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion: reduce){#mtoast{transition:opacity .2s ease;transform:translateX(-50%)}#mtoast.show{transform:translateX(-50%)}}
 </style>
 </head>
 <body>
@@ -723,7 +759,27 @@ body{font-family:var(--reader-font)}
     <button id="marksbtn" class="toolbtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="markspanel" title="Flag this spot and jump back to it later">Marks<span id="markcount" class="markcount" hidden>0</span></button>
     <a href="#contents">Contents</a>
   </div>
+  <button id="menubtn" class="menubtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="menusheet" title="Menu">
+    <span class="mb-ico" aria-hidden="true">&#9776;</span><span class="mb-label">Menu</span>
+  </button>
 </div></nav>
+<div id="menusheet" class="menusheet" role="dialog" aria-modal="true" aria-label="Reading menu" hidden>
+  <div class="ms-card">
+    <button class="ms-x" type="button" data-menu-close aria-label="Close menu">&#215;</button>
+    <p class="ms-h">Reading menu</p>
+    <button class="ms-item" type="button" data-act="contents"><span class="ms-i" aria-hidden="true">&#9776;</span><span class="ms-t">Contents</span></button>
+    <button class="ms-item" type="button" data-act="search"><span class="ms-i" aria-hidden="true">&#8981;</span><span class="ms-t">Search the book</span></button>
+    <button class="ms-item" type="button" data-act="journey"><span class="ms-i" aria-hidden="true">&#10022;</span><span class="ms-t">Your journey</span></button>
+    <button class="ms-item" type="button" data-act="marks"><span class="ms-i" aria-hidden="true">&#9094;</span><span class="ms-t">Flags</span></button>
+    <div class="ms-div"></div>
+    <button class="ms-item" type="button" data-act="settings"><span class="ms-i" aria-hidden="true">Aa</span><span class="ms-t">Display &amp; text</span></button>
+    <button class="ms-item" type="button" data-act="sound"><span class="ms-i" aria-hidden="true">&#9834;</span><span class="ms-t">Sound</span><span class="ms-meta" id="ms-soundstate">off</span></button>
+    <div class="ms-div"></div>
+    <button class="ms-item" type="button" data-act="share"><span class="ms-i" aria-hidden="true">&#8599;</span><span class="ms-t">Share this book</span></button>
+    <a class="ms-item" href="index.html"><span class="ms-i" aria-hidden="true">&#9825;</span><span class="ms-t">Support the work</span></a>
+  </div>
+</div>
+<div id="mtoast" role="status"></div>
 <div id="markspanel" class="markspanel" role="dialog" aria-modal="true" aria-label="Your flagged spots" hidden>
   <button id="markadd" class="mp-add" type="button">&#8982;&#160;Flag this spot</button>
   <ul id="markslist" class="mp-list"></ul>
@@ -780,7 +836,10 @@ body{font-family:var(--reader-font)}
   <p id="searchhint" class="sp-hint">Type at least two letters to search all twelve chapters.</p>
   <ul id="searchresults" class="sp-results"></ul>
 </div>
-<button id="copyquote" class="copyquote" type="button" hidden>Copy quote</button>
+<div id="copyquote" class="copyquote" hidden>
+  <button type="button" data-cq="copy">Copy</button>
+  <button type="button" data-cq="image">Share image</button>
+</div>
 <div id="milestone" role="status"><span class="ms-ico" aria-hidden="true">✦</span><span id="ms-text"></span></div>
 <div id="journeypanel" class="journeypanel" role="dialog" aria-modal="true" aria-label="Your journey" hidden>
   <div class="jp-card">
@@ -3996,7 +4055,8 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
     while(n&&n!==document.body){if(n.id)return n.id;n=n.parentNode;}return "";}
   function nearestChapter(node){var n=node&&node.nodeType===3?node.parentNode:node;
     while(n&&n!==document.body){if(n.classList&&n.classList.contains("chapter")){var h=n.querySelector("h1");return h?h.textContent.trim():"";}n=n.parentNode;}return "";}
-  function hideCq(){cq.hidden=true;held=null;}
+  var cqCopy=cq.querySelector('[data-cq="copy"]'), cqImg=cq.querySelector('[data-cq="image"]');
+  function hideCq(){cq.hidden=true;held=null;if(cqCopy)cqCopy.textContent="Copy";if(cqImg)cqImg.textContent="Share image";}
   function onSel(){
     if(cqT)clearTimeout(cqT);
     cqT=setTimeout(function(){
@@ -4009,7 +4069,6 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
       var rect=sel.getRangeAt(0).getBoundingClientRect();
       if(!rect||(!rect.width&&!rect.height)){hideCq();return;}
       held={text:text,id:nearestId(node),ctitle:nearestChapter(node)};
-      cq.textContent="Copy quote";
       cq.style.left=(rect.left+rect.width/2+window.pageXOffset)+"px";
       cq.style.top=(rect.top+window.pageYOffset)+"px";
       cq.hidden=false;
@@ -4018,16 +4077,65 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
   document.addEventListener("selectionchange",onSel);
   window.addEventListener("scroll",function(){if(!cq.hidden)hideCq();},{passive:true});
   cq.addEventListener("mousedown",function(e){e.preventDefault();}); /* keep the selection */
-  cq.addEventListener("click",function(){
-    if(!held)return;
-    var url=location.origin+location.pathname+(held.id?("#"+held.id):"");
-    var attribution="— Everything That Glows"+(held.ctitle?(", "+held.ctitle):"");
-    var payload="“"+held.text+"”\n"+attribution+"\n"+url;
-    function done(){cq.textContent="Copied ✓";setTimeout(hideCq,1100);}
-    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(payload).then(done,fallback);}
-    else fallback();
-    function fallback(){try{var ta=document.createElement("textarea");ta.value=payload;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done();}catch(e){cq.textContent="Copy failed";setTimeout(hideCq,1100);}}
+  function quoteUrl(){return location.origin+location.pathname+(held&&held.id?("#"+held.id):"");}
+
+  cqCopy.addEventListener("click",function(){
+    if(!held)return; var btn=this;
+    var payload="“"+held.text+"”\n— Everything That Glows"+(held.ctitle?(", "+held.ctitle):"")+"\n"+quoteUrl();
+    function done(){btn.textContent="Copied ✓";setTimeout(hideCq,1000);}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(payload).then(done,fb);} else fb();
+    function fb(){try{var ta=document.createElement("textarea");ta.value=payload;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done();}catch(e){btn.textContent="Failed";}}
   });
+
+  cqImg.addEventListener("click",function(){
+    if(!held)return; var btn=this, text=held.text, chapter=held.ctitle, url=quoteUrl();
+    btn.textContent="…";
+    makeQuoteImage(text,chapter).then(function(blob){
+      if(!blob){btn.textContent="Failed";return;}
+      var file=null; try{file=new File([blob],"everything-that-glows.png",{type:"image/png"});}catch(e){}
+      var data=file?{files:[file],title:"Everything That Glows",text:"“"+text+"” — Everything That Glows"+(chapter?(", "+chapter):"")+"\n"+url}:null;
+      if(file&&navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
+        navigator.share(data).then(function(){hideCq();},function(){download(blob);});
+      } else download(blob);
+    });
+    function download(blob){var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="everything-that-glows.png";document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1000);hideCq();}
+  });
+
+  /* compose a shareable quote card on a canvas */
+  function wrapText(x,text,maxW){var words=text.split(" "),lines=[],cur="";for(var i=0;i<words.length;i++){var t=cur?cur+" "+words[i]:words[i];if(x.measureText(t).width>maxW&&cur){lines.push(cur);cur=words[i];}else cur=t;}if(cur)lines.push(cur);return lines;}
+  function drawPrism(x,cx,cy,s){
+    x.save();x.strokeStyle="#34346b";x.lineWidth=4;x.lineJoin="round";
+    x.beginPath();x.moveTo(cx,cy-s*0.5);x.lineTo(cx-s*0.42,cy+s*0.4);x.lineTo(cx+s*0.42,cy+s*0.4);x.closePath();x.stroke();
+    x.beginPath();x.moveTo(cx-s*0.95,cy);x.lineTo(cx-s*0.12,cy);x.stroke();
+    var cols=["#d65a5a","#e0c15a","#3fae9f","#4a90d9","#6b5bd0"];
+    for(var i=0;i<cols.length;i++){x.strokeStyle=cols[i];x.beginPath();x.moveTo(cx+s*0.12,cy);x.lineTo(cx+s*0.92,cy-s*0.36+i*(s*0.72/(cols.length-1)));x.stroke();}
+    x.restore();
+  }
+  function makeQuoteImage(text,chapter){
+    return new Promise(function(resolve){
+      try{
+        var S=1080,pad=110,c=document.createElement("canvas");c.width=S;c.height=S;var x=c.getContext("2d");
+        x.fillStyle="#fbfaf7";x.fillRect(0,0,S,S);
+        var g=x.createLinearGradient(pad,0,S-pad,0),sp=["#d65a5a","#e0894a","#e0c15a","#3fae9f","#4a90d9","#5757c8","#6b5bd0"];
+        for(var i=0;i<sp.length;i++)g.addColorStop(i/(sp.length-1),sp[i]);
+        x.fillStyle=g;x.fillRect(pad,pad,S-2*pad,6);
+        var fs=text.length>320?40:text.length>210?48:text.length>120?58:66;
+        x.fillStyle="#1b1b1f";x.textBaseline="alphabetic";
+        x.font='italic '+fs+'px "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif';
+        var maxW=S-2*pad, lines=wrapText(x,'“'+text+'”',maxW), lh=fs*1.34, blockH=lines.length*lh;
+        var startY=Math.max(pad+90,(S-blockH)/2-30);
+        for(var j=0;j<lines.length;j++)x.fillText(lines[j],pad,startY+j*lh+fs);
+        var ay=startY+blockH+76;
+        x.font='600 30px system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';
+        x.fillStyle="#34346b";x.fillText("EVERYTHING THAT GLOWS",pad,ay);
+        if(chapter){x.font='28px system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';x.fillStyle="#5f5d57";x.fillText(chapter,pad,ay+42);}
+        drawPrism(x,S-pad-120,S-pad-150,120);
+        x.font='26px system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';x.fillStyle="#8a877e";
+        x.fillText("everythingthatglows.com",pad,S-pad+10);
+        if(c.toBlob)c.toBlob(function(b){resolve(b);},"image/png"); else resolve(null);
+      }catch(e){resolve(null);}
+    });
+  }
 })();
 </script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
@@ -4265,6 +4373,58 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
     var apply=function(){ var t=(so.type||"").indexOf("landscape")===0?"landscape":"portrait";
       so.lock(t).then(function(){setLocked(true);},function(){ lrb.title="Rotation lock needs fullscreen on this device — turn on Immersive first."; }); };
     if(!fsOn()) reqFS().then(function(){ setTimeout(apply,200); }); else apply();
+  });
+})();
+</script>
+<script>
+/* ---- consolidated reading menu + share ---- */
+(function(){
+  var SITE="https://everythingthatglows.com/";
+  var INVITE="I’ve been reading Everything That Glows — a free book, in twelve chapters, on the idea that the world is, underneath, made of information. Beautiful, and easier to get into than you’d think.";
+  var btn=document.getElementById("menubtn"), sheet=document.getElementById("menusheet");
+  if(!btn||!sheet)return;
+  var toast=document.getElementById("mtoast"), toastT=null, toastF=null;
+  function showToast(msg){ if(!toast)return; toast.textContent=msg; toast.style.display="block";
+    toast.offsetHeight; toast.classList.add("show");
+    if(toastT)clearTimeout(toastT); if(toastF)clearTimeout(toastF);
+    toastT=setTimeout(function(){toast.classList.remove("show");toastF=setTimeout(function(){toast.style.display="none";},400);},2800); }
+
+  function openMenu(){ sheet.hidden=false; requestAnimationFrame(function(){sheet.classList.add("show");}); btn.setAttribute("aria-expanded","true");
+    syncSound(); document.addEventListener("keydown",onKey); document.addEventListener("click",onOutside,true); }
+  function closeMenu(){ sheet.classList.remove("show"); btn.setAttribute("aria-expanded","false");
+    document.removeEventListener("keydown",onKey); document.removeEventListener("click",onOutside,true);
+    setTimeout(function(){sheet.hidden=true;},180); }
+  function onKey(e){ if(e.key==="Escape"){closeMenu();btn.focus();} }
+  function onOutside(e){ if(!sheet.contains(e.target)&&e.target!==btn&&!btn.contains(e.target))closeMenu(); }
+  btn.addEventListener("click",function(){ if(sheet.hidden)openMenu(); else closeMenu(); });
+  var xb=sheet.querySelector("[data-menu-close]"); if(xb)xb.addEventListener("click",function(){closeMenu();btn.focus();});
+
+  function clickId(id){var el=document.getElementById(id);if(el)el.click();}
+  function syncSound(){var st=document.querySelector("#soundtoggle .s-state"),el=document.getElementById("ms-soundstate");if(st&&el)el.textContent=(st.textContent||"").trim();}
+
+  function share(){
+    var data={title:"Everything That Glows",text:INVITE,url:SITE};
+    if(navigator.share){navigator.share(data).catch(function(){});return;}
+    var payload=INVITE+" "+SITE;
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(payload).then(function(){showToast("Invitation copied — paste it into Messages.");},mail);}
+    else mail();
+    function mail(){location.href="mailto:?subject="+encodeURIComponent("Everything That Glows")+"&body="+encodeURIComponent(payload);}
+  }
+
+  Array.prototype.forEach.call(sheet.querySelectorAll(".ms-item[data-act]"),function(it){
+    it.addEventListener("click",function(){
+      var act=it.getAttribute("data-act");
+      if(act==="sound"){ clickId("soundtoggle"); setTimeout(syncSound,40); return; }
+      closeMenu();
+      setTimeout(function(){
+        if(act==="contents"){var c=document.getElementById("contents");if(c)c.scrollIntoView({behavior:"smooth",block:"start"});}
+        else if(act==="search")clickId("searchbtn");
+        else if(act==="settings")clickId("setbtn");
+        else if(act==="marks")clickId("marksbtn");
+        else if(act==="journey")clickId("ts-journey");
+        else if(act==="share")share();
+      },190);
+    });
   });
 })();
 </script>

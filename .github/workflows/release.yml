@@ -1,0 +1,71 @@
+name: Release EPUB
+
+# Publishes the two EPUB editions as downloadable GitHub Release assets.
+# Trigger by pushing a version tag (e.g. v1.0.0), or run manually from the
+# Actions tab (workflow_dispatch) with a tag name. The site's "Download EPUB"
+# buttons point at the latest release's assets, so a new release updates them.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to create (e.g. v1.0.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      EPUBCHECK_VERSION: "5.1.0"
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: tools/package-lock.json
+
+      - name: Build EPUB editions
+        working-directory: tools
+        run: |
+          npm ci
+          node build-epub.mjs
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Validate EPUBs with epubcheck
+        working-directory: tools
+        run: |
+          curl -fsSL -o /tmp/epubcheck.zip \
+            "https://github.com/w3c/epubcheck/releases/download/v${EPUBCHECK_VERSION}/epubcheck-${EPUBCHECK_VERSION}.zip"
+          unzip -q -o /tmp/epubcheck.zip -d /tmp
+          jar="/tmp/epubcheck-${EPUBCHECK_VERSION}/epubcheck.jar"
+          for f in dist/*.epub; do java -jar "$jar" "$f"; done
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}
+          name: Everything That Glows ${{ env.TAG }}
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: true
+          body: |
+            **Everything That Glows** — the complete book as an ebook, free to read.
+
+            - **everything-that-glows.epub** — MathML equations. Best for Apple Books, Google Play Books, Kobo, Thorium.
+            - **everything-that-glows-kindle.epub** — equations as SVG images, for Kindle and readers with weak MathML support. Send it to a Kindle with "Send to Kindle".
+
+            Both validate clean with epubcheck and are regenerated from the source on every release.
+          files: |
+            tools/dist/everything-that-glows.epub
+            tools/dist/everything-that-glows-kindle.epub

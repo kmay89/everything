@@ -33,7 +33,9 @@ manager, and no dependencies.
   Reader features: a settings panel ("Aa") for theme (auto/light/dark), text size, line
   spacing, and **typeface** (serif/sans); in-book **Search**; an ambient "minutes to next
   chapter" pill; a welcome-back toast; "Copy quote" on text selection; a skip link and
-  focus-trapped dialogs. A gentle engagement layer: a **Contents progress summary** (bar +
+  focus-trapped dialogs. A **quick tools dock** (bottom-right) surfaces in-the-moment
+  **Flag this spot** + a flag count outside the Menu, with a first-visit coachmark and a one-time
+  reminder if the reader hasn't flagged anything. A gentle engagement layer: a **Contents progress summary** (bar +
   "N of 12 · ~time left" + milestone badges), an **end-of-chapter card** (encouragement,
   optional saved reflection, "Mark as read", next-chapter link), and **milestone toasts** —
   no streaks or pressure. A **reflections-across-time** layer captures a **Before** note at each
@@ -43,13 +45,18 @@ manager, and no dependencies.
   (`created`/`updated`, migrated from the older single `t`) and a **"Thoughts across time"** timeline
   (menu + Your journey) shows the arc per chapter with relative timestamps.
   A **Your journey** panel (progress ring, time read, reflections count, milestone badges) opens
-  from the Contents summary, and finishing all twelve triggers a one-time **completion celebration**. A **Reading mode** row offers **Immersive** (fullscreen)
+  from the Contents summary, and finishing all twelve triggers a one-time **completion celebration**.
+  A **cast roster** ("Minds you've met", from the Menu / Your journey) auto-checks each figure
+  as you reach their bolded introduction (`IntersectionObserver` on the curated `ROSTER`), grouped
+  by chapter with an "N of M minds met" count. A **Reading mode** row offers **Immersive** (fullscreen)
   and a best-effort **Lock rotation** (Screen Orientation API; disabled where unsupported, e.g.
   iOS). State lives in `localStorage`: `et-theme`, `et-textsize`, `et-leading`, `et-font`,
   `et-progress`/`et-current` (auto reading progress, written only by the reader script), and the
   engagement-owned `et-read`, `et-before`/`et-after` (timestamped reflections; migrated from the
-  legacy `et-notes`), `et-milestones`, `et-celebrated`. Theme/size/typeface are applied pre-paint
-  by a small head script.
+  legacy `et-notes`), `et-milestones`, `et-celebrated`, and the quick-tools `et-tools-intro`/
+  `et-tools-nudge`/`et-flag-used`, as well as `et-cast` (minds met). Theme/size/typeface are applied pre-paint by a small head
+  script. The landing orientation's install step shows iOS-specific "Share → Add to Home Screen"
+  guidance (no `beforeinstallprompt` on iOS Safari).
 - `privacy.html` — privacy & cookies policy (no data collected, no cookies); contact
   errerlabs@gmail.com.
 - `404.html` — themed not-found page (Netlify serves it automatically).

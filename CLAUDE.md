@@ -25,8 +25,11 @@ manager, and no dependencies.
   The reader chrome is consolidated behind a single **Menu** button in the topbar (a
   `#menusheet` that proxies to the still-present feature controls: Contents, Search, Journey,
   Flags, Display & text, Sound, Share, Support). **Share** uses the Web Share API (native
-  sheet → iMessage on Apple) with a copy/mailto fallback; **selecting text** offers Copy or
-  **Share as image**, and each **flagged bookmark** has a Share action too. Quote cards are
+  sheet → iMessage on Apple) with a copy/mailto fallback; **selecting text** offers Copy, **Flag**
+  (bookmark that exact paragraph), **Link** (deep link to it), or **Share as image**. Every
+  paragraph gets a stable anchor (`<sectionId>-p<n>`) at load, so flags, jumps, and deep links are
+  **paragraph-precise**; flagged paragraphs show an inline accent marker, and each saved flag has a
+  Share action. Quote cards are
   rendered on a `<canvas>` by the shared `window.ETShare` helper (`hueFor`/`chapterIndex`/
   `image`/`sendImage`), **themed per chapter** with a spectrum hue, shared as a PNG file where
   supported, else downloaded.

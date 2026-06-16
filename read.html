@@ -837,6 +837,14 @@ body{font-family:var(--reader-font)}
 .cast-name .cn-tick{font-size:.78rem;color:var(--faint)}
 .cast-name.met{color:var(--ink);border-color:color-mix(in srgb,var(--accent) 45%,var(--rule))}
 .cast-name.met .cn-tick{color:var(--accent)}
+
+/* ===== paragraph bookmarks: inline marker + wider select popover ===== */
+.copyquote{flex-wrap:wrap;max-width:min(21rem,calc(100vw - 1.2rem));justify-content:center}
+.prose p.flagged{position:relative}
+.prose p.flagged::before{content:"";position:absolute;left:-.95rem;top:.35em;bottom:.35em;width:3px;
+  border-radius:2px;background:var(--accent);opacity:.85}
+@media (max-width:640px){.prose p.flagged::before{left:-.55rem}}
+@media print{.prose p.flagged::before{display:none}}
 </style>
 </head>
 <body>
@@ -944,7 +952,9 @@ body{font-family:var(--reader-font)}
 </div>
 <div id="copyquote" class="copyquote" hidden>
   <button type="button" data-cq="copy">Copy</button>
-  <button type="button" data-cq="image">Share image</button>
+  <button type="button" data-cq="flag">Flag</button>
+  <button type="button" data-cq="link">Link</button>
+  <button type="button" data-cq="image">Image</button>
 </div>
 <div id="milestone" role="status"><span class="ms-ico" aria-hidden="true">âœ¦</span><span id="ms-text"></span></div>
 <div id="journeypanel" class="journeypanel" role="dialog" aria-modal="true" aria-label="Your journey" hidden>
@@ -3901,8 +3911,17 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
     var noteEl = document.getElementById("marksnote"), addBtn = document.getElementById("markadd");
     var countEl = document.getElementById("markcount"), bar = document.querySelector(".topbar");
     var paras = [].slice.call(document.querySelectorAll(".prose p"));
+    /* give every paragraph a stable anchor so flags + deep links are paragraph-precise */
+    (function(){ var cnt={}; paras.forEach(function(p){ if(!p.id){ var sec=p.closest&&p.closest("section.chapter"); var sid=sec&&sec.id?sec.id:"sec"; cnt[sid]=(cnt[sid]||0)+1; p.id=sid+"-p"+cnt[sid]; } }); })();
     var marks = [];
     try{ var raw = load("marks"); if(raw){ marks = JSON.parse(raw) || []; } }catch(e){ marks = []; }
+    function paintFlags(){ paras.forEach(function(p){p.classList.remove("flagged");}); marks.forEach(function(m){ var p=(m.pid&&document.getElementById(m.pid))||paras[m.i]; if(p)p.classList.add("flagged"); }); }
+    /* flag one specific paragraph (used by select-to-flag) */
+    window.ETFlagPara=function(pEl){ if(!pEl)return false; var i=paras.indexOf(pEl); if(i<0)return false;
+      if(marks.some(function(m){return m.i===i||(m.pid&&m.pid===pEl.id);})){ paintFlags(); return true; }
+      var absY=(window.scrollY||0)+pEl.getBoundingClientRect().top;
+      marks.unshift({ i:i, pid:pEl.id, c:chapterTitleAt(absY), s:snippetOf(pEl), y:Math.round(absY), t:Date.now() });
+      if(marks.length>60)marks.pop(); persist(); render(); paintFlags(); return true; };
     if(!Array.isArray(marks)) marks = [];
 
     function persist(){ save("marks", JSON.stringify(marks)); }
@@ -3949,7 +3968,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
         var d = document.createElement("button");
         d.type = "button"; d.className = "mp-del"; d.setAttribute("aria-label","Remove this flag");
         d.innerHTML = "\u00d7";
-        d.addEventListener("click", function(ev){ ev.stopPropagation(); marks.splice(k,1); persist(); render(); });
+        d.addEventListener("click", function(ev){ ev.stopPropagation(); marks.splice(k,1); persist(); render(); paintFlags(); });
         li.appendChild(j); li.appendChild(sh); li.appendChild(d); listEl.appendChild(li);
       });
       var n = marks.length;
@@ -3958,7 +3977,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       if(noteEl){ noteEl.hidden = false; noteEl.textContent = store ? "Saved on this device." : "Saved for this session."; }
     }
     function jump(m){
-      var p = paras[m.i];
+      var p = (m.pid && document.getElementById(m.pid)) || paras[m.i];
       if(p) p.scrollIntoView({block:"start", behavior: RM ? "auto" : "smooth"});
       else window.scrollTo(0, m.y || 0);
       closePanel(); sJump();
@@ -3969,11 +3988,11 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       var absY = (window.scrollY || 0) + p.getBoundingClientRect().top;
       var dup = marks.some(function(m){ return m.i === i; });
       if(!dup){
-        marks.unshift({ i:i, c:chapterTitleAt(absY), s:snippetOf(p), y:Math.round(absY), t:Date.now() });
+        marks.unshift({ i:i, pid:p.id, c:chapterTitleAt(absY), s:snippetOf(p), y:Math.round(absY), t:Date.now() });
         if(marks.length > 60) marks.pop();
         persist();
       }
-      render();
+      render(); paintFlags();
       addBtn.classList.add("saved"); addBtn.textContent = dup ? "Already flagged \u2713" : "Flagged \u2713";
       setTimeout(resetAdd, 1400); sOpen();
     }
@@ -3999,7 +4018,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
     function esc(e){ if(e.key === "Escape"){ closePanel(); mb.focus(); } }
     mb.addEventListener("click", function(){ if(panel.hidden) openPanel(); else closePanel(); });
     addBtn.addEventListener("click", addMark);
-    render();
+    render(); paintFlags();
   })();
 
   /* ---- restore persisted state, then lay out the rail ---- */
@@ -4259,8 +4278,9 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
     while(n&&n!==document.body){if(n.id)return n.id;n=n.parentNode;}return "";}
   function nearestChapter(node){var n=node&&node.nodeType===3?node.parentNode:node;
     while(n&&n!==document.body){if(n.classList&&n.classList.contains("chapter")){var h=n.querySelector("h1");return h?h.textContent.trim():"";}n=n.parentNode;}return "";}
-  var cqCopy=cq.querySelector('[data-cq="copy"]'), cqImg=cq.querySelector('[data-cq="image"]');
-  function hideCq(){cq.hidden=true;held=null;if(cqCopy)cqCopy.textContent="Copy";if(cqImg)cqImg.textContent="Share image";}
+  var cqCopy=cq.querySelector('[data-cq="copy"]'), cqImg=cq.querySelector('[data-cq="image"]'),
+      cqFlag=cq.querySelector('[data-cq="flag"]'), cqLink=cq.querySelector('[data-cq="link"]');
+  function hideCq(){cq.hidden=true;held=null;if(cqCopy)cqCopy.textContent="Copy";if(cqImg)cqImg.textContent="Image";if(cqFlag)cqFlag.textContent="Flag";if(cqLink)cqLink.textContent="Link";}
   function onSel(){
     if(cqT)clearTimeout(cqT);
     cqT=setTimeout(function(){
@@ -4272,7 +4292,8 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       if(!main||!node||!main.contains(node.nodeType===3?node.parentNode:node)){hideCq();return;}
       var rect=sel.getRangeAt(0).getBoundingClientRect();
       if(!rect||(!rect.width&&!rect.height)){hideCq();return;}
-      held={text:text,id:nearestId(node),ctitle:nearestChapter(node),cidx:(window.ETShare?ETShare.chapterIndex(node):-1)};
+      var el=node.nodeType===3?node.parentNode:node, pEl=el&&el.closest?el.closest(".prose p"):null;
+      held={text:text,pEl:pEl,id:(pEl&&pEl.id)||nearestId(node),ctitle:nearestChapter(node),cidx:(window.ETShare?ETShare.chapterIndex(node):-1)};
       cq.style.left=(rect.left+rect.width/2+window.pageXOffset)+"px";
       cq.style.top=(rect.top+window.pageYOffset)+"px";
       cq.hidden=false;
@@ -4296,6 +4317,20 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
     btn.textContent="â€¦";
     ETShare.sendImage(held.text,held.ctitle,ETShare.hueFor(held.cidx>=0?held.cidx:0),quoteUrl())
       .then(function(){hideCq();},function(){btn.textContent="Failed";});
+  });
+
+  cqFlag.addEventListener("click",function(){
+    if(!held)return; var btn=this;
+    if(window.ETFlagPara&&held.pEl&&window.ETFlagPara(held.pEl)){ btn.textContent="Flagged âœ“"; }
+    else { btn.textContent="Flagged âœ“"; }
+    setTimeout(hideCq,1000);
+  });
+
+  cqLink.addEventListener("click",function(){
+    if(!held)return; var btn=this, url=quoteUrl();
+    function done(){btn.textContent="Link copied âœ“";setTimeout(hideCq,1000);}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(done,fb);} else fb();
+    function fb(){try{var ta=document.createElement("textarea");ta.value=url;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);done();}catch(e){btn.textContent="Failed";}}
   });
 })();
 </script>

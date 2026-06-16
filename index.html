@@ -59,14 +59,14 @@ a{color:var(--accent)}
   color:var(--accent);font-weight:600}
 
 /* ---------- hero ---------- */
-.hero{text-align:center;padding:clamp(3.2rem,9vw,6rem) 0 3.4rem}
+.hero{text-align:center;padding:clamp(3.6rem,10vw,6.8rem) 0 4.2rem}
 .hero .kicker{font-family:var(--sans);font-size:.74rem;letter-spacing:.36em;text-transform:uppercase;
-  color:var(--accent);margin:0 0 1.5rem}
-.hero .cover-title{font-family:var(--serif);font-size:clamp(2.7rem,8.6vw,4.9rem);line-height:1.02;
+  color:var(--accent);margin:0 0 1.7rem}
+.hero .cover-title{font-family:var(--serif);font-size:clamp(2.7rem,8.6vw,4.9rem);line-height:1.04;
   font-weight:600;letter-spacing:-.02em;text-wrap:balance;max-width:15ch;margin:0 auto;display:inline-block}
-.hero .lede{font-size:1.2rem;color:var(--muted);font-style:italic;max-width:34rem;
-  margin:1.5rem auto 0;line-height:1.55}
-.cta-row{margin:2.3rem 0 .9rem;display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap}
+.hero .lede{font-size:1.24rem;color:var(--muted);font-style:italic;max-width:33rem;
+  margin:1.9rem auto 0;line-height:1.65}
+.cta-row{margin:2.7rem 0 .9rem;display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap}
 .btn{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--sans);font-size:.82rem;
   letter-spacing:.12em;text-transform:uppercase;font-weight:600;text-decoration:none;
   padding:.85rem 1.5rem;border-radius:999px;transition:transform .15s ease,background .2s,border-color .2s,color .2s}
@@ -83,16 +83,16 @@ a{color:var(--accent)}
 .cover .kicker,.cover .lede,.cover .spine{margin-left:auto;margin-right:auto}
 .cover .lede{max-width:34rem}
 .cover-art{width:min(372px,84%);height:auto;display:block;margin:.4rem auto 1.5rem;overflow:visible;
-  opacity:0;animation:cover-fade 1.1s ease .1s forwards}
+  opacity:0;animation:cover-fade 1.6s ease .15s forwards}
 .cover-prism{fill:url(#cover-prismfill);stroke:color-mix(in srgb,var(--ink) 50%,transparent);
   stroke-width:1.2;stroke-linejoin:round}
 .cover-prism-edge{stroke:#ffffff;stroke-width:1.1;opacity:.5;fill:none;stroke-linecap:round}
-.cover-beam,.cover-beam-halo{stroke-dasharray:1;stroke-dashoffset:1;animation:cover-draw .8s ease .35s forwards}
+.cover-beam,.cover-beam-halo{stroke-dasharray:1;stroke-dashoffset:1;animation:cover-draw 1.2s ease .5s forwards}
 .cover-beam{stroke:color-mix(in srgb,var(--ink) 42%,transparent);stroke-width:1.4}
 .cover-beam-halo{stroke:#e8d39a;stroke-width:5;opacity:.4}
 .cover-beamdot{fill:#fff7e6;filter:drop-shadow(0 0 3px #f0d68a);opacity:0;animation:cover-dot 3.6s linear 1.7s infinite}
 .cover-fan{opacity:0;transform-box:fill-box;transform-origin:left center;
-  animation:cover-bloom 1.1s cubic-bezier(.2,.7,.3,1) .9s forwards}
+  animation:cover-bloom 1.5s cubic-bezier(.2,.7,.3,1) 1s forwards}
 .cover-sep line{stroke:#fffaf0;stroke-width:.6;opacity:.32}
 .cover-sheen{opacity:0;animation:cover-sheen 7s ease-in-out 2.4s infinite}
 @keyframes cover-fade{to{opacity:1}}
@@ -100,15 +100,15 @@ a{color:var(--accent)}
 @keyframes cover-bloom{from{opacity:0;transform:scaleX(.5)}to{opacity:.94;transform:none}}
 @keyframes cover-dot{0%{transform:translateX(0);opacity:0}9%{opacity:1}60%{transform:translateX(122px);opacity:1}72%{opacity:0}100%{transform:translateX(122px);opacity:0}}
 @keyframes cover-sheen{0%{transform:translateX(0);opacity:0}26%{opacity:.52}58%{transform:translateX(198px);opacity:0}100%{transform:translateX(198px);opacity:0}}
-.cover h1{opacity:0;animation:cover-rise 1s cubic-bezier(.2,.7,.3,1) .7s forwards}
-.cover .kicker{opacity:0;animation:cover-rise .9s ease .5s forwards}
-.cover .lede{opacity:0;animation:cover-rise 1s ease 1.2s forwards}
-.cover .spine{opacity:0;animation:cover-rise 1s ease 1.45s forwards}
+.cover h1{opacity:0;animation:cover-rise 1.4s cubic-bezier(.2,.7,.3,1) .9s forwards}
+.cover .kicker{opacity:0;animation:cover-rise 1.2s ease .55s forwards}
+.cover .lede{opacity:0;animation:cover-rise 1.35s ease 1.6s forwards}
+.cover .spine{opacity:0;animation:cover-rise 1.35s ease 2s forwards}
 @keyframes cover-rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .cover-rule{display:block;height:2px;width:clamp(150px,44%,340px);margin:1.25rem auto 0;border-radius:2px;
   opacity:.9;transform:scaleX(0);
   background:linear-gradient(90deg,#d65a5a,#e0894a,#e0c15a,#3fae9f,#4a90d9,#5757c8,#6b5bd0);
-  animation:cover-rulein 1.1s cubic-bezier(.2,.7,.3,1) 1.3s forwards}
+  animation:cover-rulein 1.5s cubic-bezier(.2,.7,.3,1) 1.75s forwards}
 @keyframes cover-rulein{to{transform:scaleX(1)}}
 .cover-title{position:relative;display:inline-block}
 .cover-title .caustic{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;
@@ -129,11 +129,33 @@ a{color:var(--accent)}
 .hero .cover-art{width:min(380px,86%)}
 
 /* ---------- section rhythm ---------- */
-section{padding:3.2rem 0}
+section{padding:4.4rem 0}
 .section-rule{border:none;border-top:1px solid var(--rule);max-width:42rem;margin:0 auto}
-.premise p{margin:0 0 1.1rem}
+.premise p{margin:0 0 1.3rem;font-size:1.06rem;line-height:1.75}
 .premise p:last-child{margin-bottom:0}
-.lead-line{font-size:1.28rem;line-height:1.5}
+.lead-line{font-size:1.42rem;line-height:1.5;color:var(--ink)!important;margin-bottom:1.5rem!important}
+
+/* ---------- curiosity / questions ---------- */
+.curio h2{font-family:var(--sans);font-size:.78rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--faint);font-weight:600;margin:0 0 .8rem;text-align:center}
+.curio .curio-lead{text-align:center;color:var(--muted);font-style:italic;max-width:34rem;
+  margin:0 auto 2rem;line-height:1.55;font-size:1.08rem}
+.curio ul{list-style:none;margin:0;padding:0;max-width:38rem;margin-inline:auto}
+.curio li{position:relative;padding:1.15rem 0 1.15rem 1.7rem;border-top:1px solid var(--rule);
+  font-size:1.2rem;line-height:1.5;color:var(--ink);text-wrap:pretty}
+.curio li:last-child{border-bottom:1px solid var(--rule)}
+.curio li::before{content:"";position:absolute;left:0;top:1.72rem;width:.55rem;height:.55rem;border-radius:50%}
+.curio li:nth-child(1)::before{background:#d65a5a}
+.curio li:nth-child(2)::before{background:#e0894a}
+.curio li:nth-child(3)::before{background:#e0c15a}
+.curio li:nth-child(4)::before{background:#3fae9f}
+.curio li:nth-child(5)::before{background:#4a90d9}
+.curio li:nth-child(6)::before{background:#6b5bd0}
+
+/* ---------- gentle scroll reveal ---------- */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .8s ease,transform .8s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none;transition:none}}
 
 /* ---------- chapters ---------- */
 .chapters h2,.support h2,.about h2{font-family:var(--sans);font-size:.78rem;letter-spacing:.3em;
@@ -227,8 +249,8 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
 .enter-inner{max-width:34rem;width:100%;position:relative}
 .enter-prism{width:min(116px,28vw);height:auto;margin:0 auto 1.5rem;display:block;opacity:.95}
 .enter-panel{display:none}
-.enter-panel.active{display:block;animation:enter-fade .7s ease}
-@keyframes enter-fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.enter-panel.active{display:block;animation:enter-fade 1s ease}
+@keyframes enter-fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .enter .eb{font-family:var(--sans);font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;
   color:var(--accent);font-weight:600;margin:0 0 1rem}
 .enter h2{font-family:var(--serif);font-size:clamp(1.8rem,6vw,2.7rem);line-height:1.1;letter-spacing:-.02em;
@@ -416,6 +438,21 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
     <p class="lead-line">Everything That Glows is a book about the deepest idea in modern physics: that <em>information is physical.</em></p>
     <p>That to know a thing, to remember it, or to forget it is never free; that each costs something real and measurable; and that this single fact runs like a thread through heat and light, life and gravity, number and mind. It is the story of how a question about a cooling cup of coffee turned, over two centuries, into a question about everything.</p>
     <p>It is written for the curious, not the credentialed. There is no prerequisite but attention. And it is here in full, free to read, because understanding should not sit behind a gate.</p>
+  </section>
+
+  <hr class="section-rule">
+
+  <section class="curio wrap">
+    <h2>Questions you&rsquo;ll get to live with</h2>
+    <p class="curio-lead">You don&rsquo;t need the answers to begin &mdash; only the pull of the questions.</p>
+    <ul>
+      <li>Why does forgetting a single bit of information release a tiny, unavoidable trace of heat?</li>
+      <li>What does a cup of coffee cooling on your desk have in common with a black hole?</li>
+      <li>Is mathematics something we discover, or something we invent &mdash; and could we ever run out of it?</li>
+      <li>Why does time run one way, when the laws underneath barely notice a direction?</li>
+      <li>What is a &ldquo;particle,&rdquo; really, once you stop picturing a tiny ball?</li>
+      <li>If the world is, underneath, made of information &mdash; whose is it, and where is it kept?</li>
+    </ul>
   </section>
 
   <hr class="section-rule">
@@ -653,7 +690,7 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
     lset("sound","on");
     if(tone){try{tone.volume=0.7;tone.currentTime=0;var p=tone.play();if(p&&p.catch)p.catch(function(){});}catch(e){}}
     if(stateEl)stateEl.textContent="Sound on. Let the journey begin.";
-    setTimeout(function(){show(cur+1);},900);
+    setTimeout(function(){show(cur+1);},1300);
   });
   enter.querySelector("[data-sound-off]").addEventListener("click",function(){ lset("sound","off"); show(cur+1); });
 
@@ -693,6 +730,19 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
     var payload=INVITE+" "+SITE;
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(payload).then(function(){showToast("Invitation copied — paste it into Messages.");},mail);} else mail();
     function mail(){location.href="mailto:?subject="+encodeURIComponent("Everything That Glows")+"&body="+encodeURIComponent(payload);}
+  });
+})();
+</script>
+<script>
+/* gentle scroll reveal — only for sections below the fold (no flash) */
+(function(){
+  if(!("IntersectionObserver" in window)) return;
+  if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var els=[].slice.call(document.querySelectorAll("main section, main .section-rule"));
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add("in");io.unobserve(en.target);}});},{threshold:0.12,rootMargin:"0px 0px -8% 0px"});
+  els.forEach(function(el){
+    if(el.getBoundingClientRect().top < window.innerHeight*0.92) return; /* visible now: leave it */
+    el.classList.add("reveal"); io.observe(el);
   });
 })();
 </script>

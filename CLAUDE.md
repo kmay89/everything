@@ -13,8 +13,9 @@ manager, and no dependencies.
 ## Layout
 
 - `index.html` — the landing page: prism hero, the free-to-read premise, a theatrical
-  first-visit **orientation overlay** (`#enter`: purpose → optional sound → how progress/marks
-  work → make-it-yours/install → "Begin at the beginning"), the free-to-read premise, a
+  first-visit **orientation overlay** (`#enter`, light copy, self-paced — no auto-advance:
+  purpose → optional sound (plays `welcome.mp3`) → **"what do you hope to find"** chips + write-in
+  saved to `et-hopes` → how progress/marks work → make-it-yours/install → "Begin at the beginning"), the free-to-read premise, a
   **curiosity panel** ("Questions you'll get to live with"), the twelve chapters as a
   **non-clickable preview** (no deep links — readers funnel into the book and navigate via its
   Contents), an FAQ, an About, a "Support the work" panel, and a footer. Sections gently

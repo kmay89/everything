@@ -14,9 +14,11 @@ manager, and no dependencies.
 
 - `index.html` — the landing page: prism hero, the free-to-read premise, a theatrical
   first-visit **orientation overlay** (`#enter`: purpose → optional sound → how progress/marks
-  work → make-it-yours/install → "Begin at the beginning"), the twelve chapters as a
+  work → make-it-yours/install → "Begin at the beginning"), the free-to-read premise, a
+  **curiosity panel** ("Questions you'll get to live with"), the twelve chapters as a
   **non-clickable preview** (no deep links — readers funnel into the book and navigate via its
-  Contents), an FAQ, an About, a "Support the work" panel, and a footer. The orientation shows
+  Contents), an FAQ, an About, a "Support the work" panel, and a footer. Sections gently
+  reveal on scroll (below the fold; honors `prefers-reduced-motion`). The orientation shows
   once (`et-onboarded`) and is reopenable via "How to read this".
 - `welcome.mp3` — a ~29s welcome tone played when the reader opts into sound during orientation.
 - `read.html` — the whole book and its reader (~1.7 MB). The canonical book artifact.

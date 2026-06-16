@@ -767,7 +767,7 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
     var standalone=(window.navigator.standalone===true)||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches);
     if(!installText)return;
     if(standalone){ installText.style.display="none"; }
-    else if(isIOS){ installText.innerHTML="On iPhone or iPad: tap the Share icon <span aria-hidden=\"true\">&#x2191;</span> at the bottom of Safari, then choose <strong>Add to Home Screen</strong>. It opens like an app and reads offline."; }
+    else if(isIOS){ installText.innerHTML="On iPhone or iPad: tap the Share icon <span aria-hidden=\"true\">&#x2191;</span> in Safari, then choose <strong>Add to Home Screen</strong>. It opens like an app and reads offline."; }
   })();
 
   function onboarded(){return lget("et-onboarded")==="1";}

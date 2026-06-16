@@ -821,6 +821,19 @@ body{font-family:var(--reader-font)}
 #qt-coach button:hover{background:var(--accent-bright)}
 #qt-coach::after{content:"";position:absolute;right:1.5rem;bottom:-7px;border:7px solid transparent;border-top-color:var(--paper)}
 @media (prefers-reduced-motion: reduce){#qt-coach,#quicktools{transition:none}}
+
+/* ===== the cast (minds you've met) ===== */
+.cast-count{text-align:center;font-family:var(--serif);font-size:1.45rem;color:var(--ink);margin:.1rem 0 .2rem}
+.cast-count b{color:var(--accent)}
+.cast-ch{border-top:1px solid var(--rule);padding:.9rem 0}
+.cast-ch:first-of-type{border-top:0;padding-top:.2rem}
+.cast-ch h4{font-family:var(--serif);font-size:1rem;color:var(--ink);margin:0 0 .55rem;font-weight:600}
+.cast-people{display:flex;flex-wrap:wrap;gap:.4rem}
+.cast-name{display:inline-flex;align-items:center;gap:.35rem;font-family:var(--sans);font-size:.8rem;
+  border:1px solid var(--rule);border-radius:999px;padding:.28rem .62rem;color:var(--faint)}
+.cast-name .cn-tick{font-size:.78rem;color:var(--faint)}
+.cast-name.met{color:var(--ink);border-color:color-mix(in srgb,var(--accent) 45%,var(--rule))}
+.cast-name.met .cn-tick{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -851,6 +864,7 @@ body{font-family:var(--reader-font)}
     <button class="ms-item" type="button" data-act="search"><span class="ms-i" aria-hidden="true">&#8981;</span><span class="ms-t">Search the book</span></button>
     <button class="ms-item" type="button" data-act="journey"><span class="ms-i" aria-hidden="true">&#10022;</span><span class="ms-t">Your journey</span></button>
     <button class="ms-item" type="button" data-act="time"><span class="ms-i" aria-hidden="true">&#8986;</span><span class="ms-t">Thoughts across time</span></button>
+    <button class="ms-item" type="button" data-act="cast"><span class="ms-i" aria-hidden="true">&#9733;</span><span class="ms-t">Minds you&rsquo;ve met</span></button>
     <button class="ms-item" type="button" data-act="marks"><span class="ms-i" aria-hidden="true">&#9094;</span><span class="ms-t">Flags</span></button>
     <div class="ms-div"></div>
     <button class="ms-item" type="button" data-act="settings"><span class="ms-i" aria-hidden="true">Aa</span><span class="ms-t">Display &amp; text</span></button>
@@ -938,6 +952,7 @@ body{font-family:var(--reader-font)}
     <p class="jp-stats" id="jp-stats"></p>
     <div class="jp-badges" id="jp-badges"></div>
     <button class="jp-link" type="button" data-jp-time>See your thoughts across time &#10022;</button>
+    <button class="jp-link" type="button" data-jp-cast>See the minds you&rsquo;ve met &#9733;</button>
     <p class="jp-foot">Everything here is yours alone, kept on this device.</p>
   </div>
 </div>
@@ -948,6 +963,16 @@ body{font-family:var(--reader-font)}
     <p class="tp-intro">How your thinking moves: what you expected <em>before</em>, what you flagged <em>while</em> reading, and what you understood <em>after</em>.</p>
     <div class="tp-body"></div>
     <p class="tp-foot">Private to this device. Jot a line before a chapter and reflect after to watch it grow.</p>
+  </div>
+</div>
+<div id="castpanel" class="timepanel" role="dialog" aria-modal="true" aria-label="The minds you have met" hidden>
+  <div class="tp-card">
+    <button class="tp-close" type="button" data-cast-close aria-label="Close">&#215;</button>
+    <p class="tp-eyebrow">The cast</p>
+    <p class="cast-count" id="cast-count"></p>
+    <p class="tp-intro">Every scientist and thinker checks off as you reach them in the book.</p>
+    <div class="tp-body" id="cast-body"></div>
+    <p class="tp-foot">A small map of the minds behind the ideas. Private to this device.</p>
   </div>
 </div>
 <div id="celebrate" class="celebrate" role="dialog" aria-modal="true" aria-label="You finished the book" hidden>
@@ -4403,7 +4428,8 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
     var refl=reflectionCount();
     document.getElementById("jp-stats").innerHTML=
       st.done+" of "+chapters.length+" chapters finished &middot; about "+timeStr+" of reading"
-      +(refl?(" &middot; "+refl+" reflection"+(refl>1?"s":"")+" kept"):"");
+      +(refl?(" &middot; "+refl+" reflection"+(refl>1?"s":"")+" kept"):"")
+      +((window.ETCast&&window.ETCast.count()>0)?(" &middot; "+window.ETCast.count()+" minds met"):"");
     var badges=document.getElementById("jp-badges"); badges.innerHTML="";
     var s=stateFrom(pm);
     MILES.forEach(function(m){
@@ -4622,6 +4648,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         else if(act==="marks")clickId("marksbtn");
         else if(act==="journey")clickId("ts-journey");
         else if(act==="time"){ if(window.ETShowTime)window.ETShowTime(); }
+        else if(act==="cast"){ if(window.ETShowCast)window.ETShowCast(); }
         else if(act==="share")share();
       },190);
     });
@@ -4679,6 +4706,64 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
     }
   }
   window.addEventListener("scroll",function(){if(remT)return;remT=setTimeout(function(){remT=null;maybeRemind();},1600);},{passive:true});
+})();
+</script>
+<script>
+/* ---- the cast: minds you've met (auto-checks as you reach each name in the book) ---- */
+(function(){
+  var panel=document.getElementById("castpanel"); if(!panel)return;
+  var ROSTER=["Albert Einstein","Carl Friedrich Gauss","Carlo Rovelli","James Clerk Maxwell","Margaret Hamilton","Roger Penrose","Adi Shamir","Alan Turing","Albert Fert","Alexei Kitaev","Alfred Russel Wallace","An Wang","Anatol Zhabotinsky","Arthur Eddington","Benoit Mandelbrot","Bernhard Riemann","Boris Belousov","Bronnie Ware","Charles Bennett","Charles Darwin","Christian Anfinsen","Clifford Cocks","Colin MacLeod","Cyrus Levinthal","David Baker","David Deutsch","Demis Hassabis","Denise Schmandt-Besserat","Dmitri Mendeleev","Dorothy Crowfoot Hodgkin","Edward Lorenz","Emmy Noether","Eric Mazur","Erwin Chargaff","Erwin Schrödinger","Ettore Majorana","Francis Crick","Freeman Dyson","Friedrich Miescher","Fujio Masuoka","Galileo Galilei","Geoffrey Hinton","Gottfried Wilhelm Leibniz","Gregor Mendel","Henri Poincaré","Henry Gordon Rice","Isaac Newton","Jack Edmonds","Jacob Bekenstein","James Ellis","James Prescott Joule","James Watson","Jay Forrester","Johannes Kepler","John Archibald Wheeler","John Conway","John Hopfield","John Jumper","John Kendrew","Joseph Fourier","Joseph Le Bel","Karl Schwarzschild","Kurt Gödel","Le Verrier","Leonard Adleman","Leonhard Euler","Leonid Levin","Lewis Fry Richardson","Lord Kelvin","Louis Pasteur","Lov Grover","Ludwig Boltzmann","Maclyn McCarty","Malcolm Williamson","Marcel Grossmann","Matthias Schleiden","Maurice Wilkins","Max Perutz","Max Planck","Michael Faraday","Michael Freedman","Nikola Tesla","Oswald Avery","Paul Davies","Peter Grünberg","Peter Kazansky","Peter Mitchell","Peter Shor","Ralph Merkle","Reynold Johnson","Richard Feynman","Richard Karp","Robert Hooke","Robert May","Rolf Landauer","Ronald Rivest","Rosalind Franklin","Rudolf Virchow","S. M. Carroll","Sadi Carnot","Seth Lloyd","Stephen Cook","Stephen Hawking","Stuart Parkin","Theodor Schwann","Thomas Decru","Tibor Radó","Tycho Brahe","William Henry Bragg","William Lawrence Bragg","Wouter Castryck"];
+  function norm(t){return (t||"").replace(/\s+/g," ").trim().replace(/[.,;:]+$/,"");}
+  function esc(s){return (s||"").replace(/[&<>]/g,function(c){return c==="&"?"&amp;":c==="<"?"&lt;":"&gt;";});}
+  var set={}; ROSTER.forEach(function(n){set[norm(n)]=n;});
+  var secs=[].slice.call(document.querySelectorAll("section.chapter"));
+  function chOf(el){var n=el;while(n&&n!==document.body){if(n.classList&&n.classList.contains("chapter"))return n;n=n.parentNode;}return null;}
+  function chIndex(sec){for(var i=0;i<secs.length;i++)if(secs[i]===sec)return i;return 999;}
+  function chTitle(sec){var h=sec&&sec.querySelector("h1");return h?h.textContent.trim():"";}
+  var intro={}, order=[], strongs=document.querySelectorAll("section.chapter strong");
+  for(var i=0;i<strongs.length;i++){ var k=norm(strongs[i].textContent);
+    if(set[k]&&!intro[k]){ var sec=chOf(strongs[i]); intro[k]={el:strongs[i],ci:chIndex(sec),title:chTitle(sec)}; order.push(k); } }
+  var people=order.map(function(k){return {name:set[k],key:k,ci:intro[k].ci,title:intro[k].title,el:intro[k].el};});
+  var TOTAL=people.length;
+  function loadMet(){try{var r=localStorage.getItem("et-cast");return r?JSON.parse(r):{};}catch(e){return {};}}
+  function saveMet(){try{localStorage.setItem("et-cast",JSON.stringify(met));}catch(e){}}
+  var met=loadMet();
+  function metCount(){var n=0;people.forEach(function(p){if(met[p.key])n++;});return n;}
+  window.ETCast={count:metCount,total:function(){return TOTAL;}};
+
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(es){
+      var changed=false;
+      es.forEach(function(en){ if(en.isIntersecting){ var k=en.target.getAttribute("data-cast-key"); if(k&&!met[k]){met[k]=1;changed=true;} io.unobserve(en.target); } });
+      if(changed){ saveMet(); if(!panel.hidden)render(); }
+    },{threshold:0,rootMargin:"0px 0px -25% 0px"});
+    people.forEach(function(p){ if(!met[p.key]){ p.el.setAttribute("data-cast-key",p.key); io.observe(p.el); } });
+  }
+
+  function render(){
+    document.getElementById("cast-count").innerHTML="<b>"+metCount()+"</b> of "+TOTAL+" minds met";
+    var byCh={}, chOrder=[];
+    people.forEach(function(p){ if(!byCh[p.ci]){byCh[p.ci]=[];chOrder.push(p.ci);} byCh[p.ci].push(p); });
+    chOrder.sort(function(a,b){return a-b;});
+    var html="";
+    chOrder.forEach(function(ci){
+      html+='<div class="cast-ch"><h4>'+esc(byCh[ci][0].title)+'</h4><div class="cast-people">';
+      byCh[ci].forEach(function(p){ var on=!!met[p.key];
+        html+='<span class="cast-name'+(on?" met":"")+'"><span class="cn-tick" aria-hidden="true">'+(on?"✓":"○")+'</span>'+esc(p.name)+'</span>'; });
+      html+='</div></div>';
+    });
+    document.getElementById("cast-body").innerHTML=html;
+  }
+
+  var last=null;
+  function open(){ last=document.activeElement; panel.hidden=false; render(); requestAnimationFrame(function(){panel.classList.add("show");}); var c=panel.querySelector("[data-cast-close]"); if(c)c.focus(); document.addEventListener("keydown",key); }
+  function close(){ panel.classList.remove("show"); document.removeEventListener("keydown",key); setTimeout(function(){panel.hidden=true;},200); if(last&&last.focus){try{last.focus();}catch(e){}} }
+  function key(e){ if(e.key==="Escape")close(); }
+  Array.prototype.forEach.call(panel.querySelectorAll("[data-cast-close]"),function(b){b.addEventListener("click",close);});
+  panel.addEventListener("click",function(e){if(e.target===panel)close();});
+  window.ETShowCast=open;
+  var jpEl=document.getElementById("journeypanel");
+  if(jpEl){ var jc=jpEl.querySelector("[data-jp-cast]"); if(jc)jc.addEventListener("click",function(){ var x=jpEl.querySelector("[data-jp-close]"); if(x)x.click(); setTimeout(open,210); }); }
 })();
 </script>
 </body>

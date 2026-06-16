@@ -42,13 +42,16 @@ manager, and no dependencies.
   chapter's start, uses **Flags** as the in-the-moment layer, and the timestamped end-of-chapter **After**
   reflection; a **"Thoughts across time"** timeline (menu + Your journey) shows the arc per chapter.
   A **Your journey** panel (progress ring, time read, reflections count, milestone badges) opens
-  from the Contents summary, and finishing all twelve triggers a one-time **completion celebration**. A **Reading mode** row offers **Immersive** (fullscreen)
+  from the Contents summary, and finishing all twelve triggers a one-time **completion celebration**.
+  A **cast roster** ("Minds you've met", from the Menu / Your journey) auto-checks each scientist
+  as you reach their bolded introduction (`IntersectionObserver` on the curated `ROSTER`), grouped
+  by chapter with an "N of M minds met" count. A **Reading mode** row offers **Immersive** (fullscreen)
   and a best-effort **Lock rotation** (Screen Orientation API; disabled where unsupported, e.g.
   iOS). State lives in `localStorage`: `et-theme`, `et-textsize`, `et-leading`, `et-font`,
   `et-progress`/`et-current` (auto reading progress, written only by the reader script), and the
   engagement-owned `et-read`, `et-before`/`et-after` (timestamped reflections; migrated from the
   legacy `et-notes`), `et-milestones`, `et-celebrated`, and the quick-tools `et-tools-intro`/
-  `et-tools-nudge`/`et-flag-used`. Theme/size/typeface are applied pre-paint by a small head
+  `et-tools-nudge`/`et-flag-used`, and `et-cast` (minds met). Theme/size/typeface are applied pre-paint by a small head
   script. The landing orientation's install step shows iOS-specific "Share → Add to Home Screen"
   guidance (no `beforeinstallprompt` on iOS Safari).
 - `privacy.html` — privacy & cookies policy (no data collected, no cookies); contact

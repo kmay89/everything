@@ -758,9 +758,17 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
   enter.querySelector("[data-enter-skip]").addEventListener("click",function(){close(true);});
   enter.querySelector("[data-begin-final]").addEventListener("click",function(){close(true);location.href="read.html#top";});
 
-  var deferred=null, installBtn=enter.querySelector("[data-install]");
+  var deferred=null, installBtn=enter.querySelector("[data-install]"), installText=enter.querySelector("[data-install-text]");
   window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferred=e;if(installBtn)installBtn.hidden=false;});
   if(installBtn)installBtn.addEventListener("click",function(){if(deferred){deferred.prompt();deferred=null;installBtn.hidden=true;}});
+  (function(){
+    var ua=navigator.userAgent||"";
+    var isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+    var standalone=(window.navigator.standalone===true)||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches);
+    if(!installText)return;
+    if(standalone){ installText.style.display="none"; }
+    else if(isIOS){ installText.innerHTML="On iPhone or iPad: tap the Share icon <span aria-hidden=\"true\">&#x2191;</span> at the bottom of Safari, then choose <strong>Add to Home Screen</strong>. It opens like an app and reads offline."; }
+  })();
 
   function onboarded(){return lget("et-onboarded")==="1";}
   Array.prototype.forEach.call(document.querySelectorAll("[data-begin]"),function(b){

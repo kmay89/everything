@@ -788,6 +788,39 @@ body{font-family:var(--reader-font)}
 .tp-foot{font-size:.7rem;color:var(--faint);margin:1.2rem 0 0;text-align:center}
 @media (prefers-reduced-motion: reduce){.timepanel,.tp-card{transition:none}}
 @media print{.timepanel{display:none}}
+
+/* ===== quick tools dock (in-the-moment flagging) ===== */
+#quicktools{position:fixed;right:max(.9rem,env(safe-area-inset-right));bottom:max(4.7rem,calc(env(safe-area-inset-bottom) + 4.4rem));
+  z-index:44;display:flex;flex-direction:column;gap:.5rem;align-items:center;opacity:.6;transition:opacity .25s ease}
+#quicktools:hover,#quicktools.active{opacity:1}
+#quicktools button{width:2.9rem;height:2.9rem;border-radius:50%;border:1px solid var(--rule);cursor:pointer;position:relative;
+  background:color-mix(in srgb,var(--paper) 86%,transparent);backdrop-filter:saturate(140%) blur(8px);
+  color:var(--accent);font-size:1.15rem;line-height:1;display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.14);
+  transition:transform .15s ease,background .2s,color .2s,border-color .2s}
+#qt-flag{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+#qt-flag:hover{background:var(--accent-bright);border-color:var(--accent-bright);transform:translateY(-1px)}
+#qt-list{font-family:var(--sans);font-size:.92rem;font-weight:600;font-variant-numeric:tabular-nums}
+#qt-list:hover{color:var(--accent);border-color:var(--accent);transform:translateY(-1px)}
+#qt-list[hidden]{display:none}
+#quicktools button:focus-visible{outline:2px solid var(--accent-bright);outline-offset:2px}
+#qt-flag .qt-done{position:absolute;inset:0;display:grid;place-items:center;opacity:0;font-size:1.25rem}
+#qt-flag.saved .qt-ico{opacity:0}#qt-flag.saved .qt-done{opacity:1}
+@media print{#quicktools,#qt-coach{display:none}}
+
+/* coachmark / reminder above the dock */
+#qt-coach{position:fixed;right:max(.9rem,env(safe-area-inset-right));
+  bottom:calc(max(4.7rem,calc(env(safe-area-inset-bottom) + 4.4rem)) + 3.5rem);
+  z-index:46;width:min(17.5rem,calc(100vw - 1.8rem));background:var(--paper);border:1px solid var(--rule);border-radius:12px;
+  box-shadow:0 14px 38px rgba(0,0,0,.22);padding:.9rem 1rem;font-family:var(--sans);opacity:0;transform:translateY(8px);
+  transition:opacity .25s ease,transform .25s ease}
+#qt-coach.show{opacity:1;transform:none}
+#qt-coach[hidden]{display:none}
+#qt-coach p{margin:0 0 .7rem;font-size:.84rem;line-height:1.45;color:var(--ink)}
+#qt-coach button{background:var(--accent);color:var(--paper);border:0;border-radius:8px;padding:.45rem .85rem;cursor:pointer;
+  font-family:var(--sans);font-size:.74rem;letter-spacing:.04em}
+#qt-coach button:hover{background:var(--accent-bright)}
+#qt-coach::after{content:"";position:absolute;right:1.5rem;bottom:-7px;border:7px solid transparent;border-top-color:var(--paper)}
+@media (prefers-reduced-motion: reduce){#qt-coach,#quicktools{transition:none}}
 </style>
 </head>
 <body>
@@ -828,6 +861,14 @@ body{font-family:var(--reader-font)}
   </div>
 </div>
 <div id="mtoast" role="status"></div>
+<div id="quicktools" aria-label="Quick tools">
+  <button id="qt-flag" type="button" title="Flag this spot" aria-label="Flag this spot"><span class="qt-ico" aria-hidden="true">&#9873;</span><span class="qt-done" aria-hidden="true">&#10003;</span></button>
+  <button id="qt-list" type="button" title="Your flags" aria-label="Open your flags" hidden><span id="qt-count">0</span></button>
+</div>
+<div id="qt-coach" role="status" hidden>
+  <p id="qt-coach-text"><strong>Flag where you are.</strong> Tap <span aria-hidden="true">&#9873;</span> to bookmark this spot, or any passage worth returning to. Your flags wait for you, and each one can be shared.</p>
+  <button type="button" id="qt-coach-x">Got it</button>
+</div>
 <div id="markspanel" class="markspanel" role="dialog" aria-modal="true" aria-label="Your flagged spots" hidden>
   <button id="markadd" class="mp-add" type="button">&#8982;&#160;Flag this spot</button>
   <ul id="markslist" class="mp-list"></ul>
@@ -4585,6 +4626,59 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       },190);
     });
   });
+})();
+</script>
+<script>
+/* ---- quick tools dock: in-the-moment flagging, with intro + reminder ---- */
+(function(){
+  var dock=document.getElementById("quicktools"); if(!dock)return;
+  var flagBtn=document.getElementById("qt-flag"), listBtn=document.getElementById("qt-list"), countEl=document.getElementById("qt-count");
+  var coach=document.getElementById("qt-coach"), coachX=document.getElementById("qt-coach-x"), coachText=document.getElementById("qt-coach-text");
+  function lget(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function lset(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+  function marksCount(){try{var r=localStorage.getItem("marks");var a=r?JSON.parse(r):[];return Array.isArray(a)?a.length:0;}catch(e){return 0;}}
+  function updateCount(){var n=marksCount();if(n>0){countEl.textContent=n;listBtn.hidden=false;}else{listBtn.hidden=true;}}
+  updateCount();
+
+  flagBtn.addEventListener("click",function(){
+    var m=document.getElementById("markadd"); if(m)m.click();   /* addMark() flags the current spot */
+    flagBtn.classList.add("saved"); setTimeout(function(){flagBtn.classList.remove("saved");},1100);
+    setTimeout(updateCount,60);
+    lset("et-flag-used","1"); hideCoach();
+  });
+  listBtn.addEventListener("click",function(){var b=document.getElementById("marksbtn"); if(b)b.click();});
+
+  window.addEventListener("storage",function(e){if(e.key==="marks")updateCount();});
+  dock.addEventListener("mouseenter",updateCount);
+
+  /* dim when idle, brighten while reading */
+  var idleT=null;
+  window.addEventListener("scroll",function(){dock.classList.add("active");if(idleT)clearTimeout(idleT);idleT=setTimeout(function(){dock.classList.remove("active");},1500);},{passive:true});
+
+  /* coachmark / reminder share one bubble */
+  function showCoach(){if(!coach)return;coach.hidden=false;requestAnimationFrame(function(){coach.classList.add("show");});}
+  function hideCoach(){if(!coach)return;coach.classList.remove("show");setTimeout(function(){coach.hidden=true;},260);}
+  if(coachX)coachX.addEventListener("click",function(){hideCoach();lset("et-tools-intro","1");});
+
+  /* first reader visit: introduce the dock */
+  if(lget("et-tools-intro")!=="1"){
+    setTimeout(showCoach,2600);
+    setTimeout(function(){hideCoach();lset("et-tools-intro","1");},14000);
+  }
+
+  /* later: gentle nudge if reading along but never flagged */
+  var remT=null;
+  function maybeRemind(){
+    if(lget("et-tools-nudge")==="1"||lget("et-flag-used")==="1"||marksCount()>0)return;
+    if(lget("et-tools-intro")!=="1"||(coach&&!coach.hidden))return;
+    var h=document.documentElement,p=(window.scrollY||0)/((h.scrollHeight-h.clientHeight)||1);
+    if(p>0.2){
+      lset("et-tools-nudge","1");
+      if(coachText)coachText.innerHTML="Reading something worth keeping? Tap <span aria-hidden=\"true\">&#9873;</span> to flag this spot or a passage, and return to it whenever you like.";
+      showCoach(); setTimeout(hideCoach,9000);
+    }
+  }
+  window.addEventListener("scroll",function(){if(remT)return;remT=setTimeout(function(){remT=null;maybeRemind();},1600);},{passive:true});
 })();
 </script>
 </body>

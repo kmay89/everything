@@ -37,7 +37,7 @@ manager, and no dependencies.
   "N of 12 · ~time left" + milestone badges), an **end-of-chapter card** (encouragement,
   optional saved reflection, "Mark as read", next-chapter link), and **milestone toasts** —
   no streaks or pressure. A **reflections-across-time** layer captures a **Before** note at each
-  chapter's start (with a per-chapter **starter prompt** tied to that chapter's subject, modelling
+  chapter's start (with a per-chapter **starter prompt** tied to that chapter's subject, modeling
   how science begins — a question, an observation, or something to learn), uses **Flags** as the
   in-the-moment layer, and the end-of-chapter **After** reflection; entries are timestamped
   (`created`/`updated`, migrated from the older single `t`) and a **"Thoughts across time"** timeline

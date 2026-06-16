@@ -24,8 +24,10 @@ manager, and no dependencies.
   `#menusheet` that proxies to the still-present feature controls: Contents, Search, Journey,
   Flags, Display & text, Sound, Share, Support). **Share** uses the Web Share API (native
   sheet → iMessage on Apple) with a copy/mailto fallback; **selecting text** offers Copy or
-  **Share as image** (an on-brand quote card rendered on a `<canvas>`, shared as a PNG file
-  where supported, else downloaded).
+  **Share as image**, and each **flagged bookmark** has a Share action too. Quote cards are
+  rendered on a `<canvas>` by the shared `window.ETShare` helper (`hueFor`/`chapterIndex`/
+  `image`/`sendImage`), **themed per chapter** with a spectrum hue, shared as a PNG file where
+  supported, else downloaded.
   Reader features: a settings panel ("Aa") for theme (auto/light/dark), text size, line
   spacing, and **typeface** (serif/sans); in-book **Search**; an ambient "minutes to next
   chapter" pill; a welcome-back toast; "Copy quote" on text selection; a skip link and

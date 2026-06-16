@@ -451,7 +451,9 @@ figure.diagram .dia{max-width:100%}
 .mp-del{flex:0 0 auto;background:none;border:0;cursor:pointer;color:var(--faint);
   font-size:1.05rem;line-height:1;padding:.1rem .25rem;border-radius:6px}
 .mp-del:hover{color:var(--accent);background:var(--note-bg,rgba(120,120,160,.12))}
-.mp-jump:focus-visible,.mp-del:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.mp-share{flex:0 0 auto;background:none;border:0;cursor:pointer;color:var(--faint);font-size:.98rem;line-height:1;padding:.1rem .3rem;border-radius:6px}
+.mp-share:hover{color:var(--accent);background:var(--note-bg,rgba(120,120,160,.12))}
+.mp-jump:focus-visible,.mp-del:focus-visible,.mp-share:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 .mp-empty{font-family:var(--serif);font-size:.82rem;line-height:1.5;color:var(--muted);margin:.7rem .2rem .2rem}
 .mp-note{font-family:var(--sans);font-size:.58rem;letter-spacing:.04em;color:var(--faint);margin:.6rem .2rem 0;text-align:center}
 @media (prefers-reduced-motion: reduce){.markspanel{transition:opacity .12s ease;transform:none}}
@@ -871,6 +873,69 @@ body{font-family:var(--reader-font)}
   </div>
 </div>
 <main class="wrap">
+<script>
+/* ---- shared quote-card image + share (per-chapter themed) ---- */
+window.ETShare=(function(){
+  var HUES=["#d65a5a","#dd7a4e","#e0a24f","#cdab52","#7fae57","#3fae9f","#3fa6c2","#4a90d9","#5a73d4","#5757c8","#6b5bd0","#8a5cc6"];
+  var SPECTRUM=["#d65a5a","#e0894a","#e0c15a","#3fae9f","#4a90d9","#5757c8","#6b5bd0"];
+  function hueFor(i){ i=Math.floor(i)||0; i=((i%HUES.length)+HUES.length)%HUES.length; return HUES[i]; }
+  function chapterIndex(node){
+    var n=node&&node.nodeType===3?node.parentNode:node;
+    var sec=n&&n.closest?n.closest("section.chapter"):null;
+    if(!sec)return -1;
+    var all=document.querySelectorAll("section.chapter");
+    for(var i=0;i<all.length;i++)if(all[i]===sec)return i;
+    return -1;
+  }
+  function wrap(x,text,maxW){var w=text.split(" "),lines=[],cur="";for(var i=0;i<w.length;i++){var t=cur?cur+" "+w[i]:w[i];if(x.measureText(t).width>maxW&&cur){lines.push(cur);cur=w[i];}else cur=t;}if(cur)lines.push(cur);return lines;}
+  function prism(x,cx,cy,s,hue){
+    x.save();x.strokeStyle=hue;x.lineWidth=4;x.lineJoin="round";x.lineCap="round";
+    x.beginPath();x.moveTo(cx,cy-s*0.5);x.lineTo(cx-s*0.42,cy+s*0.4);x.lineTo(cx+s*0.42,cy+s*0.4);x.closePath();x.stroke();
+    x.beginPath();x.moveTo(cx-s*0.95,cy);x.lineTo(cx-s*0.12,cy);x.stroke();
+    for(var i=0;i<SPECTRUM.length;i++){x.strokeStyle=SPECTRUM[i];x.beginPath();x.moveTo(cx+s*0.12,cy);x.lineTo(cx+s*0.92,cy-s*0.36+i*(s*0.72/(SPECTRUM.length-1)));x.stroke();}
+    x.restore();
+  }
+  function image(text,chapter,hue){
+    return new Promise(function(resolve){try{
+      hue=hue||"#34346b";
+      var S=1080,pad=110,textX=pad+42,c=document.createElement("canvas");c.width=S;c.height=S;var x=c.getContext("2d");
+      x.fillStyle="#fbfaf7";x.fillRect(0,0,S,S);
+      var fs=text.length>340?38:text.length>220?46:text.length>130?54:64;
+      x.textBaseline="alphabetic";
+      x.font='italic '+fs+'px "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif';
+      var maxW=S-textX-pad, lines=wrap(x,'“'+text+'”',maxW), lh=fs*1.34, blockH=lines.length*lh;
+      var startY=Math.max(pad+80,(S-blockH)/2-40);
+      x.fillStyle=hue; x.fillRect(pad,startY,10,Math.max(blockH-lh*0.25,fs));
+      x.fillStyle="#1b1b1f";
+      for(var j=0;j<lines.length;j++)x.fillText(lines[j],textX,startY+j*lh+fs);
+      var ay=startY+blockH+76;
+      x.font='600 30px system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';
+      x.fillStyle="#34346b"; x.fillText("EVERYTHING THAT GLOWS",textX,ay);
+      if(chapter){ x.font='italic 30px "Iowan Old Style",Palatino,Georgia,serif'; x.fillStyle=hue; x.fillText(chapter,textX,ay+44); }
+      var fy=S-pad-26, g=x.createLinearGradient(pad,0,S-pad,0);
+      for(var k=0;k<SPECTRUM.length;k++)g.addColorStop(k/(SPECTRUM.length-1),SPECTRUM[k]);
+      x.fillStyle=g; x.fillRect(pad,fy,S-2*pad-150,5);
+      x.font='26px system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif'; x.fillStyle="#8a877e";
+      x.fillText("everythingthatglows.com",pad,S-pad+12);
+      prism(x,S-pad-74,S-pad-6,76,hue);
+      if(c.toBlob)c.toBlob(function(b){resolve(b);},"image/png"); else resolve(null);
+    }catch(e){resolve(null);}});
+  }
+  function dl(blob){var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="everything-that-glows.png";document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1000);}
+  function sendImage(text,chapter,hue,url){
+    return image(text,chapter,hue).then(function(blob){
+      if(!blob)return false;
+      var file=null; try{file=new File([blob],"everything-that-glows.png",{type:"image/png"});}catch(e){}
+      var cap="“"+text+"” — Everything That Glows"+(chapter?(", "+chapter):"")+(url?("\n"+url):"");
+      if(file&&navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
+        return navigator.share({files:[file],title:"Everything That Glows",text:cap}).then(function(){return true;},function(){dl(blob);return true;});
+      }
+      dl(blob); return true;
+    });
+  }
+  return {HUES:HUES, hueFor:hueFor, chapterIndex:chapterIndex, image:image, sendImage:sendImage};
+})();
+</script>
 
   <header class="titlepage cover" id="top">
     <svg class="cover-art" viewBox="0 0 360 130" role="img" aria-label="A prism splitting a beam of white light into a spectrum.">
@@ -3732,6 +3797,16 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
       return s.length > 90 ? s.slice(0,88).replace(/\s+\S*$/,"") + "\u2026" : s;
     }
     function resetAdd(){ addBtn.classList.remove("saved"); addBtn.innerHTML = "\u2316\u00a0Flag this spot"; }
+    function shareMark(m){
+      if(!window.ETShare) return;
+      var p = paras[m.i];
+      var passage = p ? (p.textContent||"").replace(/\s+/g," ").trim() : (m.s||"");
+      if(passage.length > 600) passage = passage.slice(0,580).replace(/\s+\S*$/,"") + "\u2026";
+      var sec = p && p.closest ? p.closest("section.chapter") : null;
+      var url = location.origin + location.pathname + (sec && sec.id ? ("#"+sec.id) : "");
+      var idx = ETShare.chapterIndex(p); if(idx < 0) idx = 0;
+      ETShare.sendImage(passage, m.c || "", ETShare.hueFor(idx), url);
+    }
     function render(){
       listEl.innerHTML = "";
       marks.forEach(function(m, k){
@@ -3742,11 +3817,15 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
         j.querySelector(".mp-ch").textContent = m.c || "Marked";
         j.querySelector(".mp-sn").textContent = m.s || "(passage)";
         j.addEventListener("click", function(){ jump(m); });
+        var sh = document.createElement("button");
+        sh.type = "button"; sh.className = "mp-share"; sh.setAttribute("aria-label","Share this passage as an image"); sh.title = "Share as image";
+        sh.innerHTML = "\u2197";
+        sh.addEventListener("click", function(ev){ ev.stopPropagation(); shareMark(m); });
         var d = document.createElement("button");
         d.type = "button"; d.className = "mp-del"; d.setAttribute("aria-label","Remove this flag");
         d.innerHTML = "\u00d7";
         d.addEventListener("click", function(ev){ ev.stopPropagation(); marks.splice(k,1); persist(); render(); });
-        li.appendChild(j); li.appendChild(d); listEl.appendChild(li);
+        li.appendChild(j); li.appendChild(sh); li.appendChild(d); listEl.appendChild(li);
       });
       var n = marks.length;
       countEl.textContent = n; countEl.hidden = (n === 0);
@@ -4068,7 +4147,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
       if(!main||!node||!main.contains(node.nodeType===3?node.parentNode:node)){hideCq();return;}
       var rect=sel.getRangeAt(0).getBoundingClientRect();
       if(!rect||(!rect.width&&!rect.height)){hideCq();return;}
-      held={text:text,id:nearestId(node),ctitle:nearestChapter(node)};
+      held={text:text,id:nearestId(node),ctitle:nearestChapter(node),cidx:(window.ETShare?ETShare.chapterIndex(node):-1)};
       cq.style.left=(rect.left+rect.width/2+window.pageXOffset)+"px";
       cq.style.top=(rect.top+window.pageYOffset)+"px";
       cq.hidden=false;
@@ -4088,54 +4167,11 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
   });
 
   cqImg.addEventListener("click",function(){
-    if(!held)return; var btn=this, text=held.text, chapter=held.ctitle, url=quoteUrl();
+    if(!held||!window.ETShare)return; var btn=this;
     btn.textContent="…";
-    makeQuoteImage(text,chapter).then(function(blob){
-      if(!blob){btn.textContent="Failed";return;}
-      var file=null; try{file=new File([blob],"everything-that-glows.png",{type:"image/png"});}catch(e){}
-      var data=file?{files:[file],title:"Everything That Glows",text:"“"+text+"” — Everything That Glows"+(chapter?(", "+chapter):"")+"\n"+url}:null;
-      if(file&&navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
-        navigator.share(data).then(function(){hideCq();},function(){download(blob);});
-      } else download(blob);
-    });
-    function download(blob){var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="everything-that-glows.png";document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1000);hideCq();}
+    ETShare.sendImage(held.text,held.ctitle,ETShare.hueFor(held.cidx>=0?held.cidx:0),quoteUrl())
+      .then(function(){hideCq();},function(){btn.textContent="Failed";});
   });
-
-  /* compose a shareable quote card on a canvas */
-  function wrapText(x,text,maxW){var words=text.split(" "),lines=[],cur="";for(var i=0;i<words.length;i++){var t=cur?cur+" "+words[i]:words[i];if(x.measureText(t).width>maxW&&cur){lines.push(cur);cur=words[i];}else cur=t;}if(cur)lines.push(cur);return lines;}
-  function drawPrism(x,cx,cy,s){
-    x.save();x.strokeStyle="#34346b";x.lineWidth=4;x.lineJoin="round";
-    x.beginPath();x.moveTo(cx,cy-s*0.5);x.lineTo(cx-s*0.42,cy+s*0.4);x.lineTo(cx+s*0.42,cy+s*0.4);x.closePath();x.stroke();
-    x.beginPath();x.moveTo(cx-s*0.95,cy);x.lineTo(cx-s*0.12,cy);x.stroke();
-    var cols=["#d65a5a","#e0c15a","#3fae9f","#4a90d9","#6b5bd0"];
-    for(var i=0;i<cols.length;i++){x.strokeStyle=cols[i];x.beginPath();x.moveTo(cx+s*0.12,cy);x.lineTo(cx+s*0.92,cy-s*0.36+i*(s*0.72/(cols.length-1)));x.stroke();}
-    x.restore();
-  }
-  function makeQuoteImage(text,chapter){
-    return new Promise(function(resolve){
-      try{
-        var S=1080,pad=110,c=document.createElement("canvas");c.width=S;c.height=S;var x=c.getContext("2d");
-        x.fillStyle="#fbfaf7";x.fillRect(0,0,S,S);
-        var g=x.createLinearGradient(pad,0,S-pad,0),sp=["#d65a5a","#e0894a","#e0c15a","#3fae9f","#4a90d9","#5757c8","#6b5bd0"];
-        for(var i=0;i<sp.length;i++)g.addColorStop(i/(sp.length-1),sp[i]);
-        x.fillStyle=g;x.fillRect(pad,pad,S-2*pad,6);
-        var fs=text.length>320?40:text.length>210?48:text.length>120?58:66;
-        x.fillStyle="#1b1b1f";x.textBaseline="alphabetic";
-        x.font='italic '+fs+'px "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif';
-        var maxW=S-2*pad, lines=wrapText(x,'“'+text+'”',maxW), lh=fs*1.34, blockH=lines.length*lh;
-        var startY=Math.max(pad+90,(S-blockH)/2-30);
-        for(var j=0;j<lines.length;j++)x.fillText(lines[j],pad,startY+j*lh+fs);
-        var ay=startY+blockH+76;
-        x.font='600 30px system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';
-        x.fillStyle="#34346b";x.fillText("EVERYTHING THAT GLOWS",pad,ay);
-        if(chapter){x.font='28px system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';x.fillStyle="#5f5d57";x.fillText(chapter,pad,ay+42);}
-        drawPrism(x,S-pad-120,S-pad-150,120);
-        x.font='26px system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';x.fillStyle="#8a877e";
-        x.fillText("everythingthatglows.com",pad,S-pad+10);
-        if(c.toBlob)c.toBlob(function(b){resolve(b);},"image/png"); else resolve(null);
-      }catch(e){resolve(null);}
-    });
-  }
 })();
 </script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>

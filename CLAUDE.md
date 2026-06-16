@@ -25,7 +25,7 @@ manager, and no dependencies.
 - `read.html` — the whole book and its reader (~1.7 MB). The canonical book artifact.
   The reader chrome is consolidated behind a single **Menu** button in the topbar (a
   `#menusheet` that proxies to the still-present feature controls: Contents, Search, Journey,
-  Flags, Display & text, Sound, Share, Read aloud, Support). **Read aloud** uses the Web Speech
+  Flags, Reference & people, Display & text, Sound, Share, Read aloud, Support). **Read aloud** uses the Web Speech
   API (`speechSynthesis`, on-device, no network): a player with play/pause/stop, a voice picker and
   speed (persisted `et-voice`/`et-rate`), reading block-by-block from the viewport with the current
   block highlighted, skipping citations and reading equations as "(equation)". **Share** uses the Web Share API (native
@@ -46,8 +46,8 @@ manager, and no dependencies.
   focus-trapped dialogs. A **quick tools dock** (bottom-right) surfaces in-the-moment
   **Flag this spot** + a flag count outside the Menu, with a first-visit coachmark and a one-time
   reminder if the reader hasn't flagged anything. **Keyboard shortcuts** (desktop; ignored while
-  typing): `/` search, `g` Contents, `m` Flags, `a` Aa menu, `b` flag, `j`/`k` next/previous
-  section, `?` help overlay, `Esc` close — also in the Menu as "Keyboard shortcuts". A gentle engagement layer: a **Contents progress summary** (bar +
+  typing): `/` search, `g` Contents, `m` Flags, `r` Reference & people, `a` Aa menu, `b` flag,
+  `j`/`k` next/previous section, `?` help overlay, `Esc` close — also in the Menu as "Keyboard shortcuts". A gentle engagement layer: a **Contents progress summary** (bar +
   "N of 12 · ~time left" + milestone badges), an **end-of-chapter card** (encouragement,
   optional saved reflection, "Mark as read", next-chapter link), and **milestone toasts** —
   no streaks or pressure. A **reflections-across-time** layer captures a **Before** note at each
@@ -59,14 +59,23 @@ manager, and no dependencies.
   A **Your journey** panel (progress ring, time read, reflections count, milestone badges) opens
   from the Contents summary, and finishing all twelve triggers a one-time **completion celebration**.
   A **cast roster** ("Minds you've met", from the Menu / Your journey) auto-checks each figure
-  as you reach their bolded introduction (`IntersectionObserver` on the curated `ROSTER`), grouped
-  by chapter with an "N of M minds met" count. A **Reading mode** row offers **Immersive** (fullscreen)
+  as you reach their bolded introduction (`IntersectionObserver` on the curated `ROSTER`, exposed via
+  `window.ETCast.roster`), grouped by chapter with an "N of M minds met" count. A **Reference & people**
+  panel (Menu, or `r`; `window.ETShowReference`) is an on-device index/X-Ray: it lazily scans `.prose`
+  text once for the cast (full name, plus unambiguous non-denylisted surnames) and a curated inline
+  `IDEAS` list (aliases, blurbs intentionally left blank for the author to fill), groups results into
+  **People** and **Ideas**, is searchable, and lists each entry's occurrences as snippet rows that jump
+  to the paragraph and flash it. Each person's first bold introduction in the prose becomes a tappable
+  `.xref` that opens its entry (mouse/touch; the Menu/`r` is the keyboard route). The **"Thoughts across
+  time"** panel also surfaces **"What you hoped to find"** from the landing orientation (`et-hopes`).
+  A **Reading mode** row offers **Immersive** (fullscreen)
   and a best-effort **Lock rotation** (Screen Orientation API; disabled where unsupported, e.g.
   iOS). State lives in `localStorage`: `et-theme`, `et-textsize`, `et-leading`, `et-font`,
   `et-progress`/`et-current` (auto reading progress, written only by the reader script), and the
   engagement-owned `et-read`, `et-before`/`et-after` (timestamped reflections; migrated from the
   legacy `et-notes`), `et-milestones`, `et-celebrated`, and the quick-tools `et-tools-intro`/
-  `et-tools-nudge`/`et-flag-used`, as well as `et-cast` (minds met). Theme/size/typeface are applied pre-paint by a small head
+  `et-tools-nudge`/`et-flag-used`, `et-cast` (minds met), and `et-hopes` (what you hoped to find,
+  written by the landing orientation). Theme/size/typeface are applied pre-paint by a small head
   script. The landing orientation's install step shows iOS-specific "Share → Add to Home Screen"
   guidance (no `beforeinstallprompt` on iOS Safari).
 - `privacy.html` — privacy & cookies policy (no data collected, no cookies); contact

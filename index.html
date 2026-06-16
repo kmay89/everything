@@ -318,6 +318,18 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
   background-size:100vw 100%;background-repeat:no-repeat;
   box-shadow:0 0 10px color-mix(in srgb,#e0894a 45%,transparent);transition:width .08s linear}
 @media (prefers-reduced-motion: reduce){#scrollspectrum span{transition:none}}
+
+/* orientation: "what do you hope to find" chips + write-in */
+.hope-chips{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin:.4rem auto 0;max-width:30rem}
+.hope-chip{font-family:var(--sans);font-size:.82rem;cursor:pointer;border:1px solid var(--rule);border-radius:999px;
+  padding:.45rem .85rem;background:none;color:var(--muted);transition:color .15s,border-color .15s,background .15s}
+.hope-chip:hover{color:var(--accent);border-color:var(--accent)}
+.hope-chip.on{background:var(--accent);color:var(--paper);border-color:var(--accent)}
+.hope-chip:focus-visible{outline:2px solid var(--accent-bright);outline-offset:2px}
+.hope-write{display:block;width:100%;max-width:30rem;margin:1rem auto 0;box-sizing:border-box;font:inherit;
+  font-size:1rem;padding:.6rem .8rem;border:1px solid var(--rule);border-radius:10px;background:var(--paper);
+  color:var(--ink);resize:vertical;min-height:2.6rem;text-align:left}
+.hope-write:focus{outline:2px solid var(--accent);outline-offset:1px}
 </style>
 <script type="application/ld+json">
 {
@@ -396,34 +408,50 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
     <section class="enter-panel" data-panel="0">
       <p class="eb">Welcome</p>
       <h2>Everything That Glows</h2>
-      <p>This is a book about the deepest idea in modern physics &mdash; that the world is, underneath, made of information. It is written for the curious, not the credentialed. There is no prerequisite but attention.</p>
-      <p class="hint">Read it slowly. It was made to be lived in, not rushed.</p>
+      <p>A book about one idea: that the world is, underneath, made of information.</p>
+      <p class="hint">Written for the curious. Read it slowly.</p>
       <div class="enter-actions"><button class="btn btn-primary" type="button" data-next>Continue &#8594;</button></div>
     </section>
 
     <section class="enter-panel" data-panel="1">
       <p class="eb">A gentle beginning</p>
-      <h2>Will you read with sound?</h2>
-      <p>A soft welcome tone now, and &mdash; later, if you like &mdash; quiet notes tuned to simple whole-number ratios as you read. All optional, and off until you ask. You can change it anytime.</p>
+      <h2>Read with sound?</h2>
+      <p>A soft welcome tone now, and quiet notes later if you like. Off until you ask.</p>
       <div class="enter-actions">
         <button class="btn btn-primary" type="button" data-sound-on>Turn on sound</button>
-        <button class="btn btn-ghost" type="button" data-sound-off>Continue in silence</button>
+        <button class="btn btn-ghost" type="button" data-sound-off>Not now</button>
       </div>
       <p class="sound-state" data-sound-state aria-live="polite"></p>
+      <div class="enter-actions" data-sound-next hidden><button class="btn btn-primary" type="button" data-next>Continue &#8594;</button></div>
     </section>
 
     <section class="enter-panel" data-panel="2">
-      <p class="eb">Your place is kept</p>
-      <h2>It remembers where you are</h2>
-      <p>Stop whenever you like; the book quietly holds your place and brings you back. Tap to flag any passage and return to it later. Your progress, your marks, and your reflections live on this device alone, and are never sent anywhere.</p>
+      <p class="eb">Before we begin</p>
+      <h2>What do you hope to find here?</h2>
+      <p class="hint">Pick any that fit, or add your own. Just for you, kept on this device.</p>
+      <div class="hope-chips" role="group" aria-label="What you hope to find">
+        <button type="button" class="hope-chip" data-hope="how the world really works">How the world really works</button>
+        <button type="button" class="hope-chip" data-hope="to follow the ideas, math and all">To follow the ideas</button>
+        <button type="button" class="hope-chip" data-hope="a new way of seeing">A new way of seeing</button>
+        <button type="button" class="hope-chip" data-hope="to wonder more">To wonder more</button>
+        <button type="button" class="hope-chip" data-hope="to finish a hard, beautiful book">To finish a hard, beautiful book</button>
+      </div>
+      <textarea class="hope-write" rows="1" placeholder="Or write your own&#8230;" aria-label="What you hope to find here"></textarea>
       <div class="enter-actions"><button class="btn btn-primary" type="button" data-next>Continue &#8594;</button></div>
     </section>
 
     <section class="enter-panel" data-panel="3">
+      <p class="eb">Your place is kept</p>
+      <h2>It remembers where you are</h2>
+      <p>Stop anytime; it brings you back. Flag passages to return to. Everything stays on this device.</p>
+      <div class="enter-actions"><button class="btn btn-primary" type="button" data-next>Continue &#8594;</button></div>
+    </section>
+
+    <section class="enter-panel" data-panel="4">
       <p class="eb">Made for long reading</p>
-      <h2>Make it yours, and keep it close</h2>
-      <p>From the &ldquo;Aa&rdquo; menu as you read, choose light or dark, the size of the type, the spacing of the lines, even a more legible typeface &mdash; whatever lets you forget the screen and stay in the words.</p>
-      <p class="enter-install" data-install-text>Tip: add Everything That Glows to your home screen to open it like an app and read it fully offline.</p>
+      <h2>Make it yours</h2>
+      <p>Light, dark, or warm; the type size and spacing &mdash; all from the &ldquo;Aa&rdquo; menu.</p>
+      <p class="enter-install" data-install-text>Tip: add it to your home screen to read offline.</p>
       <div class="enter-actions">
         <button class="btn btn-ghost" type="button" data-install hidden>Add to home screen</button>
         <button class="btn btn-primary" type="button" data-begin-final>Begin at the beginning &#8594;</button>
@@ -751,14 +779,33 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
     }
   }
 
-  var stateEl=enter.querySelector("[data-sound-state]");
+  var stateEl=enter.querySelector("[data-sound-state]"), soundNext=enter.querySelector("[data-sound-next]");
   enter.querySelector("[data-sound-on]").addEventListener("click",function(){
     lset("sound","on");
     if(tone){try{tone.volume=0.7;tone.currentTime=0;var p=tone.play();if(p&&p.catch)p.catch(function(){});}catch(e){}}
-    if(stateEl)stateEl.textContent="Sound on. Let the journey begin.";
-    setTimeout(function(){show(cur+1);},1300);
+    if(stateEl)stateEl.textContent="Sound on. Take a breath before you read on.";
+    if(soundNext)soundNext.hidden=false;
   });
-  enter.querySelector("[data-sound-off]").addEventListener("click",function(){ lset("sound","off"); show(cur+1); });
+  enter.querySelector("[data-sound-off]").addEventListener("click",function(){
+    lset("sound","off"); if(stateEl)stateEl.textContent="Reading in quiet.";
+    if(soundNext)soundNext.hidden=false;
+  });
+
+  /* what do you hope to find — selectable + write-in, saved for later */
+  function lget(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function readHopes(){ try{var r=lget("et-hopes");return r?JSON.parse(r):{picks:[],text:""};}catch(e){return {picks:[],text:""};} }
+  function saveHopes(h){ try{localStorage.setItem("et-hopes",JSON.stringify(h));}catch(e){} }
+  (function(){
+    var chips=[].slice.call(enter.querySelectorAll(".hope-chip")), ta=enter.querySelector(".hope-write");
+    if(!chips.length) return;
+    var h=readHopes(), picks=h.picks||[];
+    chips.forEach(function(c){ var v=c.getAttribute("data-hope"); if(picks.indexOf(v)>=0)c.classList.add("on"),c.setAttribute("aria-pressed","true"); else c.setAttribute("aria-pressed","false");
+      c.addEventListener("click",function(){ var on=!c.classList.contains("on"); c.classList.toggle("on",on); c.setAttribute("aria-pressed",String(on));
+        var cur=readHopes(); cur.picks=cur.picks||[]; var i=cur.picks.indexOf(v); if(on&&i<0)cur.picks.push(v); else if(!on&&i>=0)cur.picks.splice(i,1); saveHopes(cur); }); });
+    if(ta){ if(h.text)ta.value=h.text;
+      function grow(){ta.style.height="auto";ta.style.height=Math.min(ta.scrollHeight,140)+"px";}
+      ta.addEventListener("input",function(){ var cur=readHopes(); cur.text=ta.value; saveHopes(cur); grow(); }); setTimeout(grow,0); }
+  })();
 
   Array.prototype.forEach.call(enter.querySelectorAll("[data-next]"),function(b){b.addEventListener("click",function(){show(cur+1);});});
   enter.querySelector("[data-enter-skip]").addEventListener("click",function(){close(true);});

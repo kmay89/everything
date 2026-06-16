@@ -93,6 +93,19 @@ manager, and no dependencies.
 - `THIRD-PARTY-NOTICES.md` — MIT/OFL notices for the bundled KaTeX CSS and math fonts.
 - `SECURITY.md` — how to report a vulnerability.
 - `robots.txt` / `sitemap.xml` — crawl + indexing hygiene.
+- `tools/` — **build + integrity tooling, separate from the site** (the published site stays
+  dependency-free). `tools/check-html.mjs` parses every page into a real DOM and asserts it
+  renders (catches the blank/black-page bug — an unclosed `<style>`/`<script>` that swallows the
+  body — which `node --check` cannot see; also checks 12 chapters, equation MathML+LaTeX, figure
+  titles). `tools/build-epub.mjs` regenerates two EPUBs from `read.html` into `tools/dist/`:
+  `everything-that-glows.epub` (equations as **MathML**, for Apple Books/Play Books/Kobo/Thorium)
+  and `everything-that-glows-kindle.epub` (equations as **SVG**, Kindle-safe). Both render math
+  from each equation's LaTeX source via **MathJax** and keep figures as inline SVG, so they track
+  edits; the ZIP is written with stdlib `zlib` (no dependency). Validate with `epubcheck` (needs
+  Java); both should report 0 errors. See `tools/README.md`.
+- `.github/workflows/ci.yml` — runs the HTML integrity check, builds both EPUBs, and validates
+  them with epubcheck on every push/PR (uploads the EPUBs as artifacts). This is the guard that
+  keeps the book buildable and unbreakable as the prose is edited.
 
 When regenerating the PWA icons (no image libraries are installed), use the stdlib PNG
 rasterizer approach (zlib + struct, supersampled) — see the session history for the script.
@@ -112,4 +125,8 @@ rasterizer approach (zlib + struct, supersampled) — see the session history fo
 - **Citations** are bracketed numbers tied to a per-chapter numbered `Sources` list; sources
   are primary wherever one exists. Keep that invariant if you touch references.
 - **Verify visually** by opening `index.html` / `read.html` in a browser, or
-  `python3 -m http.server`. There are no automated tests.
+  `python3 -m http.server`.
+- **After editing the book**, run `cd tools && npm run check` (HTML integrity — same check CI
+  runs, and the one that would have caught the blank-page regression) and, if equations/figures
+  changed, `npm run build:epub` then validate with epubcheck. CI does all of this on every
+  push/PR; keep it green.

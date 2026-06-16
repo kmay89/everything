@@ -1,0 +1,70 @@
+name: CI
+
+# Guards the book against edits that would break it:
+#  - HTML integrity (catches the blank/black-page class of bug),
+#  - the EPUB exports still build and validate with epubcheck.
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      EPUBCHECK_VERSION: "5.1.0"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: tools/package-lock.json
+
+      - name: Install tooling
+        working-directory: tools
+        run: npm ci
+
+      - name: HTML integrity check
+        working-directory: tools
+        run: node check-html.mjs
+
+      - name: Build EPUB editions
+        working-directory: tools
+        run: node build-epub.mjs
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Fetch epubcheck
+        run: |
+          curl -fsSL -o /tmp/epubcheck.zip \
+            "https://github.com/w3c/epubcheck/releases/download/v${EPUBCHECK_VERSION}/epubcheck-${EPUBCHECK_VERSION}.zip"
+          unzip -q -o /tmp/epubcheck.zip -d /tmp
+
+      - name: Validate EPUBs with epubcheck
+        working-directory: tools
+        run: |
+          jar="/tmp/epubcheck-${EPUBCHECK_VERSION}/epubcheck.jar"
+          status=0
+          for f in dist/*.epub; do
+            echo "::group::epubcheck $f"
+            java -jar "$jar" "$f" || status=1
+            echo "::endgroup::"
+          done
+          exit $status
+
+      - name: Upload EPUB artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: epub-editions
+          path: tools/dist/*.epub
+          if-no-files-found: error

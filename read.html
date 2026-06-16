@@ -4089,7 +4089,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
   /* theme */
   function tcSet(t){ var col=t==="dark"?"#16161a":t==="warm"?"#f3e9d2":t==="light"?"#fbfaf7":null;
     var m=document.getElementById("tc-dyn");
-    if(!col){ if(m)m.parentNode.removeChild(m); return; }
+    if(!col){ if(m)m.remove(); return; }
     if(!m){ m=document.createElement("meta"); m.id="tc-dyn"; m.name="theme-color"; document.head.appendChild(m); }
     m.setAttribute("content",col); }
   function applyTheme(t){

@@ -847,6 +847,28 @@ body{font-family:var(--reader-font)}
   border-radius:2px;background:var(--accent);opacity:.85}
 @media (max-width:640px){.prose p.flagged::before{left:-.55rem}}
 @media print{.prose p.flagged::before{display:none}}
+
+/* ===== keyboard shortcuts help ===== */
+.keyspanel{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:1.5rem;
+  background:color-mix(in srgb,var(--ink) 38%,transparent);backdrop-filter:blur(3px);opacity:0;transition:opacity .2s ease}
+.keyspanel.show{opacity:1}
+.keyspanel[hidden]{display:none}
+.kp-card{position:relative;width:min(24rem,100%);background:var(--paper);border:1px solid var(--rule);border-radius:16px;
+  box-shadow:0 24px 70px rgba(0,0,0,.3);padding:1.6rem 1.5rem 1.4rem;font-family:var(--sans);
+  transform:translateY(8px);transition:transform .22s ease}
+.keyspanel.show .kp-card{transform:none}
+.kp-close{position:absolute;top:.6rem;right:.7rem;background:none;border:0;cursor:pointer;color:var(--faint);font-size:1.4rem;line-height:1;padding:.2rem .4rem;border-radius:8px}
+.kp-close:hover{color:var(--accent)}
+.kp-h{font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 1rem;text-align:center}
+.kp-list{margin:0;display:grid;grid-template-columns:1fr;gap:.1rem}
+.kp-list div{display:flex;align-items:center;gap:.8rem;padding:.4rem 0;border-top:1px solid var(--rule)}
+.kp-list div:first-child{border-top:0}
+.kp-list dt{flex:0 0 auto;min-width:2.6rem;text-align:center;font-family:var(--sans);font-size:.82rem;font-weight:600;
+  color:var(--ink);background:var(--note-bg);border:1px solid var(--rule);border-radius:7px;padding:.18rem .35rem}
+.kp-list dd{margin:0;font-size:.92rem;color:var(--muted)}
+.kp-foot{font-size:.72rem;color:var(--faint);margin:1.1rem 0 0;line-height:1.45;text-align:center}
+@media (prefers-reduced-motion: reduce){.keyspanel,.kp-card{transition:none}}
+@media print{.keyspanel{display:none}}
 </style>
 </head>
 <body>
@@ -885,9 +907,28 @@ body{font-family:var(--reader-font)}
     <div class="ms-div"></div>
     <button class="ms-item" type="button" data-act="share"><span class="ms-i" aria-hidden="true">&#8599;</span><span class="ms-t">Share this book</span></button>
     <a class="ms-item" href="https://github.com/sponsors/kmay89" target="_blank" rel="noopener"><span class="ms-i" aria-hidden="true">&#9825;</span><span class="ms-t">Support the work</span></a>
+    <button class="ms-item ms-keys" type="button" data-act="keys"><span class="ms-i" aria-hidden="true">&#9000;</span><span class="ms-t">Keyboard shortcuts</span></button>
   </div>
 </div>
 <div id="mtoast" role="status"></div>
+<div id="keyspanel" class="keyspanel" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts" hidden>
+  <div class="kp-card">
+    <button class="kp-close" type="button" data-keys-close aria-label="Close">&#215;</button>
+    <p class="kp-h">Keyboard shortcuts</p>
+    <dl class="kp-list">
+      <div><dt>/</dt><dd>Focus search</dd></div>
+      <div><dt>g</dt><dd>Open Contents</dd></div>
+      <div><dt>m</dt><dd>Open Flags</dd></div>
+      <div><dt>a</dt><dd>Open the Aa menu</dd></div>
+      <div><dt>b</dt><dd>Flag the current spot</dd></div>
+      <div><dt>j</dt><dd>Next section</dd></div>
+      <div><dt>k</dt><dd>Previous section</dd></div>
+      <div><dt>Esc</dt><dd>Close any panel</dd></div>
+      <div><dt>?</dt><dd>Show or hide this help</dd></div>
+    </dl>
+    <p class="kp-foot">Shortcuts are off while you are typing in a note. Everything is also reachable from the Menu.</p>
+  </div>
+</div>
 <div id="quicktools" aria-label="Quick tools">
   <button id="qt-flag" type="button" title="Flag this spot" aria-label="Flag this spot"><span class="qt-ico" aria-hidden="true">&#9873;</span><span class="qt-done" aria-hidden="true">&#10003;</span></button>
   <button id="qt-list" type="button" title="Your flags" aria-label="Open your flags" hidden><span id="qt-count">0</span></button>
@@ -4722,6 +4763,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
         else if(act==="journey")clickId("ts-journey");
         else if(act==="time"){ if(window.ETShowTime)window.ETShowTime(); }
         else if(act==="cast"){ if(window.ETShowCast)window.ETShowCast(); }
+        else if(act==="keys"){ if(window.ETShowKeys)window.ETShowKeys(); }
         else if(act==="share")share();
       },190);
     });
@@ -4837,6 +4879,46 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
   window.ETShowCast=open;
   var jpEl=document.getElementById("journeypanel");
   if(jpEl){ var jc=jpEl.querySelector("[data-jp-cast]"); if(jc)jc.addEventListener("click",function(){ var x=jpEl.querySelector("[data-jp-close]"); if(x)x.click(); setTimeout(open,210); }); }
+})();
+</script>
+<script>
+/* ---- keyboard shortcuts (desktop) ---- */
+(function(){
+  var panel=document.getElementById("keyspanel");
+  var RM=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function typing(el){ if(!el)return false; var t=(el.tagName||"").toLowerCase(); return t==="input"||t==="textarea"||t==="select"||el.isContentEditable; }
+  function clickId(id){ var e=document.getElementById(id); if(e)e.click(); }
+  function openSearch(){ var sp=document.getElementById("searchpanel"), sb=document.getElementById("searchbtn"), si=document.getElementById("searchinput");
+    if(sp&&sp.hidden&&sb)sb.click(); if(si)setTimeout(function(){si.focus();},120); }
+  var heads=[].slice.call(document.querySelectorAll("section.chapter h1, section.chapter h2[id]"));
+  function gotoSection(dir){
+    var off=80, target=null, i;
+    if(dir>0){ for(i=0;i<heads.length;i++){ if(heads[i].getBoundingClientRect().top>off+2){ target=heads[i]; break; } } }
+    else { for(i=heads.length-1;i>=0;i--){ if(heads[i].getBoundingClientRect().top<off-2){ target=heads[i]; break; } } }
+    if(target)target.scrollIntoView({behavior:RM?"auto":"smooth",block:"start"});
+  }
+  var kLast=null;
+  function keysOpen(){ return panel&&!panel.hidden; }
+  function openKeys(){ if(!panel)return; kLast=document.activeElement; panel.hidden=false; requestAnimationFrame(function(){panel.classList.add("show");}); var c=panel.querySelector("[data-keys-close]"); if(c)c.focus(); }
+  function closeKeys(){ if(!panel)return; panel.classList.remove("show"); setTimeout(function(){panel.hidden=true;},200); if(kLast&&kLast.focus){try{kLast.focus();}catch(e){}} }
+  if(panel){ Array.prototype.forEach.call(panel.querySelectorAll("[data-keys-close]"),function(b){b.addEventListener("click",closeKeys);}); panel.addEventListener("click",function(e){if(e.target===panel)closeKeys();}); }
+  window.ETShowKeys=function(){ if(keysOpen())closeKeys(); else openKeys(); };
+
+  document.addEventListener("keydown",function(e){
+    if(e.ctrlKey||e.metaKey||e.altKey)return;
+    if(typing(e.target))return;
+    var k=e.key;
+    if(k==="?"){ e.preventDefault(); window.ETShowKeys(); return; }
+    if(k==="Escape"){ if(keysOpen()){ e.preventDefault(); closeKeys(); } return; }
+    if(keysOpen())return;
+    if(k==="/"){ e.preventDefault(); openSearch(); }
+    else if(k==="g"){ e.preventDefault(); var c=document.getElementById("contents"); if(c)c.scrollIntoView({behavior:RM?"auto":"smooth",block:"start"}); }
+    else if(k==="m"){ e.preventDefault(); clickId("marksbtn"); }
+    else if(k==="a"){ e.preventDefault(); clickId("setbtn"); }
+    else if(k==="b"){ e.preventDefault(); clickId("markadd"); }
+    else if(k==="j"){ e.preventDefault(); gotoSection(1); }
+    else if(k==="k"){ e.preventDefault(); gotoSection(-1); }
+  });
 })();
 </script>
 </body>

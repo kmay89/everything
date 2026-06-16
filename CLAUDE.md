@@ -39,7 +39,9 @@ manager, and no dependencies.
   chapter" pill; a welcome-back toast; "Copy quote" on text selection; a skip link and
   focus-trapped dialogs. A **quick tools dock** (bottom-right) surfaces in-the-moment
   **Flag this spot** + a flag count outside the Menu, with a first-visit coachmark and a one-time
-  reminder if the reader hasn't flagged anything. A gentle engagement layer: a **Contents progress summary** (bar +
+  reminder if the reader hasn't flagged anything. **Keyboard shortcuts** (desktop; ignored while
+  typing): `/` search, `g` Contents, `m` Flags, `a` Aa menu, `b` flag, `j`/`k` next/previous
+  section, `?` help overlay, `Esc` close — also in the Menu as "Keyboard shortcuts". A gentle engagement layer: a **Contents progress summary** (bar +
   "N of 12 · ~time left" + milestone badges), an **end-of-chapter card** (encouragement,
   optional saved reflection, "Mark as read", next-chapter link), and **milestone toasts** —
   no streaks or pressure. A **reflections-across-time** layer captures a **Before** note at each

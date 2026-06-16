@@ -29,7 +29,9 @@ manager, and no dependencies.
   (bookmark that exact paragraph), **Link** (deep link to it), or **Share as image**. Every
   paragraph gets a stable anchor (`<sectionId>-p<n>`) at load, so flags, jumps, and deep links are
   **paragraph-precise**; flagged paragraphs show an inline accent marker, and each saved flag has a
-  Share action. Quote cards are
+  Share action. The Marks panel also has **Export notes** (Markdown of flags + reflections),
+  **Back up data** (versioned JSON: `schemaVersion`/`position`/`marks`/`prefs`), and **Restore data**
+  (import with Merge or Replace) — all on-device, no network. Quote cards are
   rendered on a `<canvas>` by the shared `window.ETShare` helper (`hueFor`/`chapterIndex`/
   `image`/`sendImage`), **themed per chapter** with a spectrum hue, shared as a PNG file where
   supported, else downloaded.

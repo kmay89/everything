@@ -93,8 +93,8 @@ The site is static and deploys as-is, with no build step and no dependencies. Th
 becomes the homepage automatically. The same files work on any static host (GitHub Pages,
 Cloudflare Pages, etc.); just point the host at the root.
 
-Two placeholders in `index.html` are marked `YOUR-USERNAME` (the GitHub Sponsors donation
-button and the footer GitHub link); fill those in before going live.
+The donation button and footer link point to the author's GitHub
+(`github.com/sponsors/kmay89` and `github.com/kmay89`).
 
 ## A note on the text
 

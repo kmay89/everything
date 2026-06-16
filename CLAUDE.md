@@ -132,7 +132,12 @@ rasterizer approach (zlib + struct, supersampled) — see the session history fo
 - **Design language**: warm paper (`--paper`), ink serif body, a prism/spectrum accent
   (red→violet rule). Honor `prefers-color-scheme` (dark mode) and `prefers-reduced-motion`.
 - **Citations** are bracketed numbers tied to a per-chapter numbered `Sources` list; sources
-  are primary wherever one exists. Keep that invariant if you touch references.
+  are primary wherever one exists. Keep that invariant if you touch references. The book also
+  ends with a **Combined Bibliography** appendix (`#appendix`): **Part I** is the curated
+  "recurring sources / the spine," and **Part II** is a single unified A–Z list of every unique
+  source across all twelve chapters, each entry tagged with the chapters that cite it (e.g.
+  `[Glows 24 · Remembers 80]`). A source cited in more than one chapter appears once, with all its
+  tags merged — keep that single-entry invariant if you add citations.
 - **Verify visually** by opening `index.html` / `read.html` in a browser, or
   `python3 -m http.server`.
 - **After editing the book**, run `cd tools && npm run check` (HTML integrity — same check CI

@@ -72,7 +72,7 @@ rasterizer approach (zlib + struct, supersampled) — see the session history fo
   `<script>` that powers progress, "Marks", citations, and the optional sound.
 - **Editing the landing page** means editing `index.html`. It deliberately reuses the book's
   exact design tokens, prism artwork, and cover animation so the two pages feel like one work.
-  The donation button and footer link contain `YOUR-USERNAME` placeholders to fill in.
+  The donation button and footer link point to GitHub Sponsors / profile (`kmay89`).
 - **Design language**: warm paper (`--paper`), ink serif body, a prism/spectrum accent
   (red→violet rule). Honor `prefers-color-scheme` (dark mode) and `prefers-reduced-motion`.
 - **Citations** are bracketed numbers tied to a per-chapter numbered `Sources` list; sources

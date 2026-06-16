@@ -47,6 +47,7 @@ const META = {
 
 /* ----------------------------------------------------------------- parse --- */
 const html = readFileSync(join(root, "read.html"), "utf8");
+const coverImg = readFileSync(join(root, "cover.jpg")); // raster cover for Kindle/Apple Books
 const vc = new VirtualConsole(); // suppress jsdom CSS-parse noise
 const dom = new JSDOM(html, { virtualConsole: vc });
 const doc = dom.window.document;
@@ -246,6 +247,16 @@ function esc(s) {
 
 // Title page: a clean, static prism (no animation/JS), plus the book's text.
 function coverDoc() {
+  // Full-bleed raster cover (the file Kindle/Apple Books show as the thumbnail).
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ` +
+    `width="100%" height="100%" viewBox="0 0 1600 2400" preserveAspectRatio="xMidYMid meet" ` +
+    `role="img" aria-label="Cover — ${esc(META.title)} by ${esc(META.creator)}">\n` +
+    `<image width="1600" height="2400" xlink:href="../images/cover.jpg"/>\n</svg>`;
+  return xhtmlDoc(META.title, `<section epub:type="cover" class="cover">\n${svg}\n</section>`, "cover");
+}
+
+function titlepageDoc() {
   const lede = doc.querySelector("header.titlepage .lede");
   const ledeHtml = lede ? serializeChildren(lede.cloneNode(true)) : "";
   const prism = `<svg xmlns="http://www.w3.org/2000/svg" class="cover-prism-art" viewBox="0 0 360 130" role="img" aria-label="A prism splitting a beam of white light into a spectrum.">
@@ -340,7 +351,10 @@ function crc32(buf) {
 /* ------------------------------------------------------------ assemble --- */
 function bookCss() {
   return `/* Everything That Glows - generated EPUB stylesheet */
-html,body{margin:0;padding:0}
+html,body{margin:0;padding:0;height:100%}
+body.cover{margin:0;padding:0}
+.cover{margin:0;padding:0}
+.cover svg{display:block;width:100%;height:100%}
 body{font-family:Iowan Old Style,Palatino,Georgia,serif;color:${TOKENS.ink || "#1b1b1f"};
   line-height:1.6;padding:1em 1.2em;hyphens:auto}
 h1,h2,h3{font-weight:600;line-height:1.15;color:${TOKENS.ink || "#1b1b1f"}}
@@ -397,6 +411,7 @@ function buildEdition(mode, fileName, idSuffix) {
     { noManifest: true }
   );
   add("OEBPS/css/book.css", bookCss(), { id: "css", media: "text/css" });
+  add("OEBPS/images/cover.jpg", coverImg, { id: "cover-image", media: "image/jpeg", props: "cover-image", store: true });
 
   // Content documents
   const spine = []; // {id, props}
@@ -415,6 +430,7 @@ function buildEdition(mode, fileName, idSuffix) {
   };
 
   pushDoc("xhtml/cover.xhtml", coverDoc(), "cover", null);
+  pushDoc("xhtml/titlepage.xhtml", titlepageDoc(), "titlepage", null);
 
   const foreword = doc.querySelector("section.foreword");
   if (foreword) {
@@ -458,7 +474,7 @@ function buildEdition(mode, fileName, idSuffix) {
   const navDoc =
     XHTML_HEAD("Contents", "css/book.css") +
     `<body>\n  <nav epub:type="toc" id="toc" role="doc-toc">\n    <h1>Contents</h1>\n    <ol>\n${navList}\n    </ol>\n  </nav>\n` +
-    `  <nav epub:type="landmarks" hidden="hidden">\n    <h2>Guide</h2>\n    <ol>\n      <li><a epub:type="titlepage" href="xhtml/cover.xhtml">Title page</a></li>\n      <li><a epub:type="bodymatter" href="xhtml/ch01.xhtml">Begin reading</a></li>\n    </ol>\n  </nav>\n</body>\n</html>\n`;
+    `  <nav epub:type="landmarks" hidden="hidden">\n    <h2>Guide</h2>\n    <ol>\n      <li><a epub:type="cover" href="xhtml/cover.xhtml">Cover</a></li>\n      <li><a epub:type="titlepage" href="xhtml/titlepage.xhtml">Title page</a></li>\n      <li><a epub:type="bodymatter" href="xhtml/ch01.xhtml">Begin reading</a></li>\n    </ol>\n  </nav>\n</body>\n</html>\n`;
   add("OEBPS/nav.xhtml", navDoc, {
     id: "nav",
     media: "application/xhtml+xml",
@@ -487,6 +503,7 @@ function buildEdition(mode, fileName, idSuffix) {
     `    <dc:language>${META.language}</dc:language>\n` +
     `    <dc:publisher>${esc(META.publisher)}</dc:publisher>\n` +
     `    <dc:rights>${esc(META.rights)}</dc:rights>\n` +
+    `    <meta name="cover" content="cover-image"/>\n` +
     `    <meta property="dcterms:modified">${modified}</meta>\n` +
     `    <meta property="schema:accessMode">textual</meta>\n` +
     `    <meta property="schema:accessMode">visual</meta>\n` +

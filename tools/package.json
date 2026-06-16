@@ -7,9 +7,12 @@
   "scripts": {
     "check": "node check-html.mjs",
     "build:epub": "node build-epub.mjs",
+    "prepare:cover": "node prepare-cover.mjs",
     "all": "node check-html.mjs && node build-epub.mjs"
   },
   "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "jpeg-js": "^0.4.4",
     "jsdom": "^24.1.0",
     "mathjax-full": "^3.2.2"
   }

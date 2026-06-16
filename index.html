@@ -59,7 +59,16 @@ a{color:var(--accent)}
   color:var(--accent);font-weight:600}
 
 /* ---------- hero ---------- */
-.hero{text-align:center;padding:clamp(3.6rem,10vw,6.8rem) 0 4.2rem}
+.hero{text-align:center;padding:clamp(3.6rem,10vw,6.8rem) 0 4.2rem;position:relative}
+/* keep the wordmark crisp: the spectrum shimmer overlay caused a doubled look on some browsers */
+.hero .cover-title .caustic{display:none}
+/* a faint glowing heat-filament behind the hero (echoes the book's diagrams) */
+.hero-filament{position:absolute;left:0;right:0;top:14%;height:64%;width:100%;z-index:-1;
+  pointer-events:none;opacity:.42;filter:blur(2px)}
+@media (prefers-color-scheme: dark){.hero-filament{opacity:.6;filter:blur(2.5px)}}
+html[data-theme="dark"] .hero-filament{opacity:.6;filter:blur(2.5px)}
+html[data-theme="light"] .hero-filament{opacity:.42;filter:blur(2px)}
+@media print{.hero-filament{display:none}}
 .hero .kicker{font-family:var(--sans);font-size:.74rem;letter-spacing:.36em;text-transform:uppercase;
   color:var(--accent);margin:0 0 1.7rem}
 .hero .cover-title{font-family:var(--serif);font-size:clamp(2.7rem,8.6vw,4.9rem);line-height:1.04;
@@ -422,6 +431,12 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
 <main>
 
   <header class="hero cover wrap">
+    <svg class="hero-filament" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="hf-g" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#d65a5a"/><stop offset=".4" stop-color="#e0894a"/>
+        <stop offset=".7" stop-color="#e0c15a"/><stop offset="1" stop-color="#3fae9f"/></linearGradient></defs>
+      <path d="M-20,170 C 220,70 360,250 600,160 S 980,60 1220,150" fill="none" stroke="url(#hf-g)" stroke-width="3" stroke-linecap="round"/>
+    </svg>
     <svg class="cover-art" viewBox="0 0 360 130" role="img" aria-label="A prism splitting a beam of white light into a spectrum.">
 <defs>
 <linearGradient id="cover-spec" x1="0" y1="0" x2="0" y2="1">

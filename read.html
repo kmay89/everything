@@ -714,6 +714,17 @@ body{font-family:var(--reader-font)}
 
 /* ===== consolidated reading menu ===== */
 .topbar .tools{display:none}
+/* Kindle-style quick controls: the most-used menu actions, surfaced in the topbar */
+.qbar{display:flex;align-items:center;gap:.3rem;margin-left:auto}
+.qbtn{display:inline-flex;align-items:center;justify-content:center;min-width:2.1rem;height:2.1rem;
+  padding:0 .5rem;background:none;border:1px solid var(--rule);border-radius:999px;cursor:pointer;
+  font-family:var(--sans);font-size:.86rem;line-height:1;color:var(--faint);text-decoration:none;
+  transition:color .2s,border-color .2s}
+.qbtn:hover{color:var(--accent);border-color:var(--accent)}
+.qbtn[aria-expanded="true"]{color:var(--accent);border-color:var(--accent)}
+.qbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:380px){.qbar{gap:.22rem}.qbtn{min-width:1.95rem;height:1.95rem;padding:0 .35rem}}
+@media print{.qbar{display:none}}
 .menubtn{display:inline-flex;align-items:center;gap:.5rem;background:none;border:1px solid var(--rule);
   border-radius:999px;padding:.32rem .8rem;cursor:pointer;font-family:var(--sans);font-size:.7rem;
   letter-spacing:.14em;text-transform:uppercase;color:var(--faint);transition:color .2s,border-color .2s}
@@ -961,6 +972,12 @@ body{font-family:var(--reader-font)}
     <button id="marksbtn" class="toolbtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="markspanel" title="Flag this spot and jump back to it later">Marks<span id="markcount" class="markcount" hidden>0</span></button>
     <a href="#contents">Contents</a>
   </div>
+  <div class="qbar" role="group" aria-label="Quick controls">
+    <a class="qbtn" href="#contents" title="Contents" aria-label="Contents"><span aria-hidden="true">&#9776;</span></a>
+    <button class="qbtn" type="button" data-q="search" title="Search the book" aria-label="Search the book"><span aria-hidden="true">&#8981;</span></button>
+    <button class="qbtn" type="button" data-q="aa" title="Display &amp; text" aria-label="Display and text">Aa</button>
+    <button class="qbtn" type="button" data-q="marks" title="Flags" aria-label="Flags"><span aria-hidden="true">&#9094;</span></button>
+  </div>
   <button id="menubtn" class="menubtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="menusheet" title="Menu">
     <span class="mb-ico" aria-hidden="true">&#9776;</span><span class="mb-label">Menu</span>
   </button>
@@ -982,6 +999,7 @@ body{font-family:var(--reader-font)}
     <button class="ms-item" type="button" data-act="sound"><span class="ms-i" aria-hidden="true">&#9834;</span><span class="ms-t">Sound</span><span class="ms-meta" id="ms-soundstate">off</span></button>
     <div class="ms-div"></div>
     <button class="ms-item" type="button" data-act="share"><span class="ms-i" aria-hidden="true">&#8599;</span><span class="ms-t">Share this book</span></button>
+    <a class="ms-item" href="https://github.com/kmay89/everything/releases/latest/download/everything-that-glows.epub"><span class="ms-i" aria-hidden="true">&#8595;</span><span class="ms-t">Download ebook (EPUB)</span></a>
     <a class="ms-item" href="https://github.com/sponsors/kmay89" target="_blank" rel="noopener"><span class="ms-i" aria-hidden="true">&#9825;</span><span class="ms-t">Support the work</span></a>
     <button class="ms-item ms-keys" type="button" data-act="keys"><span class="ms-i" aria-hidden="true">&#9000;</span><span class="ms-t">Keyboard shortcuts</span></button>
   </div>
@@ -4800,6 +4818,18 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
   window.addEventListener("scroll",function(){var now=Date.now();if(now-last>450){last=now;var pm=progMap();updateSummary(pm);refreshCards(pm);checkMilestones(pm);}},{passive:true});
   window.addEventListener("resize",function(){measure();});
   window.addEventListener("load",function(){measure();setTimeout(refresh,300);});
+})();
+</script>
+<script>
+/* ---- quick controls: surface the most-used menu actions in the topbar ---- */
+(function(){
+  var bar=document.querySelector(".qbar"); if(!bar)return;
+  function clickId(id){ var e=document.getElementById(id); if(e)e.click(); }
+  var map={ search:"searchbtn", aa:"setbtn", marks:"marksbtn" };
+  bar.addEventListener("click",function(e){
+    var b=e.target.closest("[data-q]"); if(!b)return;
+    var id=map[b.getAttribute("data-q")]; if(id)clickId(id);
+  });
 })();
 </script>
 <script>

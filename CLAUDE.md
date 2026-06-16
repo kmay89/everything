@@ -18,7 +18,8 @@ manager, and no dependencies.
   saved to `et-hopes` → how progress/marks work → make-it-yours/install → "Begin at the beginning"), the free-to-read premise, a
   **curiosity panel** ("Questions you'll get to live with"), the twelve chapters as a
   **non-clickable preview** (no deep links — readers funnel into the book and navigate via its
-  Contents), an FAQ, an About, a "Support the work" panel, and a footer. Sections gently
+  Contents), an FAQ, an About, a **"Take it with you" download panel** (EPUB / Kindle-friendly
+  EPUB, linked to the latest GitHub Release assets), a "Support the work" panel, and a footer. Sections gently
   reveal on scroll (below the fold; honors `prefers-reduced-motion`). The orientation shows
   once (`et-onboarded`) and is reopenable via "How to read this".
 - `welcome.mp3` — a ~29s welcome tone played when the reader opts into sound during orientation.
@@ -77,7 +78,10 @@ manager, and no dependencies.
   `et-tools-nudge`/`et-flag-used`, `et-cast` (minds met), and `et-hopes` (what you hoped to find,
   written by the landing orientation). Theme/size/typeface are applied pre-paint by a small head
   script. The landing orientation's install step shows iOS-specific "Share → Add to Home Screen"
-  guidance (no `beforeinstallprompt` on iOS Safari).
+  guidance (no `beforeinstallprompt` on iOS Safari). The topbar also surfaces a Kindle-style
+  **quick-controls row** (`.qbar`: Contents, Search, Aa/Display, Flags) alongside the Menu button,
+  proxying to the same handlers; the Menu has a **Download ebook (EPUB)** item linking to the
+  latest GitHub Release asset.
 - `privacy.html` — privacy & cookies policy (no data collected, no cookies); contact
   errerlabs@gmail.com.
 - `404.html` — themed not-found page (Netlify serves it automatically).
@@ -106,6 +110,11 @@ manager, and no dependencies.
 - `.github/workflows/ci.yml` — runs the HTML integrity check, builds both EPUBs, and validates
   them with epubcheck on every push/PR (uploads the EPUBs as artifacts). This is the guard that
   keeps the book buildable and unbreakable as the prose is edited.
+- `.github/workflows/release.yml` — on a pushed `v*` tag (or manual dispatch with a tag), builds
+  + epubcheck-validates both EPUBs and publishes a **GitHub Release** with both files attached.
+  The site's download buttons point at the release's `latest/download/<file>` URLs, so cutting a
+  new tagged release updates them. Cut a release after the book changes: `git tag vX.Y.Z &&
+  git push origin vX.Y.Z`.
 
 When regenerating the PWA icons (no image libraries are installed), use the stdlib PNG
 rasterizer approach (zlib + struct, supersampled) — see the session history for the script.

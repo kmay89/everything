@@ -17,6 +17,10 @@ if (!src) {
   console.error("usage: node prepare-cover.mjs <source-image.(png|jpg)>");
   process.exit(1);
 }
+if (!fs.existsSync(src)) {
+  console.error("error: file not found: " + src);
+  process.exit(1);
+}
 const buf = fs.readFileSync(src);
 const isPng = buf.slice(0, 8).toString("hex").startsWith("89504e47");
 const mime = isPng ? "image/png" : "image/jpeg";

@@ -351,8 +351,10 @@ function crc32(buf) {
 /* ------------------------------------------------------------ assemble --- */
 function bookCss() {
   return `/* Everything That Glows - generated EPUB stylesheet */
-html,body{margin:0;padding:0;height:100%}
-body.cover{margin:0;padding:0}
+@page{margin:0}
+html{height:100%}
+html,body{margin:0;padding:0}
+body.cover{margin:0;padding:0;height:100%}
 .cover{margin:0;padding:0}
 .cover svg{display:block;width:100%;height:100%}
 body{font-family:Iowan Old Style,Palatino,Georgia,serif;color:${TOKENS.ink || "#1b1b1f"};

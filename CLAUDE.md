@@ -37,7 +37,7 @@ manager, and no dependencies.
   "N of 12 · ~time left" + milestone badges), an **end-of-chapter card** (encouragement,
   optional saved reflection, "Mark as read", next-chapter link), and **milestone toasts** —
   no streaks or pressure. A **reflections-across-time** layer captures a **Before** note at each
-  chapter's start, flags as the in-the-moment layer, and the timestamped end-of-chapter **After**
+  chapter's start, uses **Flags** as the in-the-moment layer, and the timestamped end-of-chapter **After**
   reflection; a **"Thoughts across time"** timeline (menu + Your journey) shows the arc per chapter.
   A **Your journey** panel (progress ring, time read, reflections count, milestone badges) opens
   from the Contents summary, and finishing all twelve triggers a one-time **completion celebration**. A **Reading mode** row offers **Immersive** (fullscreen)

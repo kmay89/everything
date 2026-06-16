@@ -549,7 +549,9 @@ body{line-height:var(--reader-leading,1.72)}
 .sp-close{background:none;border:0;cursor:pointer;color:var(--faint);font-size:1.3rem;line-height:1;padding:.2rem .4rem;border-radius:6px}
 .sp-close:hover{color:var(--accent)}
 .sp-hint{font-size:.72rem;color:var(--faint);margin:.7rem .2rem .1rem}
-.sp-results{list-style:none;margin:.4rem 0 0;padding:0;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.sp-results{list-style:none;margin:.4rem 0 0;padding:0;flex:1 1 auto;min-height:0;
+  max-height:calc(100vh - 9rem);max-height:calc(100dvh - 9rem - env(safe-area-inset-bottom));
+  overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .sp-results li{border-top:1px solid var(--rule)}
 .sp-results button{display:block;width:100%;text-align:left;background:none;border:0;cursor:pointer;padding:.6rem .3rem;font:inherit;color:inherit}
 .sp-results button:hover,.sp-results button:focus-visible{background:var(--note-bg);outline:none}

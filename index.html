@@ -130,7 +130,15 @@ a{color:var(--accent)}
 
 /* ---------- section rhythm ---------- */
 section{padding:4.4rem 0}
-.section-rule{border:none;border-top:1px solid var(--rule);max-width:42rem;margin:0 auto}
+.section-rule{border:none;border-top:2px solid var(--rule);max-width:42rem;margin:0 auto}
+/* the dividers walk the spectrum as you descend the page */
+main hr.section-rule:nth-of-type(1){border-top-color:color-mix(in srgb,#d65a5a 55%,var(--rule))}
+main hr.section-rule:nth-of-type(2){border-top-color:color-mix(in srgb,#e0894a 55%,var(--rule))}
+main hr.section-rule:nth-of-type(3){border-top-color:color-mix(in srgb,#e0c15a 55%,var(--rule))}
+main hr.section-rule:nth-of-type(4){border-top-color:color-mix(in srgb,#3fae9f 55%,var(--rule))}
+main hr.section-rule:nth-of-type(5){border-top-color:color-mix(in srgb,#4a90d9 55%,var(--rule))}
+main hr.section-rule:nth-of-type(6){border-top-color:color-mix(in srgb,#5757c8 55%,var(--rule))}
+main hr.section-rule:nth-of-type(7){border-top-color:color-mix(in srgb,#6b5bd0 55%,var(--rule))}
 .premise p{margin:0 0 1.3rem;font-size:1.06rem;line-height:1.75}
 .premise p:last-child{margin-bottom:0}
 .lead-line{font-size:1.42rem;line-height:1.5;color:var(--ink)!important;margin-bottom:1.5rem!important}
@@ -279,6 +287,29 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
   transition:opacity .35s ease,transform .35s ease;max-width:calc(100vw - 1.4rem);text-align:center}
 #shtoast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media (prefers-reduced-motion: reduce){#shtoast{transition:opacity .2s ease;transform:translateX(-50%)}#shtoast.show{transform:translateX(-50%)}}
+
+/* ===== heat + entropy ambience, and spectrum in the scroll ===== */
+/* a warm glow rising from the top (heat) over a faint thermal grain (entropy) */
+#ambient{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(135% 70% at 50% -18%, color-mix(in srgb,#e0894a 13%,transparent), transparent 58%),
+             radial-gradient(120% 60% at 85% 8%, color-mix(in srgb,#d65a5a 7%,transparent), transparent 55%)}
+#ambient::after{content:"";position:absolute;inset:0;opacity:.04;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+@media (prefers-color-scheme: dark){
+  #ambient{background:radial-gradient(135% 70% at 50% -18%, color-mix(in srgb,#e0894a 16%,transparent), transparent 56%),
+             radial-gradient(120% 60% at 85% 8%, color-mix(in srgb,#d65a5a 10%,transparent), transparent 55%)}
+  #ambient::after{opacity:.06;mix-blend-mode:screen}
+}
+html[data-theme="dark"] #ambient::after{opacity:.06;mix-blend-mode:screen}
+@media print{#ambient,#scrollspectrum{display:none}}
+
+/* the spectrum draws itself across the top as you scroll the page */
+#scrollspectrum{position:fixed;top:0;left:0;height:3px;width:100%;z-index:55;pointer-events:none;background:transparent}
+#scrollspectrum span{display:block;height:100%;width:0;border-radius:0 2px 2px 0;
+  background:linear-gradient(90deg,#d65a5a,#e0894a,#e0c15a,#3fae9f,#4a90d9,#5757c8,#6b5bd0);
+  background-size:100vw 100%;background-repeat:no-repeat;
+  box-shadow:0 0 10px color-mix(in srgb,#e0894a 45%,transparent);transition:width .08s linear}
+@media (prefers-reduced-motion: reduce){#scrollspectrum span{transition:none}}
 </style>
 <script type="application/ld+json">
 {
@@ -333,6 +364,8 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
 </script>
 </head>
 <body>
+<div id="ambient" aria-hidden="true"></div>
+<div id="scrollspectrum" aria-hidden="true"><span></span></div>
 <a class="skip" href="#chapters">Skip to the chapters</a>
 <button id="themetoggle" class="themetoggle" type="button" aria-label="Switch colour theme" title="Theme: Auto, Light, or Dark"><span class="tt-ico" aria-hidden="true">&#9680;</span><span id="tt-label">Auto</span></button>
 
@@ -744,6 +777,19 @@ footer .mark{color:var(--ink);font-family:var(--serif);font-size:1rem;letter-spa
     if(el.getBoundingClientRect().top < window.innerHeight*0.92) return; /* visible now: leave it */
     el.classList.add("reveal"); io.observe(el);
   });
+})();
+</script>
+<script>
+/* draw the spectrum across the top in proportion to scroll depth */
+(function(){
+  var bar=document.querySelector("#scrollspectrum span"); if(!bar)return;
+  var ticking=false;
+  function upd(){ var h=document.documentElement, max=(h.scrollHeight-h.clientHeight)||1;
+    var p=(window.pageYOffset||h.scrollTop)/max; p=p<0?0:p>1?1:p; bar.style.width=(p*100).toFixed(2)+"%"; ticking=false; }
+  function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(upd); } }
+  window.addEventListener("scroll",onScroll,{passive:true});
+  window.addEventListener("resize",onScroll);
+  upd();
 })();
 </script>
 </body>

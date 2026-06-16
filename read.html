@@ -15,7 +15,7 @@
 <script>
 /* Apply saved reading preferences before first paint (no theme/size flash). */
 (function(){try{var d=document.documentElement,s=localStorage;
-var t=s.getItem("et-theme");if(t==="light"||t==="dark")d.setAttribute("data-theme",t);
+var t=s.getItem("et-theme");if(t==="light"||t==="dark"||t==="warm")d.setAttribute("data-theme",t);
 var fs=s.getItem("et-textsize");if(fs)d.style.setProperty("--reader-scale",fs);
 var ld=s.getItem("et-leading");if(ld)d.style.setProperty("--reader-leading",ld);
 var ff=s.getItem("et-font");if(ff==="sans")d.setAttribute("data-font","sans");}catch(e){}})();
@@ -466,6 +466,8 @@ html[data-theme="light"]{--paper:#fbfaf7;--ink:#1b1b1f;--muted:#5f5d57;--faint:#
   --rule:#e3e0d6;--accent:#34346b;--accent-bright:#5757c8;--note-bg:#f3f1ea;--target:#fdf3c4}
 html[data-theme="dark"]{--paper:#16161a;--ink:#e9e7e0;--muted:#a6a39a;--faint:#7d7a72;
   --rule:#2c2c33;--accent:#a9a9f0;--accent-bright:#c5c5ff;--note-bg:#1f1f25;--target:#3a371d}
+html[data-theme="warm"]{--paper:#f3e9d2;--ink:#3b2f22;--muted:#6f5d44;--faint:#9b8763;
+  --rule:#e2d6b8;--accent:#34346b;--accent-bright:#5757c8;--note-bg:#ece0c4;--target:#f5e3a8}
 html{font-size:calc(100% * var(--reader-scale,1))}
 body{line-height:var(--reader-leading,1.72)}
 
@@ -898,6 +900,7 @@ body{font-family:var(--reader-font)}
     <div class="seg" role="group" aria-label="Theme">
       <button type="button" data-theme-opt="auto">Auto</button>
       <button type="button" data-theme-opt="light">Light</button>
+      <button type="button" data-theme-opt="warm">Warm</button>
       <button type="button" data-theme-opt="dark">Dark</button>
     </div>
   </div>
@@ -4084,9 +4087,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
   setbtn.addEventListener("click",function(){ if(panel.hidden)openP(); else closeP(); });
 
   /* theme */
+  function tcSet(t){ var col=t==="dark"?"#16161a":t==="warm"?"#f3e9d2":t==="light"?"#fbfaf7":null;
+    var m=document.getElementById("tc-dyn");
+    if(!col){ if(m)m.parentNode.removeChild(m); return; }
+    if(!m){ m=document.createElement("meta"); m.id="tc-dyn"; m.name="theme-color"; document.head.appendChild(m); }
+    m.setAttribute("content",col); }
   function applyTheme(t){
-    if(t==="light"||t==="dark"){ d.setAttribute("data-theme",t); } else { d.removeAttribute("data-theme"); t="auto"; }
-    save("et-theme",t);
+    if(t==="light"||t==="dark"||t==="warm"){ d.setAttribute("data-theme",t); } else { d.removeAttribute("data-theme"); t="auto"; }
+    save("et-theme",t); tcSet(t==="auto"?null:t);
     Array.prototype.forEach.call(panel.querySelectorAll("[data-theme-opt]"),function(b){
       b.setAttribute("aria-pressed", b.getAttribute("data-theme-opt")===t ? "true":"false"); });
   }

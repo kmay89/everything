@@ -30,7 +30,8 @@ manager, and no dependencies.
   rendered on a `<canvas>` by the shared `window.ETShare` helper (`hueFor`/`chapterIndex`/
   `image`/`sendImage`), **themed per chapter** with a spectrum hue, shared as a PNG file where
   supported, else downloaded.
-  Reader features: a settings panel ("Aa") for theme (auto/light/dark), text size, line
+  Reader features: a settings panel ("Aa") for theme (auto/light/**warm** sepia/dark; the
+  manual theme updates the `theme-color` meta and carries across pages), text size, line
   spacing, and **typeface** (serif/sans); in-book **Search**; an ambient "minutes to next
   chapter" pill; a welcome-back toast; "Copy quote" on text selection; a skip link and
   focus-trapped dialogs. A **quick tools dock** (bottom-right) surfaces in-the-moment

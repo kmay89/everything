@@ -30,7 +30,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <script>
 /* Apply the saved theme before first paint (shared with the reader). */
-(function(){try{var t=localStorage.getItem("et-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();
+(function(){try{var t=localStorage.getItem("et-theme");if(t==="light"||t==="dark"||t==="warm")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();
 </script>
 <style>
 :root{
@@ -47,6 +47,8 @@ html[data-theme="light"]{--paper:#fbfaf7;--ink:#1b1b1f;--muted:#5f5d57;--faint:#
   --rule:#e3e0d6;--accent:#34346b;--accent-bright:#5757c8;--note-bg:#f3f1ea;}
 html[data-theme="dark"]{--paper:#16161a;--ink:#e9e7e0;--muted:#a6a39a;--faint:#7d7a72;
   --rule:#2c2c33;--accent:#a9a9f0;--accent-bright:#c5c5ff;--note-bg:#1f1f25;}
+html[data-theme="warm"]{--paper:#f3e9d2;--ink:#3b2f22;--muted:#6f5d44;--faint:#9b8763;
+  --rule:#e2d6b8;--accent:#34346b;--accent-bright:#5757c8;--note-bg:#ece0c4;}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
@@ -665,14 +667,18 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
 
 </main>
 <script>
-/* theme toggle: cycle auto → light → dark, shared with the reader via localStorage */
+/* theme toggle: cycle auto → light → warm → dark, shared with the reader via localStorage */
 (function(){
   var d=document.documentElement, btn=document.getElementById("themetoggle"), lab=document.getElementById("tt-label");
-  var order=["auto","light","dark"];
-  function get(){try{return localStorage.getItem("et-theme")||"auto";}catch(e){return "auto";}}
+  var order=["auto","light","warm","dark"];
+  function get(){try{var t=localStorage.getItem("et-theme")||"auto";return order.indexOf(t)<0?"auto":t;}catch(e){return "auto";}}
   function set(t){try{localStorage.setItem("et-theme",t);}catch(e){}}
-  function apply(t){ if(t==="light"||t==="dark") d.setAttribute("data-theme",t); else d.removeAttribute("data-theme");
-    if(lab) lab.textContent=t.charAt(0).toUpperCase()+t.slice(1); }
+  function tcSet(t){ var col=t==="dark"?"#16161a":t==="warm"?"#f3e9d2":t==="light"?"#fbfaf7":null, m=document.getElementById("tc-dyn");
+    if(!col){ if(m)m.parentNode.removeChild(m); return; }
+    if(!m){ m=document.createElement("meta"); m.id="tc-dyn"; m.name="theme-color"; document.head.appendChild(m); }
+    m.setAttribute("content",col); }
+  function apply(t){ if(t==="light"||t==="dark"||t==="warm") d.setAttribute("data-theme",t); else d.removeAttribute("data-theme");
+    tcSet(t==="auto"?null:t); if(lab) lab.textContent=t.charAt(0).toUpperCase()+t.slice(1); }
   var cur=get(); apply(cur);
   btn.addEventListener("click",function(){ cur=order[(order.indexOf(cur)+1)%order.length]; set(cur); apply(cur); });
 })();

@@ -43,6 +43,8 @@ const META = {
   language: "en",
   rights: "© 2026 Karl Meves. All rights reserved.",
   publisher: "Errerlabs",
+  published: "2026-06-16",        // ISO publication date (dc:date)
+  publishedLong: "June 16, 2026", // display form for the title page
 };
 
 /* ----------------------------------------------------------------- parse --- */
@@ -274,7 +276,7 @@ function titlepageDoc() {
     `<span class="rule"></span>\n` +
     (ledeHtml ? `<p class="lede">${ledeHtml}</p>\n` : "") +
     `<p class="byline">${esc(META.creator)}</p>\n` +
-    `<p class="imprint">Published by ${esc(META.publisher)}</p>\n` +
+    `<p class="imprint">Published by ${esc(META.publisher)} &#183; First published ${esc(META.publishedLong)}</p>\n` +
     `<p class="copyright">${esc(META.rights)}</p>\n</section>`;
   return xhtmlDoc(META.title, body, "frontmatter");
 }
@@ -507,6 +509,7 @@ function buildEdition(mode, fileName, idSuffix) {
     `    <dc:language>${META.language}</dc:language>\n` +
     `    <dc:publisher>${esc(META.publisher)}</dc:publisher>\n` +
     `    <dc:rights>${esc(META.rights)}</dc:rights>\n` +
+    `    <dc:date>${META.published}</dc:date>\n` +
     `    <meta name="cover" content="cover-image"/>\n` +
     `    <meta property="dcterms:modified">${modified}</meta>\n` +
     `    <meta property="schema:accessMode">textual</meta>\n` +

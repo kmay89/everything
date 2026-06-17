@@ -201,6 +201,13 @@ ol.ch-list{list-style:none;margin:0;padding:0}
 .support .panel p,.download .panel p{color:var(--muted);max-width:32rem;margin:0 auto 1.4rem}
 .support .btn{margin-top:.3rem}
 .download .panel .dl-note{font-size:.82rem;color:var(--faint);max-width:30rem;margin:1.2rem auto 0;line-height:1.5}
+.dl-panel{display:flex;gap:2rem;align-items:center;text-align:left;max-width:46rem}
+.dl-cover{width:200px;height:auto;border-radius:8px;box-shadow:0 10px 34px rgba(0,0,0,.34);flex:none}
+.dl-text{flex:1;min-width:0}
+.dl-panel .support-btns{justify-content:flex-start}
+.dl-panel .dl-note{margin-left:0;margin-right:0}
+@media (max-width:640px){.dl-panel{flex-direction:column;text-align:center;gap:1.4rem}
+  .dl-cover{width:170px}.dl-panel .support-btns{justify-content:center}.dl-panel .dl-note{margin-left:auto;margin-right:auto}}
 
 /* ---------- footer ---------- */
 footer{border-top:1px solid var(--rule);padding:2.6rem 0 3.4rem;text-align:center;
@@ -358,8 +365,9 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
       "description": "A free book in twelve chapters arguing that the world is, underneath, made of information.",
       "author": { "@type": "Person", "name": "Karl Meves" },
       "copyrightYear": 2026,
+      "datePublished": "2026-06-16",
       "copyrightHolder": { "@type": "Person", "name": "Karl Meves" },
-      "publisher": { "@type": "Person", "name": "Karl Meves" },
+      "publisher": { "@type": "Organization", "name": "Errerlabs" },
       "workExample": {
         "@type": "Book",
         "@id": "https://everythingthatglows.com/read.html",
@@ -676,7 +684,10 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
 
   <section class="download wrap" id="download">
     <h2>Take it with you</h2>
-    <div class="panel">
+    <div class="panel dl-panel">
+      <img class="dl-cover" src="cover-web.jpg" width="760" height="1140" loading="lazy" decoding="async"
+           alt="Cover of Everything That Glows by Karl Meves">
+      <div class="dl-text">
       <p>Prefer your own reader, or want it offline on every device? Download the whole book as an
       ebook &mdash; the same text, the same equations and diagrams, free.</p>
       <div class="support-btns">
@@ -686,6 +697,7 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
       <p class="dl-note">EPUB opens in Apple Books, Google Play Books, Kobo and most readers, with
       crisp, scalable equations. The Kindle&#8209;friendly file renders the equations as images; on
       a Kindle, add it with &ldquo;Send to Kindle.&rdquo;</p>
+      </div>
     </div>
   </section>
 
@@ -702,6 +714,7 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
 
   <footer class="wrap">
     <p><span class="mark">Everything That Glows</span><br>
+    by Karl Meves &middot; published by Errerlabs &middot; first published June 16, 2026<br>
     &copy; 2026 Karl Meves. All rights reserved. Free to read online.</p>
     <p>A single self-contained page. No trackers, no ads, no accounts &mdash; nothing about your
     visit is collected, and your reading position is saved only in your own browser. It even

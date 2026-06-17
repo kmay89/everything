@@ -88,10 +88,14 @@ manager, and no dependencies.
 - `manifest.webmanifest` + `sw.js` + `icon-*.png` / `apple-touch-icon.png` — PWA: installable,
   offline-capable. `sw.js` precaches core files; network-first for HTML, cache-first for assets.
   Bump the `CACHE` constant in `sw.js` when republishing so clients refresh.
-- `og-image.png` — the 1200×630 Open Graph share card (the prism, on-brand).
 - `cover.jpg` — the 1600×2400 raster **book cover** embedded in both EPUBs (shown as the
   Kindle / Apple Books thumbnail). Regenerate from a source image with
   `cd tools && node prepare-cover.mjs <source.(png|jpg)>` (scales to 1600×2400, JPEG).
+- `cover-web.jpg` — a lighter 760×1140 web thumbnail of the cover, shown in the landing page's
+  "Take it with you" panel.
+- `og-image.png` — the 1200×630 Open Graph / Twitter share card: the cover beside the thesis,
+  with **Karl Meves · Errerlabs**. `cover-web.jpg` and `og-image.png` are both regenerated from
+  `cover.jpg` by `cd tools && node build-social.mjs`.
 - `README.md` — repo-facing description, written in the book's voice.
 - `netlify.toml` — static deploy config: publishes the root (no build command),
   security headers + CSP for every response, cache rules, the service-worker headers, and the
@@ -135,6 +139,10 @@ rasterizer approach (zlib + struct, supersampled) — see the session history fo
 - **Editing the landing page** means editing `index.html`. It deliberately reuses the book's
   exact design tokens, prism artwork, and cover animation so the two pages feel like one work.
   The donation button and footer link point to GitHub Sponsors / profile (`kmay89`).
+- **Author / publisher**: the book is **by Karl Meves**, **published by Errerlabs** (contact
+  `errerlabs@gmail.com`). Keep that split consistent across the site footers, the JSON-LD
+  (`author` = Person Karl Meves, `publisher` = Organization Errerlabs), and the EPUB metadata
+  (`dc:creator` / `dc:publisher` in `tools/build-epub.mjs`) and title page.
 - **Design language**: warm paper (`--paper`), ink serif body, a prism/spectrum accent
   (red→violet rule). Honor `prefers-color-scheme` (dark mode) and `prefers-reduced-motion`.
 - **Citations** are bracketed numbers tied to a per-chapter numbered `Sources` list; sources

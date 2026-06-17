@@ -1,9 +1,9 @@
 /* Service worker for Everything That Glows — offline reading.
    Bump CACHE when the published files change to refresh the offline copy. */
-const CACHE = 'etg-v14';
+const CACHE = 'etg-v15';
 const CORE = [
   '/', '/index.html', '/read.html', '/privacy.html', '/404.html',
-  '/manifest.webmanifest', '/og-image.png', '/cover-web.jpg',
+  '/manifest.webmanifest', '/og-image.jpg', '/cover-web.jpg',
   '/icon-192.png', '/icon-512.png', '/icon-maskable-512.png', '/apple-touch-icon.png'
 ];
 

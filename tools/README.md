@@ -76,6 +76,12 @@ node prepare-cover.mjs <source-image.(png|jpg)>   # → ../cover.jpg, 1600×2400
 this only when the cover art changes. The source is scaled to a 2:3 portrait
 (a 1024×1536 source maps exactly). Uses `@resvg/resvg-js` + `jpeg-js`.
 
+Then refresh the web/social images derived from the cover:
+
+```sh
+node build-social.mjs    # → ../cover-web.jpg (landing thumbnail) + ../og-image.png (share card)
+```
+
 ## Validate the EPUBs
 
 ```sh

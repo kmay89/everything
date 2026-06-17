@@ -42,7 +42,7 @@ const META = {
   creator: "Karl Meves",
   language: "en",
   rights: "© 2026 Karl Meves. All rights reserved.",
-  publisher: "Karl Meves",
+  publisher: "Errerlabs",
 };
 
 /* ----------------------------------------------------------------- parse --- */
@@ -274,6 +274,7 @@ function titlepageDoc() {
     `<span class="rule"></span>\n` +
     (ledeHtml ? `<p class="lede">${ledeHtml}</p>\n` : "") +
     `<p class="byline">${esc(META.creator)}</p>\n` +
+    `<p class="imprint">Published by ${esc(META.publisher)}</p>\n` +
     `<p class="copyright">${esc(META.rights)}</p>\n</section>`;
   return xhtmlDoc(META.title, body, "frontmatter");
 }
@@ -394,7 +395,8 @@ body.frontmatter{display:block}
 .rule{display:block;width:42%;height:3px;margin:.8em auto 1.4em;
   background:linear-gradient(90deg,#d65a5a,#e0c15a,#3fae9f,#4a90d9,#6b5bd0)}
 .lede{text-align:center;color:${TOKENS.muted || "#5f5d57"};font-size:1.05em;max-width:30em;margin:0 auto 2em}
-.byline{text-align:center;font-size:1.1em;margin:1.6em 0 .4em}
+.byline{text-align:center;font-size:1.1em;margin:1.6em 0 .2em}
+.imprint{text-align:center;font-size:.85em;color:${TOKENS.muted || "#5f5d57"};margin:0 0 1.2em}
 .copyright{text-align:center;font-size:.82em;color:${TOKENS.faint || "#8a877e"}}
 /* figure styles carried from the source */
 ${figureCss}

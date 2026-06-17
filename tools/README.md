@@ -60,6 +60,22 @@ glyph outlines per equation).
 The ZIP is written with Node's built-in `zlib` (no dependency), `mimetype`
 stored first per the EPUB OCF spec.
 
+Both editions embed `../cover.jpg` as the EPUB **cover image** — a full-bleed
+cover page, the `properties="cover-image"` manifest flag, and the legacy
+`<meta name="cover">` that Kindle expects — so it shows as the library
+thumbnail in Apple Books and Kindle. The textual title page is kept right
+after the cover.
+
+## Cover image
+
+```sh
+node prepare-cover.mjs <source-image.(png|jpg)>   # → ../cover.jpg, 1600×2400 JPEG
+```
+
+`cover.jpg` is committed to the repo and embedded by `build-epub.mjs`; rerun
+this only when the cover art changes. The source is scaled to a 2:3 portrait
+(a 1024×1536 source maps exactly). Uses `@resvg/resvg-js` + `jpeg-js`.
+
 ## Validate the EPUBs
 
 ```sh

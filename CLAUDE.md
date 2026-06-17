@@ -89,6 +89,9 @@ manager, and no dependencies.
   offline-capable. `sw.js` precaches core files; network-first for HTML, cache-first for assets.
   Bump the `CACHE` constant in `sw.js` when republishing so clients refresh.
 - `og-image.png` — the 1200×630 Open Graph share card (the prism, on-brand).
+- `cover.jpg` — the 1600×2400 raster **book cover** embedded in both EPUBs (shown as the
+  Kindle / Apple Books thumbnail). Regenerate from a source image with
+  `cd tools && node prepare-cover.mjs <source.(png|jpg)>` (scales to 1600×2400, JPEG).
 - `README.md` — repo-facing description, written in the book's voice.
 - `netlify.toml` — static deploy config: publishes the root (no build command),
   security headers + CSP for every response, cache rules, the service-worker headers, and the
@@ -105,7 +108,10 @@ manager, and no dependencies.
   `everything-that-glows.epub` (equations as **MathML**, for Apple Books/Play Books/Kobo/Thorium)
   and `everything-that-glows-kindle.epub` (equations as **SVG**, Kindle-safe). Both render math
   from each equation's LaTeX source via **MathJax** and keep figures as inline SVG, so they track
-  edits; the ZIP is written with stdlib `zlib` (no dependency). Validate with `epubcheck` (needs
+  edits; the ZIP is written with stdlib `zlib` (no dependency). Both embed `../cover.jpg` as the
+  EPUB **cover image** (a full-bleed cover page + `properties="cover-image"` + legacy `meta
+  name="cover"` for Kindle), with the textual title page kept after it. `tools/prepare-cover.mjs`
+  regenerates `cover.jpg` from a source image (resvg + jpeg-js). Validate with `epubcheck` (needs
   Java); both should report 0 errors. See `tools/README.md`.
 - `.github/workflows/ci.yml` — runs the HTML integrity check, builds both EPUBs, and validates
   them with epubcheck on every push/PR (uploads the EPUBs as artifacts). This is the guard that

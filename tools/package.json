@@ -9,9 +9,11 @@
     "build:epub": "node build-epub.mjs",
     "prepare:cover": "node prepare-cover.mjs",
     "build:social": "node build-social.mjs",
+    "build:fonts": "node build-fonts.mjs",
     "all": "node check-html.mjs && node build-epub.mjs"
   },
   "dependencies": {
+    "@fontsource-variable/literata": "^5.2.8",
     "@resvg/resvg-js": "^2.6.2",
     "jpeg-js": "^0.4.4",
     "jsdom": "^24.1.0",

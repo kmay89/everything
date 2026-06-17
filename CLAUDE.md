@@ -143,6 +143,12 @@ rasterizer approach (zlib + struct, supersampled) — see the session history fo
   `errerlabs@gmail.com`). Keep that split consistent across the site footers, the JSON-LD
   (`author` = Person Karl Meves, `publisher` = Organization Errerlabs), and the EPUB metadata
   (`dc:creator` / `dc:publisher` in `tools/build-epub.mjs`) and title page.
+- **Reading typeface**: the body serif is **Literata** (SIL OFL), embedded in `read.html` as
+  inline base64 woff2 (`/*ETG-FONTS-START*/…/*ETG-FONTS-END*/` in the `<style>`; latin +
+  latin-ext + greek, regular + italic, variable 400–700) and set as the first `--serif` fallback.
+  The EPUB embeds the same woff2 (`OEBPS/fonts/`, `@font-face` in its CSS). Both come from
+  `@fontsource-variable/literata` via the shared `tools/literata.mjs`; regenerate the reader's
+  inline copy with `cd tools && node build-fonts.mjs`. Kindle substitutes its own serif.
 - **Design language**: warm paper (`--paper`), ink serif body, a prism/spectrum accent
   (red→violet rule). Honor `prefers-color-scheme` (dark mode) and `prefers-reduced-motion`.
 - **Citations** are bracketed numbers tied to a per-chapter numbered `Sources` list; sources

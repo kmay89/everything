@@ -114,9 +114,15 @@ manager, and no dependencies.
   from each equation's LaTeX source via **MathJax** and keep figures as inline SVG, so they track
   edits; the ZIP is written with stdlib `zlib` (no dependency). Both embed `../cover.jpg` as the
   EPUB **cover image** (a full-bleed cover page + `properties="cover-image"` + legacy `meta
-  name="cover"` for Kindle), with the textual title page kept after it. `tools/prepare-cover.mjs`
+  name="cover"` for Kindle), with the textual title page kept after it. Both also write a
+  **store-ready `package.opf`**: title/author (`aut` + sort key)/publisher, a catalog
+  `dc:description` + BISAC `dc:subject` codes (edit these in the `META` object), and **schema.org
+  accessibility metadata declared honestly per edition** — the MathML edition advertises the
+  `MathML` feature and `accessModeSufficient: textual`; the SVG/Kindle edition declares
+  `textual,visual` and says its equations are images (no over-claiming). `tools/prepare-cover.mjs`
   regenerates `cover.jpg` from a source image (resvg + jpeg-js). Validate with `epubcheck` (needs
-  Java); both should report 0 errors. See `tools/README.md`.
+  Java); both should report 0 errors. See `tools/README.md`, and `tools/PUBLISHING.md` for the
+  store-by-store submission checklist (Apple Books / Google Play / Kobo / Kindle).
 - `.github/workflows/ci.yml` — runs the HTML integrity check, builds both EPUBs, and validates
   them with epubcheck on every push/PR (uploads the EPUBs as artifacts). This is the guard that
   keeps the book buildable and unbreakable as the prose is edited.

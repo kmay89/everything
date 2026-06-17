@@ -66,6 +66,20 @@ cover page, the `properties="cover-image"` manifest flag, and the legacy
 thumbnail in Apple Books and Kindle. The textual title page is kept right
 after the cover.
 
+## Catalog metadata & accessibility
+
+`build-epub.mjs` writes a complete, store-ready `package.opf`: title, author
+(`aut`, with a sort key), publisher, language, date, rights, a catalog
+`dc:description`, BISAC `dc:subject` codes, the cover, and **schema.org
+accessibility metadata declared honestly per edition** (the MathML edition
+advertises accessible math and `accessModeSufficient: textual`; the SVG/Kindle
+edition says its equations are images). Edit the catalog copy in the `META`
+object at the top of the script.
+
+To publish to Apple Books, Google Play Books, Kobo, or Kindle, follow
+[`PUBLISHING.md`](PUBLISHING.md) — which edition goes to which store, the free
+ISBN/ASIN situation, the KDP "make it free" workaround, and cover specs.
+
 ## Cover image
 
 ```sh

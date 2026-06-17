@@ -89,7 +89,7 @@ manager, and no dependencies.
   offline-capable. `sw.js` precaches core files; network-first for HTML, cache-first for assets.
   Bump the `CACHE` constant in `sw.js` when republishing so clients refresh.
 - `cover.jpg` — the 1600×2400 raster **book cover** embedded in both EPUBs (shown as the
-  Kindle / Apple Books thumbnail) and on the landing page. Regenerate from a source image with
+  Kindle / Apple Books thumbnail). Regenerate from a source image with
   `cd tools && node prepare-cover.mjs <source.(png|jpg)>` (scales to 1600×2400, JPEG).
 - `cover-web.jpg` — a lighter 760×1140 web thumbnail of the cover, shown in the landing page's
   "Take it with you" panel.

@@ -12,10 +12,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
 const coverB64 = fs.readFileSync(path.join(root, "cover.jpg")).toString("base64");
 const coverURI = `data:image/jpeg;base64,${coverB64}`;
-const SERIF = "Liberation Serif", SANS = "Liberation Sans";
+// font-family lists with fallbacks, so regeneration works without Liberation fonts
+const SERIF = "Liberation Serif, DejaVu Serif, Georgia, Times New Roman, serif";
+const SANS = "Liberation Sans, DejaVu Sans, Arial, Helvetica, sans-serif";
 
 function renderPng(svg, w) {
-  return new Resvg(svg, { fitTo: { mode: "width", value: w }, font: { loadSystemFonts: true, defaultFontFamily: SERIF } }).render();
+  return new Resvg(svg, { fitTo: { mode: "width", value: w }, font: { loadSystemFonts: true, defaultFontFamily: "DejaVu Serif" } }).render();
 }
 
 /* ---- web thumbnail (760×1140) ---- */

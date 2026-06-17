@@ -91,10 +91,10 @@ manager, and no dependencies.
 - `cover.jpg` — the 1600×2400 raster **book cover** embedded in both EPUBs (shown as the
   Kindle / Apple Books thumbnail). Regenerate from a source image with
   `cd tools && node prepare-cover.mjs <source.(png|jpg)>` (scales to 1600×2400, JPEG).
-- `cover-web.jpg` — a lighter 760×1140 web thumbnail of the cover, shown in the landing page's
-  "Take it with you" panel.
-- `og-image.png` — the 1200×630 Open Graph / Twitter share card: the cover beside the thesis,
-  with **Karl Meves · Errerlabs**. `cover-web.jpg` and `og-image.png` are both regenerated from
+- `cover-web.jpg` — a lighter 440×660 web thumbnail of the cover (≈2× its 200px display size),
+  shown in the landing page's "Take it with you" panel.
+- `og-image.jpg` — the 1200×630 Open Graph / Twitter share card: the cover beside the thesis,
+  with **Karl Meves · Errerlabs**. `cover-web.jpg` and `og-image.jpg` are both regenerated from
   `cover.jpg` by `cd tools && node build-social.mjs`.
 - `README.md` — repo-facing description, written in the book's voice.
 - `netlify.toml` — static deploy config: publishes the root (no build command),
@@ -143,6 +143,12 @@ rasterizer approach (zlib + struct, supersampled) — see the session history fo
   `errerlabs@gmail.com`). Keep that split consistent across the site footers, the JSON-LD
   (`author` = Person Karl Meves, `publisher` = Organization Errerlabs), and the EPUB metadata
   (`dc:creator` / `dc:publisher` in `tools/build-epub.mjs`) and title page.
+- **Reading typeface**: the body serif is **Literata** (SIL OFL), embedded in `read.html` as
+  inline base64 woff2 (`/*ETG-FONTS-START*/…/*ETG-FONTS-END*/` in the `<style>`; latin +
+  latin-ext + greek, regular + italic, variable 400–700) and set as the first `--serif` fallback.
+  The EPUB embeds the same woff2 (`OEBPS/fonts/`, `@font-face` in its CSS). Both come from
+  `@fontsource-variable/literata` via the shared `tools/literata.mjs`; regenerate the reader's
+  inline copy with `cd tools && node build-fonts.mjs`. Kindle substitutes its own serif.
 - **Design language**: warm paper (`--paper`), ink serif body, a prism/spectrum accent
   (red→violet rule). Honor `prefers-color-scheme` (dark mode) and `prefers-reduced-motion`.
 - **Citations** are bracketed numbers tied to a per-chapter numbered `Sources` list; sources

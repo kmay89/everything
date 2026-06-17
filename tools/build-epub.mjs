@@ -26,6 +26,7 @@ import { createRequire } from "node:module";
 import zlib from "node:zlib";
 import crypto from "node:crypto";
 import { JSDOM, VirtualConsole } from "jsdom";
+import { SUBSETS as LIT, FAMILY as LITFAM, read as litRead } from "./literata.mjs";
 
 const require = createRequire(import.meta.url);
 const here = dirname(fileURLToPath(import.meta.url));
@@ -353,14 +354,19 @@ function crc32(buf) {
 
 /* ------------------------------------------------------------ assemble --- */
 function bookCss() {
+  const litFaces = LIT.map((s) =>
+    `@font-face{font-family:"${LITFAM}";font-style:normal;font-weight:400 700;font-display:swap;src:url("../fonts/${s.normal}") format("woff2");unicode-range:${s.range}}\n` +
+    `@font-face{font-family:"${LITFAM}";font-style:italic;font-weight:400 700;font-display:swap;src:url("../fonts/${s.italic}") format("woff2");unicode-range:${s.range}}`
+  ).join("\n");
   return `/* Everything That Glows - generated EPUB stylesheet */
+${litFaces}
 @page{margin:0}
 html{height:100%}
 html,body{margin:0;padding:0}
 body.cover{margin:0;padding:0;height:100%}
 .cover{margin:0;padding:0}
 .cover svg{display:block;width:100%;height:100%}
-body{font-family:Iowan Old Style,Palatino,Georgia,serif;color:${TOKENS.ink || "#1b1b1f"};
+body{font-family:"${LITFAM}",Iowan Old Style,Palatino,Georgia,serif;color:${TOKENS.ink || "#1b1b1f"};
   line-height:1.6;padding:1em 1.2em;hyphens:auto}
 h1,h2,h3{font-weight:600;line-height:1.15;color:${TOKENS.ink || "#1b1b1f"}}
 h1{font-size:1.7em;margin:1.2em 0 .6em;letter-spacing:-.01em}
@@ -418,6 +424,11 @@ function buildEdition(mode, fileName, idSuffix) {
   );
   add("OEBPS/css/book.css", bookCss(), { id: "css", media: "text/css" });
   add("OEBPS/images/cover.jpg", coverImg, { id: "cover-image", media: "image/jpeg", props: "cover-image", store: true });
+  // Embed the Literata reading serif (Apple Books/Kobo/Thorium use it; Kindle substitutes its own).
+  for (const s of LIT) {
+    add(`OEBPS/fonts/${s.normal}`, litRead(s.normal), { id: `font-${s.name}-n`, media: "font/woff2", store: true });
+    add(`OEBPS/fonts/${s.italic}`, litRead(s.italic), { id: `font-${s.name}-i`, media: "font/woff2", store: true });
+  }
 
   // Content documents
   const spine = []; // {id, props}

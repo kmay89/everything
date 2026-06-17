@@ -20,9 +20,9 @@ function renderPng(svg, w) {
   return new Resvg(svg, { fitTo: { mode: "width", value: w }, font: { loadSystemFonts: true, defaultFontFamily: "DejaVu Serif" } }).render();
 }
 
-/* ---- web thumbnail (760×1140) ---- */
+/* ---- web thumbnail (440×660, ~2× the 200px display size) ---- */
 {
-  const W = 760, H = 1140;
+  const W = 440, H = 660;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><image href="${coverURI}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="xMidYMid meet"/></svg>`;
   const r = renderPng(svg, W);
   const jpg = jpeg.encode({ data: Buffer.from(r.pixels), width: r.width, height: r.height }, 82);
@@ -55,6 +55,7 @@ function renderPng(svg, w) {
 <text x="${tx}" y="566" font-family="${SANS}" font-size="25" letter-spacing="1" fill="#6f6b62">everythingthatglows.com</text>
 </svg>`;
   const r = renderPng(svg, W);
-  fs.writeFileSync(path.join(root, "og-image.png"), r.asPng());
-  console.log(`og-image.png   ${r.width}×${r.height}  ${(r.asPng().length / 1024).toFixed(0)} KB`);
+  const jpg = jpeg.encode({ data: Buffer.from(r.pixels), width: r.width, height: r.height }, 86);
+  fs.writeFileSync(path.join(root, "og-image.jpg"), jpg.data);
+  console.log(`og-image.jpg   ${r.width}×${r.height}  ${(jpg.data.length / 1024).toFixed(0)} KB`);
 }

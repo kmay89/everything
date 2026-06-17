@@ -550,6 +550,7 @@ function buildEdition(mode, fileName, idSuffix) {
     `    <dc:date>${META.published}</dc:date>\n` +
     `    <dc:description>${esc(META.description)}</dc:description>\n` +
     META.subjects.map((s) => `    <dc:subject>${esc(s)}</dc:subject>\n`).join("") +
+    META.keywords.map((k) => `    <dc:subject>${esc(k)}</dc:subject>\n`).join("") +
     `    <meta property="dcterms:modified">${modified}</meta>\n` +
     accessibilityMeta(mode) +
     `    <meta name="cover" content="cover-image"/>\n` +

@@ -46,6 +46,30 @@ const META = {
   publisher: "Errerlabs",
   published: "2026-06-16",        // ISO publication date (dc:date)
   publishedLong: "June 16, 2026", // display form for the title page
+  // Catalog copy for store ingestion (Apple Books / Google Play / Kobo / Kindle).
+  description:
+    "A free book in twelve chapters arguing that the world is, underneath, " +
+    "made of information. A literary tour of modern physics — from black-body " +
+    "radiation and the quantum to thermodynamics, computation, and the cosmos — " +
+    "written for the curious reader, not the specialist.",
+  // BISAC subject codes + keywords help stores classify the book.
+  subjects: [
+    "SCIENCE / Physics / General",
+    "SCIENCE / Essays",
+    "SCIENCE / History",
+    "PHILOSOPHY / Epistemology",
+    "SCIENCE / Cosmology",
+  ],
+  keywords: [
+    "information",
+    "physics",
+    "quantum",
+    "thermodynamics",
+    "entropy",
+    "computation",
+    "popular science",
+    "philosophy of science",
+  ],
 };
 
 /* ----------------------------------------------------------------- parse --- */
@@ -515,16 +539,20 @@ function buildEdition(mode, fileName, idSuffix) {
     `<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bookid" xml:lang="${META.language}">\n` +
     `  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">\n` +
     `    <dc:identifier id="bookid">${uid}</dc:identifier>\n` +
-    `    <dc:title>${esc(META.title)}</dc:title>\n` +
-    `    <dc:creator>${esc(META.creator)}</dc:creator>\n` +
+    `    <dc:title id="title">${esc(META.title)}</dc:title>\n` +
+    `    <meta refines="#title" property="title-type">main</meta>\n` +
+    `    <dc:creator id="creator">${esc(META.creator)}</dc:creator>\n` +
+    `    <meta refines="#creator" property="role" scheme="marc:relators">aut</meta>\n` +
+    `    <meta refines="#creator" property="file-as">${esc(fileAs(META.creator))}</meta>\n` +
     `    <dc:language>${META.language}</dc:language>\n` +
     `    <dc:publisher>${esc(META.publisher)}</dc:publisher>\n` +
     `    <dc:rights>${esc(META.rights)}</dc:rights>\n` +
     `    <dc:date>${META.published}</dc:date>\n` +
-    `    <meta name="cover" content="cover-image"/>\n` +
+    `    <dc:description>${esc(META.description)}</dc:description>\n` +
+    META.subjects.map((s) => `    <dc:subject>${esc(s)}</dc:subject>\n`).join("") +
     `    <meta property="dcterms:modified">${modified}</meta>\n` +
-    `    <meta property="schema:accessMode">textual</meta>\n` +
-    `    <meta property="schema:accessMode">visual</meta>\n` +
+    accessibilityMeta(mode) +
+    `    <meta name="cover" content="cover-image"/>\n` +
     `  </metadata>\n` +
     `  <manifest>\n${manifestItems}\n  </manifest>\n` +
     `  <spine>\n${spineItems}\n  </spine>\n` +
@@ -551,6 +579,53 @@ function deterministicUuid(seed) {
   return (
     h.slice(0, 8) + "-" + h.slice(8, 12) + "-5" + h.slice(13, 16) + "-a" +
     h.slice(17, 20) + "-" + h.slice(20, 32)
+  );
+}
+
+// "Karl Meves" -> "Meves, Karl" for the library sort key (opf:file-as).
+function fileAs(name) {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length < 2) return name;
+  return parts[parts.length - 1] + ", " + parts.slice(0, -1).join(" ");
+}
+
+// EPUB Accessibility 1.1 / schema.org metadata, declared honestly per edition.
+// Both editions are reflowable text with structural navigation and text
+// alternatives for every figure. The MathML edition carries accessible math
+// (screen readers can speak it); the Kindle/SVG edition renders equations as
+// images, so its math is visual only — we say so rather than over-claim.
+function accessibilityMeta(mode) {
+  const accessibleMath = mode === "mathml";
+  const features = [
+    "tableOfContents",
+    "readingOrder",
+    "structuralNavigation",
+    "displayTransformability",
+    "alternativeText", // every figure SVG carries a <title> description
+  ];
+  if (accessibleMath) features.push("MathML");
+  const summary = accessibleMath
+    ? "This edition is fully reflowable text with a navigable table of contents, " +
+      "a logical reading order, and a text description for every figure. " +
+      "Mathematics is encoded as MathML, so assistive technology can read the " +
+      "equations. No known accessibility hazards."
+    : "This edition is reflowable text with a navigable table of contents, a " +
+      "logical reading order, and a text description for every figure. " +
+      "Mathematical equations are rendered as images in this Kindle-targeted " +
+      "edition; for spoken math, use the MathML edition. No known accessibility " +
+      "hazards.";
+  // accessModeSufficient: the MathML edition is fully consumable as text;
+  // the image-math edition needs both text and the visual equations.
+  const sufficient = accessibleMath ? "textual" : "textual,visual";
+  return (
+    `    <meta property="schema:accessMode">textual</meta>\n` +
+    `    <meta property="schema:accessMode">visual</meta>\n` +
+    `    <meta property="schema:accessModeSufficient">${sufficient}</meta>\n` +
+    features
+      .map((f) => `    <meta property="schema:accessibilityFeature">${f}</meta>\n`)
+      .join("") +
+    `    <meta property="schema:accessibilityHazard">none</meta>\n` +
+    `    <meta property="schema:accessibilitySummary">${esc(summary)}</meta>\n`
   );
 }
 

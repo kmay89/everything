@@ -147,6 +147,7 @@ html[data-theme="light"] .hero-filament{opacity:.42;filter:blur(2px)}
 @media (prefers-color-scheme: dark){.hero-coverwrap::before{opacity:.72}}
 html[data-theme="dark"] .hero-coverwrap::before{opacity:.72}
 html[data-theme="light"] .hero-coverwrap::before{opacity:.42}
+html[data-theme="warm"] .hero-coverwrap::before{opacity:.42}
 .hero-cover{display:block;width:100%;height:auto;border-radius:10px;
   box-shadow:0 22px 60px rgba(0,0,0,.42),0 3px 10px rgba(0,0,0,.26)}
 
@@ -505,7 +506,7 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
     </svg>
     <div class="hero-coverwrap">
       <img class="hero-cover" src="cover-web.jpg" width="440" height="660"
-           fetchpriority="high" decoding="async"
+           fetchpriority="high"
            alt="Cover of Everything That Glows by Karl Meves: a prism splitting white light into a spectrum.">
     </div>
     <p class="kicker">A book in twelve chapters &middot; free to read</p>

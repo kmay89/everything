@@ -129,7 +129,7 @@ html[data-theme="light"] .hero-filament{opacity:.42;filter:blur(2px)}
   opacity:0;animation:cover-caustic 11s ease-in-out 2.7s infinite}
 @keyframes cover-caustic{0%{background-position:125% 0;opacity:0}10%{opacity:.9}48%{background-position:-25% 0;opacity:.9}58%{opacity:0}100%{background-position:-25% 0;opacity:0}}
 @media (prefers-reduced-motion: reduce){
-  .cover-art,.cover h1,.cover .kicker,.cover .lede,.cover .spine{animation:none;opacity:1;transform:none}
+  .cover-art,.hero-coverwrap,.cover h1,.cover .kicker,.cover .lede,.cover .spine{animation:none;opacity:1;transform:none}
   .cover-fan{animation:none;opacity:.94;transform:none}
   .cover-beam,.cover-beam-halo{animation:none;stroke-dashoffset:0}
   .cover-beamdot{animation:none;opacity:1;transform:translateX(118px)}
@@ -138,6 +138,17 @@ html[data-theme="light"] .hero-filament{opacity:.42;filter:blur(2px)}
   .cover-title .caustic{animation:none;opacity:0}}
 /* hero size for the reused art */
 .hero .cover-art{width:min(380px,86%)}
+/* hero: the real book cover, the page's first glance */
+.hero-coverwrap{position:relative;width:min(264px,60%);margin:.2rem auto 1.9rem;
+  opacity:0;animation:cover-fade 1.6s ease .15s forwards}
+.hero-coverwrap::before{content:"";position:absolute;inset:-12% -16%;z-index:-1;border-radius:50%;
+  background:radial-gradient(closest-side,color-mix(in srgb,var(--accent) 34%,transparent),transparent 72%);
+  filter:blur(26px);opacity:.5}
+@media (prefers-color-scheme: dark){.hero-coverwrap::before{opacity:.72}}
+html[data-theme="dark"] .hero-coverwrap::before{opacity:.72}
+html[data-theme="light"] .hero-coverwrap::before{opacity:.42}
+.hero-cover{display:block;width:100%;height:auto;border-radius:10px;
+  box-shadow:0 22px 60px rgba(0,0,0,.42),0 3px 10px rgba(0,0,0,.26)}
 
 /* ---------- section rhythm ---------- */
 section{padding:4.4rem 0}
@@ -201,13 +212,26 @@ ol.ch-list{list-style:none;margin:0;padding:0}
 .support .panel p,.download .panel p{color:var(--muted);max-width:32rem;margin:0 auto 1.4rem}
 .support .btn{margin-top:.3rem}
 .download .panel .dl-note{font-size:.82rem;color:var(--faint);max-width:30rem;margin:1.2rem auto 0;line-height:1.5}
-.dl-panel{display:flex;gap:2rem;align-items:center;text-align:left;max-width:46rem}
-.dl-cover{width:200px;height:auto;border-radius:8px;box-shadow:0 10px 34px rgba(0,0,0,.34);flex:none}
-.dl-text{flex:1;min-width:0}
-.dl-panel .support-btns{justify-content:flex-start}
-.dl-panel .dl-note{margin-left:0;margin-right:0}
-@media (max-width:640px){.dl-panel{flex-direction:column;text-align:center;gap:1.4rem}
-  .dl-cover{width:170px}.dl-panel .support-btns{justify-content:center}.dl-panel .dl-note{margin-left:auto;margin-right:auto}}
+/* ---------- two ways to read ---------- */
+.choose{text-align:center}
+.choose .lead{color:var(--muted);max-width:35rem;margin:0 auto 2rem;font-size:1.06rem}
+.choose-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;max-width:54rem;margin:0 auto;align-items:stretch}
+.choose-card{background:var(--note-bg);border:1px solid var(--rule);border-radius:16px;
+  padding:2rem 1.7rem;text-align:left;display:flex;flex-direction:column}
+.choose-card.is-primary{border-color:color-mix(in srgb,var(--accent) 48%,var(--rule));
+  box-shadow:0 14px 40px color-mix(in srgb,var(--accent) 12%,transparent)}
+.choose-card .tag{font-family:var(--sans);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 .55rem}
+.choose-card h3{font-family:var(--serif);font-size:1.5rem;line-height:1.15;margin:0 0 .55rem}
+.choose-card > p{color:var(--muted);margin:0 0 1.15rem}
+.choose-feats{list-style:none;margin:0 0 1.5rem;padding:0;display:grid;gap:.72rem}
+.choose-feats li{position:relative;padding-left:1.5rem;font-size:.96rem;line-height:1.5}
+.choose-feats li::before{content:"";position:absolute;left:0;top:.5em;width:.6rem;height:.6rem;border-radius:50%;
+  background:linear-gradient(135deg,#e0894a,#3fae9f,#5757c8)}
+.choose-card .support-btns{justify-content:flex-start;margin-top:auto}
+.choose-card .dl-note{font-size:.8rem;color:var(--faint);margin:1rem 0 0;line-height:1.55;max-width:none}
+@media (max-width:640px){.choose-grid{grid-template-columns:1fr}.choose-card{text-align:center}
+  .choose-feats{text-align:left}.choose-card .support-btns{justify-content:center}}
 
 /* ---------- footer ---------- */
 footer{border-top:1px solid var(--rule);padding:2.6rem 0 3.4rem;text-align:center;
@@ -479,33 +503,11 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
         <stop offset=".7" stop-color="#e0c15a"/><stop offset="1" stop-color="#3fae9f"/></linearGradient></defs>
       <path d="M-20,170 C 220,70 360,250 600,160 S 980,60 1220,150" fill="none" stroke="url(#hf-g)" stroke-width="3" stroke-linecap="round"/>
     </svg>
-    <svg class="cover-art" viewBox="0 0 360 130" role="img" aria-label="A prism splitting a beam of white light into a spectrum.">
-<defs>
-<linearGradient id="cover-spec" x1="0" y1="0" x2="0" y2="1">
-<stop offset="0%" stop-color="#d65a5a"/><stop offset="17%" stop-color="#e0894a"/><stop offset="33%" stop-color="#e0c15a"/><stop offset="51%" stop-color="#3fae9f"/><stop offset="68%" stop-color="#4a90d9"/><stop offset="84%" stop-color="#5757c8"/><stop offset="100%" stop-color="#6b5bd0"/>
-</linearGradient>
-<linearGradient id="cover-prismfill" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0%" stop-color="#ffffff" stop-opacity="0.42"/><stop offset="60%" stop-color="#5757c8" stop-opacity="0.04"/><stop offset="100%" stop-color="#5757c8" stop-opacity="0.13"/>
-</linearGradient>
-<linearGradient id="cover-fade" x1="0" y1="0" x2="1" y2="0">
-<stop offset="42%" style="stop-color:var(--paper);stop-opacity:0"/><stop offset="100%" style="stop-color:var(--paper);stop-opacity:0.62"/>
-</linearGradient>
-<clipPath id="cover-fanclip"><path d="M176,88 L352,46 L352,118 Z"/></clipPath>
-</defs>
-<g class="cover-fan">
-<path d="M176,88 L352,46 L352,118 Z" fill="url(#cover-spec)"/>
-<g class="cover-sep" clip-path="url(#cover-fanclip)">
-<line x1="176" y1="88" x2="352" y2="52"/><line x1="176" y1="88" x2="352" y2="64"/><line x1="176" y1="88" x2="352" y2="76"/><line x1="176" y1="88" x2="352" y2="88"/><line x1="176" y1="88" x2="352" y2="100"/><line x1="176" y1="88" x2="352" y2="112"/>
-</g>
-<rect clip-path="url(#cover-fanclip)" x="176" y="44" width="180" height="76" fill="url(#cover-fade)"/>
-<g clip-path="url(#cover-fanclip)"><rect class="cover-sheen" x="160" y="40" width="24" height="84" fill="#fffaf0"/></g>
-</g>
-<path class="cover-prism" d="M150,26 L116,100 L184,100 Z"/>
-<path class="cover-prism-edge" d="M147,32 L121,93"/>
-<line class="cover-beam-halo" x1="8" y1="72" x2="130" y2="72" pathLength="1"/>
-<line class="cover-beam" x1="8" y1="72" x2="130" y2="72" pathLength="1"/>
-<circle class="cover-beamdot" cx="8" cy="72" r="3"/>
-</svg>
+    <div class="hero-coverwrap">
+      <img class="hero-cover" src="cover-web.jpg" width="440" height="660"
+           fetchpriority="high" decoding="async"
+           alt="Cover of Everything That Glows by Karl Meves: a prism splitting white light into a spectrum.">
+    </div>
     <p class="kicker">A book in twelve chapters &middot; free to read</p>
     <h1 class="cover-title"><span class="caustic" aria-hidden="true">Everything That Glows</span>Everything That Glows</h1>
     <span class="cover-rule" aria-hidden="true"></span>
@@ -682,21 +684,43 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
 
   <hr class="section-rule">
 
-  <section class="download wrap" id="download">
-    <h2>Take it with you</h2>
-    <div class="panel dl-panel">
-      <img class="dl-cover" src="cover-web.jpg" width="440" height="660" loading="lazy" decoding="async"
-           alt="Cover of Everything That Glows by Karl Meves">
-      <div class="dl-text">
-      <p>Prefer your own reader, or want it offline on every device? Download the whole book as an
-      ebook &mdash; the same text, the same equations and diagrams, free.</p>
-      <div class="support-btns">
-        <a class="btn btn-primary" href="https://github.com/kmay89/everything/releases/latest/download/everything-that-glows.epub">Download EPUB &#8594;</a>
-        <a class="btn btn-ghost" href="https://github.com/kmay89/everything/releases/latest/download/everything-that-glows-kindle.epub">Kindle&#8209;friendly EPUB</a>
+  <section class="choose wrap" id="read-options">
+    <h2>Two ways to read</h2>
+    <p class="lead">However you like to read, the whole book is free. Start in your browser for the fullest
+    experience &mdash; or take it with you as an ebook.</p>
+    <div class="choose-grid">
+      <div class="choose-card is-primary">
+        <p class="tag">Read here &middot; recommended</p>
+        <h3>The web edition</h3>
+        <p>The complete book in your browser &mdash; no app, no sign-up, no paywall. More than a page-turner,
+        it&rsquo;s a reader built for living with the ideas:</p>
+        <ul class="choose-feats">
+          <li><strong>Flag</strong> any passage and add <strong>reflections</strong> that grow into a
+          &ldquo;thoughts across time&rdquo; timeline as you read.</li>
+          <li><strong>Search</strong> the whole book, with a <strong>Reference &amp; people</strong> index
+          that quietly explains who&rsquo;s who as they appear.</li>
+          <li><strong>Read aloud</strong> on&#8209;device, and tune the <strong>theme, typeface and
+          spacing</strong> to your eyes.</li>
+          <li>Your place, flags and notes <strong>save on this device</strong> &mdash; and you can
+          <strong>install it</strong> to read offline, like an app.</li>
+        </ul>
+        <div class="support-btns">
+          <a class="btn btn-primary" href="read.html" data-begin>Begin reading &#8594;</a>
+          <button type="button" class="btn btn-ghost" data-howto>How it works</button>
+        </div>
       </div>
-      <p class="dl-note">EPUB opens in Apple Books, Google Play Books, Kobo and most readers, with
-      crisp, scalable equations. The Kindle&#8209;friendly file renders the equations as images; on
-      a Kindle, add it with &ldquo;Send to Kindle.&rdquo;</p>
+      <div class="choose-card">
+        <p class="tag">Take it with you</p>
+        <h3>Download the ebook</h3>
+        <p>Prefer your own reader, or want it on a Kindle or e&#8209;ink device, offline forever? Download
+        the whole book &mdash; the same text, the same equations and diagrams, free.</p>
+        <div class="support-btns">
+          <a class="btn btn-primary" href="https://github.com/kmay89/everything/releases/latest/download/everything-that-glows.epub">Download EPUB &#8594;</a>
+          <a class="btn btn-ghost" href="https://github.com/kmay89/everything/releases/latest/download/everything-that-glows-kindle.epub">Kindle&#8209;friendly EPUB</a>
+        </div>
+        <p class="dl-note">EPUB opens in Apple Books, Google Play Books, Kobo and most readers, with crisp,
+        scalable equations. The Kindle&#8209;friendly file renders equations as images; on a Kindle, add it
+        with &ldquo;Send to Kindle.&rdquo;</p>
       </div>
     </div>
   </section>

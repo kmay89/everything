@@ -12,14 +12,19 @@ manager, and no dependencies.
 
 ## Layout
 
-- `index.html` — the landing page: prism hero, the free-to-read premise, a theatrical
+- `index.html` — the landing page: a hero that leads with the raster **book cover**
+  (`cover-web.jpg`, framed with a spectral glow; the prism/spectrum motif is carried by the
+  `hero-filament` arc and the spectral `cover-rule`), the free-to-read premise, a theatrical
   first-visit **orientation overlay** (`#enter`, light copy, self-paced — no auto-advance:
   purpose → optional sound (plays `welcome.mp3`) → **"what do you hope to find"** chips + write-in
   saved to `et-hopes` → how progress/marks work → make-it-yours/install → "Begin at the beginning"), the free-to-read premise, a
   **curiosity panel** ("Questions you'll get to live with"), the twelve chapters as a
   **non-clickable preview** (no deep links — readers funnel into the book and navigate via its
-  Contents), an FAQ, an About, a **"Take it with you" download panel** (EPUB / Kindle-friendly
-  EPUB, linked to the latest GitHub Release assets), a "Support the work" panel, and a footer. Sections gently
+  Contents), an FAQ, an About, a **"Two ways to read" chooser** (`#read-options`: a primary
+  **web edition** card that sells the reader's features — flags + reflections, search, Reference &
+  people, read aloud, install/offline — beside a **Download the ebook** card with the EPUB /
+  Kindle-friendly EPUB linked to the latest GitHub Release assets), a "Support the work" panel,
+  and a footer. Sections gently
   reveal on scroll (below the fold; honors `prefers-reduced-motion`). The orientation shows
   once (`et-onboarded`) and is reopenable via "How to read this".
 - `welcome.mp3` — a ~29s welcome tone played when the reader opts into sound during orientation.

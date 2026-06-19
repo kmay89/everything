@@ -829,6 +829,12 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
     book.addEventListener("animationend",function(ev){ if(ev.animationName==="bo-zoom") go(); });
     setTimeout(go,1150);   /* safety net if animationend never fires */
   });
+  /* if the back button restores this page from the bfcache, the overlay would still be up — clear it */
+  window.addEventListener("pageshow",function(e){
+    if(!e.persisted) return;
+    var ov=document.querySelector(".bookopen"); if(ov) ov.remove();
+    document.documentElement.style.overflow="";
+  });
 })();
 </script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>

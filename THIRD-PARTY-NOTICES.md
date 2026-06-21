@@ -2,8 +2,15 @@
 
 The book (`read.html`) bundles a small amount of third-party material to render
 its mathematics offline. That material is the property of its respective authors
-and is used under the licenses below. Everything else in this repository is
-© 2026 Karl Meves, all rights reserved (see [`LICENSE`](LICENSE)).
+and is used under the licenses below.
+
+**These notices apply only to the third-party math tooling listed here.** They do
+**not** place the book under an open-source license. The authored Work — its text,
+structure, design, and the compiled HTML in this repository — is **© 2026 Karl
+Meves, all rights reserved** (see [`LICENSE`](LICENSE)), and the MIT / SIL Open
+Font License terms below grant **no** rights over it whatsoever. They are
+reproduced here purely as the attribution that KaTeX requires of anyone who
+redistributes its stylesheet and fonts.
 
 ---
 

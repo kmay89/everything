@@ -105,11 +105,17 @@ interpretation, and marked as such.
 
 ## License
 
-© 2026 Karl Meves. **All rights reserved.** The book is free to *read* online; it is not
-licensed for copying, redistribution, adaptation, or commercial use. See [`LICENSE`](LICENSE)
-for the full terms, and [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md) for the MIT/OFL
-notices covering the bundled KaTeX stylesheet and math fonts. For permissions beyond reading
-(republication, translation, audio, print, or any commercial use), contact the author.
+© 2026 Karl Meves. **All rights reserved.** The book — its text, structure, design, and the
+compiled HTML in this repository — is free to *read* online; it is **not** licensed for copying,
+redistribution, adaptation, or commercial use. See [`LICENSE`](LICENSE) for the full terms.
+
+This repository carries **no open-source license** (no MIT, Apache, BSD, or similar) for the
+authored work. The only third-party licenses involved — MIT and the SIL Open Font License —
+cover **solely** the bundled [KaTeX](https://katex.org/) stylesheet and math fonts used to render
+equations; they are reproduced in [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md) purely as the
+attribution those tools require, and they grant **no** rights over the book itself. For
+permissions beyond reading (republication, translation, audio, print, or any commercial use),
+contact the author.
 
 ## Security & privacy
 

@@ -21,7 +21,7 @@ When reporting, please include:
 - steps to reproduce (a URL or minimal example is ideal), and
 - any relevant browser/OS details.
 
-You can expect an acknowledgement within a few days. Please allow a reasonable
+You can expect an acknowledgment within a few days. Please allow a reasonable
 period to investigate and address the issue before any public disclosure.
 
 ## Scope

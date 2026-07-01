@@ -115,17 +115,34 @@ const TOKENS = extractTokens(styleText);
 // the author adds keep styling in the EPUB. Match top-level rule blocks whose
 // selector list mentions a figure/diagram/katex-display token.
 function extractFigureCss(text) {
+  // Brace-aware walk (comments stripped) so a matching rule inside a
+  // conditional @-block keeps its @media/@supports wrapper instead of being
+  // hoisted to the top level.
+  text = text.replace(/\/\*[\s\S]*?\*\//g, "");
+  const FIG = /(^|[\s,>])\.(dia|diagram)\b|(^|[\s,>])figure\b|figcaption|\.katex-display/;
   const rules = [];
-  const re = /([^{}]+)\{([^{}]*)\}/g;
-  let m;
-  while ((m = re.exec(text))) {
-    const sel = m[1].trim();
-    if (/(^|[\s,>])\.(dia|diagram)\b|(^|[\s,>])figure\b|figcaption|\.katex-display/.test(sel)) {
-      // skip @-rule fragments and reader-only states
-      if (sel.startsWith("@") || /:hover|:focus|\.speaking/.test(sel)) continue;
-      rules.push(`${sel}{${m[2].trim()}}`);
+  (function walk(css, wrap) {
+    let i = 0;
+    while (i < css.length) {
+      const open = css.indexOf("{", i);
+      if (open < 0) break;
+      const sel = css.slice(i, open).trim();
+      let depth = 1, j = open + 1;
+      while (j < css.length && depth) {
+        if (css[j] === "{") depth++;
+        else if (css[j] === "}") depth--;
+        j++;
+      }
+      const body = css.slice(open + 1, j - 1);
+      if (/^@(media|supports)\b/.test(sel)) {
+        walk(body, wrap || sel);
+      } else if (!sel.startsWith("@") && FIG.test(sel) && !/:hover|:focus|\.speaking/.test(sel)) {
+        const rule = `${sel}{${body.trim()}}`;
+        rules.push(wrap ? `${wrap}{${rule}}` : rule);
+      }
+      i = j;
     }
-  }
+  })(text, "");
   return resolveVars(rules.join("\n"), TOKENS);
 }
 const figureCss = extractFigureCss(styleText);
@@ -477,7 +494,7 @@ function buildEdition(mode, fileName, idSuffix) {
   if (foreword) {
     pushDoc(
       "xhtml/foreword.xhtml",
-      sectionDoc(foreword, { title: "Foreword", type: "preamble", mathMode: mode }),
+      sectionDoc(foreword, { title: "Foreword", type: "preamble", bodyClass: "frontmatter", mathMode: mode }),
       "foreword",
       "Foreword"
     );

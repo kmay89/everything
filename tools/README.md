@@ -134,6 +134,15 @@ tripping those. `check-epub-apple.mjs` reads the **built** EPUBs in `dist/`
 - **Math** — real MathML in the default edition (Apple Books reflows it) and
   SVG in the Kindle edition, with **zero** pre-rendered KaTeX or stray TeX left
   behind in either.
+- **Equation-count parity** — the EPUB carries *exactly* as many equations as
+  `read.html` (counted from the LaTeX annotations), so a silently dropped or
+  duplicated equation fails the build.
+- **Glyph coverage** — every character in the prose is either covered by the
+  embedded Literata subsets (their `@font-face` unicode-ranges) or in a reviewed
+  fallback allowlist; a *new* out-of-range character fails the check so a
+  possible missing-glyph ("tofu") box is caught before it ships. It does **not**
+  judge whether equations are mathematically correct or how anything *renders*
+  on-device — that stays a Kindle Previewer / Apple Books Previewer eyeball pass.
 - **Fonts** — Literata actually embedded (woff2) and referenced.
 - **Navigation** — a `epub:type="toc"` table of contents plus landmarks.
 

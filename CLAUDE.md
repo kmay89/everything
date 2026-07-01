@@ -131,9 +131,12 @@ manager, and no dependencies.
   EPUBs in `dist/` (as ZIP containers, no dependency) and checks cover dimensions (portrait, short
   side ≥ 1400 px, ~2:3), OPF metadata completeness (title/author/language/publisher/description/
   UUID/`dcterms:modified`/BISAC/schema.org a11y), the dual cover declaration, math encoding per
-  edition (real MathML vs SVG, zero leftover KaTeX/TeX), embedded fonts, and TOC + landmarks. See
-  `tools/README.md`, and `tools/PUBLISHING.md` for the store-by-store submission checklist (Apple
-  Books / Google Play / Kobo / Kindle).
+  edition (real MathML vs SVG, zero leftover KaTeX/TeX), **equation-count parity** with `read.html`
+  (no silently dropped/duplicated equations), **glyph coverage** (every prose character is in the
+  embedded Literata ranges or a reviewed `ALLOWED_FALLBACK` set — a new out-of-range char fails so
+  a "tofu" box is caught early; it does not judge math correctness or on-device rendering), embedded
+  fonts, and TOC + landmarks. See `tools/README.md`, and `tools/PUBLISHING.md` for the store-by-store
+  submission checklist (Apple Books / Google Play / Kobo / Kindle).
 - `.github/workflows/ci.yml` — runs the HTML integrity check, builds both EPUBs, runs the Apple
   Books store-readiness check, and validates them with epubcheck (v5.2.1) on every push/PR (uploads
   the EPUBs as artifacts). This is the guard that keeps the book buildable, store-ready, and

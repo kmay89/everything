@@ -156,3 +156,7 @@ them with epubcheck (v5.2.1 — the version Apple runs) on every push and pull
 request, and uploads the built EPUBs as workflow artifacts. The same
 store-readiness gate runs in
 [`release.yml`](../.github/workflows/release.yml) before assets are published.
+
+For the full picture — how the gates fit together, the Apple submission
+process end to end, and a step-by-step checklist for porting this pipeline to
+another book — see [`PIPELINE.md`](PIPELINE.md).

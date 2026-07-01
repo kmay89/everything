@@ -135,8 +135,10 @@ manager, and no dependencies.
   (no silently dropped/duplicated equations), **glyph coverage** (every prose character is in the
   embedded Literata ranges or a reviewed `ALLOWED_FALLBACK` set — a new out-of-range char fails so
   a "tofu" box is caught early; it does not judge math correctness or on-device rendering), embedded
-  fonts, and TOC + landmarks. See `tools/README.md`, and `tools/PUBLISHING.md` for the store-by-store
-  submission checklist (Apple Books / Google Play / Kobo / Kindle).
+  fonts, and TOC + landmarks. See `tools/README.md`; `tools/PUBLISHING.md` for the store-by-store
+  submission checklist (Apple Books / Google Play / Kobo / Kindle); and `tools/PIPELINE.md` for the
+  full pipeline explanation, the Apple process end to end, and the checklist for porting the same
+  parity to another book.
 - `.github/workflows/ci.yml` — runs the HTML integrity check, builds both EPUBs, runs the Apple
   Books store-readiness check, and validates them with epubcheck (v5.2.1) on every push/PR (uploads
   the EPUBs as artifacts). This is the guard that keeps the book buildable, store-ready, and

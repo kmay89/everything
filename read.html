@@ -432,6 +432,17 @@ figure.diagram figcaption em{font-family:var(--serif);font-style:italic;font-siz
 .dia-tick{font-family:var(--sans);font-size:11px;
   fill:color-mix(in srgb,var(--ink) 55%,transparent)}
 
+/* ---- diagram tables (styled, reflowing; scoped to figure.diagram) ---- */
+figure.diagram table.fig-tbl{border-collapse:collapse;width:100%;margin:0 auto;
+  font-family:var(--sans);font-size:.82rem;line-height:1.45;text-align:left}
+figure.diagram table.fig-tbl th,figure.diagram table.fig-tbl td{
+  padding:.45rem .6rem;border-bottom:1px solid var(--rule);vertical-align:top}
+figure.diagram table.fig-tbl thead th{color:var(--accent);font-weight:600;
+  border-bottom:2px solid var(--rule);
+  border-bottom:2px solid color-mix(in srgb,var(--accent) 38%,var(--rule))}
+figure.diagram table.fig-tbl tbody th{font-weight:600;color:var(--ink);text-align:left}
+figure.diagram table.fig-tbl td{color:var(--muted)}
+
 /* ===== cross-device + cross-browser hardening ===== */
 /* keep anchored jumps (citations, contents, flags) clear of the sticky bar */
 :target{scroll-margin-top:4.4rem}

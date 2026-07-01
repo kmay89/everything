@@ -26,9 +26,69 @@ import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import zlib from "node:zlib";
+import { SUBSETS } from "./literata.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const distDir = join(here, "dist");
+const rootDir = join(here, "..");
+
+// Equation count in the source, taken as the number of LaTeX annotations KaTeX
+// emits (check-html.mjs guarantees exactly one per equation). The EPUB must
+// carry this many, so a silently dropped or duplicated equation fails the build
+// instead of sliding under the coarse "≥ MIN_EQUATIONS" floor below.
+const SRC_HTML = existsSync(join(rootDir, "read.html"))
+  ? readFileSync(join(rootDir, "read.html"), "utf8") : "";
+const SRC_EQUATIONS = (SRC_HTML.match(/encoding="application\/x-tex"/g) || []).length;
+
+// Codepoint ranges the embedded Literata subsets actually cover (from their
+// @font-face unicode-range). A reader draws a character from Literata only when
+// its codepoint falls inside one of these ranges; anything else comes from the
+// reader's own fallback serif.
+const FONT_RANGES = [];
+for (const s of SUBSETS) for (const tok of s.range.split(",")) {
+  const m = tok.trim().match(/^U\+([0-9A-Fa-f]+)(?:-([0-9A-Fa-f]+))?$/);
+  if (m) FONT_RANGES.push([parseInt(m[1], 16), parseInt(m[2] || m[1], 16)]);
+}
+const fontCovers = (cp) => cp <= 0x7f || FONT_RANGES.some(([a, b]) => cp >= a && cp <= b);
+
+// Prose characters that legitimately fall outside Literata's ranges and are
+// drawn from the reader's fallback serif — arrows, common math symbols,
+// sub/superscripts, and vulgar fractions that every mainstream serif covers.
+// Reviewed and accepted. A prose character outside BOTH the font ranges AND this
+// set fails the check, so a genuinely unsupported glyph (a "tofu" box) is caught
+// before it ships. Add a codepoint here only after confirming it renders.
+const ALLOWED_FALLBACK = new Set([
+  0x21a9,                                          // ↩ citation back-reference
+  0x2192, 0x2194,                                  // → ↔
+  0x221a, 0x2248, 0x223c, 0x2207, 0x221d, 0x210f,  // √ ≈ ∼ ∇ ∝ ℏ
+  0x2080, 0x2081, 0x2082, 0x2086,                  // ₀ ₁ ₂ ₆ subscripts
+  0x2070, 0x2075, 0x2076, 0x207b,                  // ⁰ ⁵ ⁶ ⁻ superscripts
+  0x2153, 0x2155, 0x2159, 0x215b,                  // ⅓ ⅕ ⅙ ⅛ fractions
+  0x2609,                                          // ☉ Sun
+]);
+
+// Reduce an XHTML string to its prose text: drop math + figure subtrees (their
+// symbols are the reader's/​outlines' job, not Literata's) and markup, then
+// decode entities so we test the real codepoints.
+function codePoint(cp) {
+  // Guard against malformed/out-of-range refs so a bad entity can't crash the
+  // checker with a RangeError — a check tool falling over is worse than a clean
+  // pass/fail. Invalid refs decode to nothing.
+  return Number.isInteger(cp) && cp >= 0 && cp <= 0x10ffff ? String.fromCodePoint(cp) : "";
+}
+
+function proseText(xhtmlStr) {
+  return xhtmlStr
+    .replace(/<math\b[^>]*>[\s\S]*?<\/math>/gi, " ")
+    .replace(/<svg\b[^>]*>[\s\S]*?<\/svg>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => codePoint(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, d) => codePoint(parseInt(d, 10)))
+    .replace(/&(amp|lt|gt|quot|apos|nbsp|mdash|ndash|hellip|middot|lsquo|rsquo|ldquo|rdquo);/g,
+      (_, n) => ({ amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ",
+        mdash: "—", ndash: "–", hellip: "…", middot: "·",
+        lsquo: "‘", rsquo: "’", ldquo: "“", rdquo: "”" }[n]));
+}
 
 const failures = [];
 const fail = (scope, msg) => failures.push(`${scope}: ${msg}`);
@@ -226,6 +286,33 @@ function checkEdition(ed) {
       `${svgCount} SVG graphic(s) present (equations + figures)`,
       "no SVG content found in the Kindle edition");
   }
+
+  /* --- equation-count parity with the source (no silent drops) --- */
+  const eqCount = ed.math === "mathml"
+    ? mathCount
+    : (xhtml.match(/class=['"][^'"]*?\beq(-inline)?\b[^'"]*?['"]/g) || []).length;
+  check(scope, SRC_EQUATIONS > 0 && eqCount === SRC_EQUATIONS,
+    `equation count matches the source exactly (${eqCount} of ${SRC_EQUATIONS})`,
+    SRC_EQUATIONS === 0
+      ? "could not read read.html to count source equations"
+      : `equation count ${eqCount} ≠ ${SRC_EQUATIONS} in read.html — an equation was dropped or duplicated in the build`);
+
+  /* --- glyph coverage: every prose character actually renders --- */
+  const offenders = new Map();
+  for (const [name, buf] of entries) {
+    if (!/^OEBPS\/(xhtml\/.*|nav)\.xhtml$/.test(name)) continue;
+    for (const ch of proseText(buf.toString("utf8"))) {
+      const cp = ch.codePointAt(0);
+      if (fontCovers(cp) || ALLOWED_FALLBACK.has(cp)) continue;
+      offenders.set(cp, (offenders.get(cp) || 0) + 1);
+    }
+  }
+  check(scope, offenders.size === 0,
+    "every prose character is covered by the embedded font or the reviewed fallback set",
+    `${offenders.size} prose character(s) outside the embedded font and not reviewed: ` +
+      [...offenders.keys()].map((cp) =>
+        `U+${cp.toString(16).toUpperCase().padStart(4, "0")} ${JSON.stringify(String.fromCodePoint(cp))}`).join(", ") +
+      ` — confirm each renders, then add it to ALLOWED_FALLBACK in check-epub-apple.mjs`);
 
   /* --- embedded reading font --- */
   const fontEntries = [...entries.keys()].filter((n) => /^OEBPS\/fonts\/.+\.woff2$/.test(n));

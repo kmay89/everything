@@ -16,7 +16,7 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     env:
-      EPUBCHECK_VERSION: "5.1.0"
+      EPUBCHECK_VERSION: "5.2.1"
     steps:
       - uses: actions/checkout@v4
 
@@ -37,6 +37,10 @@ jobs:
       - name: Build EPUB editions
         working-directory: tools
         run: node build-epub.mjs
+
+      - name: Apple Books store-readiness check
+        working-directory: tools
+        run: node check-epub-apple.mjs
 
       - uses: actions/setup-java@v4
         with:

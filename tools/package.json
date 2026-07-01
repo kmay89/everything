@@ -7,10 +7,11 @@
   "scripts": {
     "check": "node check-html.mjs",
     "build:epub": "node build-epub.mjs",
+    "check:epub": "node check-epub-apple.mjs",
     "prepare:cover": "node prepare-cover.mjs",
     "build:social": "node build-social.mjs",
     "build:fonts": "node build-fonts.mjs",
-    "all": "node check-html.mjs && node build-epub.mjs"
+    "all": "node check-html.mjs && node build-epub.mjs && node check-epub-apple.mjs"
   },
   "dependencies": {
     "@fontsource-variable/literata": "^5.2.8",

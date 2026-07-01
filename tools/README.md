@@ -101,11 +101,11 @@ node build-social.mjs    # → ../cover-web.jpg (landing thumbnail) + ../og-imag
 ```sh
 # one-time: fetch epubcheck
 curl -fsSL -o /tmp/epubcheck.zip \
-  https://github.com/w3c/epubcheck/releases/download/v5.1.0/epubcheck-5.1.0.zip
+  https://github.com/w3c/epubcheck/releases/download/v5.2.1/epubcheck-5.2.1.zip
 unzip -o /tmp/epubcheck.zip -d /tmp
 
-java -jar /tmp/epubcheck-5.1.0/epubcheck.jar dist/everything-that-glows.epub
-java -jar /tmp/epubcheck-5.1.0/epubcheck.jar dist/everything-that-glows-kindle.epub
+java -jar /tmp/epubcheck-5.2.1/epubcheck.jar dist/everything-that-glows.epub
+java -jar /tmp/epubcheck-5.2.1/epubcheck.jar dist/everything-that-glows-kindle.epub
 ```
 
 Both should report `0 fatals / 0 errors / 0 warnings`. For Kindle specifically,
@@ -113,8 +113,37 @@ also preview the `-kindle.epub` in Amazon's **Kindle Previewer** before
 publishing — epubcheck validates the EPUB, but only the Previewer shows how
 Amazon's converter will render it.
 
+## Apple Books store-readiness check
+
+```sh
+npm run check:epub   # node check-epub-apple.mjs
+```
+
+epubcheck is the main automated gate Apple runs at upload, but Apple layers a
+few requirements on top of it — and a file can pass epubcheck clean while still
+tripping those. `check-epub-apple.mjs` reads the **built** EPUBs in `dist/`
+(as ZIP containers, no dependency) and asserts that extra layer:
+
+- **Cover** — portrait, short side ≥ 1400 px, ~2:3 ratio (a common rejection
+  reason), read straight from the embedded JPEG.
+- **Metadata** — title, author, language, publisher, a 50+ char description, a
+  unique `urn:uuid` identifier, `dcterms:modified`, BISAC subject codes, and
+  schema.org accessibility metadata all present in `package.opf`.
+- **Cover declaration** — both the modern `properties="cover-image"` and the
+  legacy `<meta name="cover">`.
+- **Math** — real MathML in the default edition (Apple Books reflows it) and
+  SVG in the Kindle edition, with **zero** pre-rendered KaTeX or stray TeX left
+  behind in either.
+- **Fonts** — Literata actually embedded (woff2) and referenced.
+- **Navigation** — a `epub:type="toc"` table of contents plus landmarks.
+
+Run `node build-epub.mjs` first so `dist/` holds the current build.
+
 ## CI
 
 [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) runs the HTML check,
-builds both editions, and validates them with epubcheck on every push and pull
-request, and uploads the built EPUBs as workflow artifacts.
+builds both editions, runs the Apple Books store-readiness check, and validates
+them with epubcheck (v5.2.1 — the version Apple runs) on every push and pull
+request, and uploads the built EPUBs as workflow artifacts. The same
+store-readiness gate runs in
+[`release.yml`](../.github/workflows/release.yml) before assets are published.

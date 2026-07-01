@@ -126,13 +126,21 @@ manager, and no dependencies.
   `MathML` feature and `accessModeSufficient: textual`; the SVG/Kindle edition declares
   `textual,visual` and says its equations are images (no over-claiming). `tools/prepare-cover.mjs`
   regenerates `cover.jpg` from a source image (resvg + jpeg-js). Validate with `epubcheck` (needs
-  Java); both should report 0 errors. See `tools/README.md`, and `tools/PUBLISHING.md` for the
-  store-by-store submission checklist (Apple Books / Google Play / Kobo / Kindle).
-- `.github/workflows/ci.yml` — runs the HTML integrity check, builds both EPUBs, and validates
-  them with epubcheck on every push/PR (uploads the EPUBs as artifacts). This is the guard that
-  keeps the book buildable and unbreakable as the prose is edited.
-- `.github/workflows/release.yml` — on a pushed `v*` tag (or manual dispatch with a tag), builds
-  + epubcheck-validates both EPUBs and publishes a **GitHub Release** with both files attached.
+  Java); both should report 0 errors. `tools/check-epub-apple.mjs` (`npm run check:epub`) asserts
+  the **Apple Books store-readiness** layer that epubcheck does *not* cover — it unzips the built
+  EPUBs in `dist/` (as ZIP containers, no dependency) and checks cover dimensions (portrait, short
+  side ≥ 1400 px, ~2:3), OPF metadata completeness (title/author/language/publisher/description/
+  UUID/`dcterms:modified`/BISAC/schema.org a11y), the dual cover declaration, math encoding per
+  edition (real MathML vs SVG, zero leftover KaTeX/TeX), embedded fonts, and TOC + landmarks. See
+  `tools/README.md`, and `tools/PUBLISHING.md` for the store-by-store submission checklist (Apple
+  Books / Google Play / Kobo / Kindle).
+- `.github/workflows/ci.yml` — runs the HTML integrity check, builds both EPUBs, runs the Apple
+  Books store-readiness check, and validates them with epubcheck (v5.2.1) on every push/PR (uploads
+  the EPUBs as artifacts). This is the guard that keeps the book buildable, store-ready, and
+  unbreakable as the prose is edited.
+- `.github/workflows/release.yml` — on a pushed `v*` tag (or manual dispatch with a tag), builds,
+  runs the Apple Books store-readiness check, epubcheck-validates both EPUBs and publishes a
+  **GitHub Release** with both files attached.
   The site's download buttons point at the release's `latest/download/<file>` URLs, so cutting a
   new tagged release updates them. Cut a release after the book changes: `git tag vX.Y.Z &&
   git push origin vX.Y.Z`.

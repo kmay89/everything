@@ -14,7 +14,9 @@ Two EPUB editions ship from [`build-epub.mjs`](build-epub.mjs) into `tools/dist/
 
 > Always upload the build that CI validated, and run a fresh
 > `npm run build:epub` + epubcheck (see [README](README.md)) right before you
-> submit so the catalog metadata below is current.
+> submit so the catalog metadata below is current. How the whole quality
+> pipeline works — and how to replicate it for another book — is documented
+> in [`PIPELINE.md`](PIPELINE.md).
 
 ## What's already baked into the EPUB metadata
 

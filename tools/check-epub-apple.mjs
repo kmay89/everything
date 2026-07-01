@@ -70,13 +70,20 @@ const ALLOWED_FALLBACK = new Set([
 // Reduce an XHTML string to its prose text: drop math + figure subtrees (their
 // symbols are the reader's/​outlines' job, not Literata's) and markup, then
 // decode entities so we test the real codepoints.
+function codePoint(cp) {
+  // Guard against malformed/out-of-range refs so a bad entity can't crash the
+  // checker with a RangeError — a check tool falling over is worse than a clean
+  // pass/fail. Invalid refs decode to nothing.
+  return Number.isInteger(cp) && cp >= 0 && cp <= 0x10ffff ? String.fromCodePoint(cp) : "";
+}
+
 function proseText(xhtmlStr) {
   return xhtmlStr
     .replace(/<math\b[^>]*>[\s\S]*?<\/math>/gi, " ")
     .replace(/<svg\b[^>]*>[\s\S]*?<\/svg>/gi, " ")
     .replace(/<[^>]+>/g, " ")
-    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => String.fromCodePoint(parseInt(h, 16)))
-    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(parseInt(d, 10)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => codePoint(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, d) => codePoint(parseInt(d, 10)))
     .replace(/&(amp|lt|gt|quot|apos|nbsp|mdash|ndash|hellip|middot|lsquo|rsquo|ldquo|rdquo);/g,
       (_, n) => ({ amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ",
         mdash: "—", ndash: "–", hellip: "…", middot: "·",
@@ -283,7 +290,7 @@ function checkEdition(ed) {
   /* --- equation-count parity with the source (no silent drops) --- */
   const eqCount = ed.math === "mathml"
     ? mathCount
-    : (xhtml.match(/class="eq"/g) || []).length + (xhtml.match(/class="eq-inline"/g) || []).length;
+    : (xhtml.match(/class=['"][^'"]*?\beq(-inline)?\b[^'"]*?['"]/g) || []).length;
   check(scope, SRC_EQUATIONS > 0 && eqCount === SRC_EQUATIONS,
     `equation count matches the source exactly (${eqCount} of ${SRC_EQUATIONS})`,
     SRC_EQUATIONS === 0

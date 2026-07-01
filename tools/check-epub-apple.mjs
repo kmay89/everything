@@ -174,7 +174,7 @@ function checkEdition(ed) {
     `OPF missing required metadata: ${missing.join(", ")}`);
 
   // BISAC subject codes (e.g. "SCIENCE / Physics / General").
-  const bisac = (opf.match(/<dc:subject>[^<]* \/ [^<]*<\/dc:subject>/g) || []).length;
+  const bisac = (opf.match(/<dc:subject>[^<]*\s*\/\s*[^<]*<\/dc:subject>/g) || []).length;
   check(scope, bisac >= 1,
     `${bisac} BISAC subject code(s) present`,
     "no BISAC-formatted <dc:subject> codes (expected e.g. \"SCIENCE / Physics / General\")");

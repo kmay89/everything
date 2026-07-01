@@ -140,11 +140,13 @@ function jpegSize(buf) {
   let o = 2;
   while (o + 9 < buf.length) {
     if (buf[o] !== 0xff) { o++; continue; }
+    while (buf[o + 1] === 0xff && o + 9 < buf.length) o++; // skip 0xFF fill bytes before the marker (ITU-T T.81)
     let marker = buf[o + 1];
     o += 2;
     if (marker === 0xd8 || marker === 0xd9 || marker === 0x01 ||
         (marker >= 0xd0 && marker <= 0xd7)) continue; // markers without a length
     const len = buf.readUInt16BE(o);
+    if (len < 2) return null; // malformed segment length — bail rather than desync
     // SOF0..SOF15, excluding DHT(C4), JPG(C8), DAC(CC).
     if (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) {
       return { height: buf.readUInt16BE(o + 3), width: buf.readUInt16BE(o + 5) };

@@ -5272,8 +5272,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
   function setToggle(p){ toggle.innerHTML=p?"❚❚":"▶"; toggle.setAttribute("aria-label",p?"Pause":"Play"); }
   function show(){ bar.hidden=false; document.body.classList.add("speaking-active"); }
   function hide(){ bar.hidden=true; if(setP){setP.hidden=true;gear.setAttribute("aria-expanded","false");} document.body.classList.remove("speaking-active"); }
-  function start(){ try{synth.cancel();}catch(e){} playing=true; show(); setToggle(true); if(label)label.textContent="Reading aloud"; speakAt(startFrom()); }
-  function stop(){ playing=false; gen++; try{synth.cancel();}catch(e){} blocks.forEach(function(b){b.classList.remove("speaking");}); hide(); }
+  /* Chrome desktop stalls silently on utterances longer than ~15s; a periodic
+     resume() while actively speaking is the standard keep-alive. Runs only
+     while reading, so an idle page has no lingering timer. */
+  var kaTimer=null;
+  function keepAliveOn(){ if(!kaTimer)kaTimer=setInterval(function(){ if(playing&&synth.speaking&&!synth.paused){ try{synth.resume();}catch(e){} } },10000); }
+  function keepAliveOff(){ if(kaTimer){ clearInterval(kaTimer); kaTimer=null; } }
+  function start(){ try{synth.cancel();}catch(e){} playing=true; show(); setToggle(true); if(label)label.textContent="Reading aloud"; keepAliveOn(); speakAt(startFrom()); }
+  function stop(){ playing=false; gen++; try{synth.cancel();}catch(e){} keepAliveOff(); blocks.forEach(function(b){b.classList.remove("speaking");}); hide(); }
   function restart(){ if(!playing)return; gen++; try{synth.cancel();}catch(e){} speakAt(idx<0?0:idx); }
 
   window.ETReadAloud=function(){ if(!voices.length)voices=synth.getVoices()||[]; if(!playing)start(); };

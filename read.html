@@ -750,6 +750,9 @@ body{font-family:var(--reader-font)}
   border:1px solid var(--rule);font-size:.8rem;color:var(--faint)}
 .jp-badge.got{color:var(--ink);border-color:color-mix(in srgb,var(--accent) 45%,var(--rule))}
 .jp-badge.got .jb-ico{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.jp-lap{font-size:.82rem;color:var(--accent);font-weight:600;margin:1.1rem 0 0}
+.jp-lap-btn{color:var(--accent)}
+.cel-again{font-size:.9rem;color:var(--muted);margin:.2rem 0 1.1rem;line-height:1.5}
 .jp-foot{font-size:.7rem;color:var(--faint);margin:1.2rem 0 0}
 @media (prefers-reduced-motion: reduce){.journeypanel,.jp-card,.jp-ring .ring-prog{transition:none}}
 @media (max-width:420px){.jp-badges{grid-template-columns:1fr}}
@@ -1214,7 +1217,9 @@ body{font-family:var(--reader-font)}
     <div class="jp-badges" id="jp-badges"></div>
     <button class="jp-link" type="button" data-jp-time>See your thoughts across time &#10022;</button>
     <button class="jp-link" type="button" data-jp-cast>See the minds you&rsquo;ve met &#9733;</button>
-    <p class="jp-foot">Everything here is yours alone, kept on this device.</p>
+    <p class="jp-lap" id="jp-lap" hidden></p>
+    <button class="jp-link jp-lap-btn" type="button" data-jp-lap>Start a new lap &#8635;</button>
+    <p class="jp-foot">Everything here is yours alone, kept on this device. A new lap resets your progress but keeps your flags and reflections.</p>
   </div>
 </div>
 <div id="timepanel" class="timepanel" role="dialog" aria-modal="true" aria-label="Your thoughts across time" hidden>
@@ -1259,8 +1264,10 @@ body{font-family:var(--reader-font)}
     <p class="jp-eyebrow">The end, and the beginning</p>
     <h2>You&rsquo;ve read Everything That Glows</h2>
     <p>Every chapter, finished. Thank you for the attention you brought to it &mdash; that closeness to the world is the whole of the method, and most of the reward.</p>
+    <p class="cel-again">Want to read it again? A new lap starts you fresh from the top &mdash; your flags and reflections are kept.</p>
     <div class="cel-actions">
       <button class="btn-cel primary" type="button" data-cel-close>Return to the book</button>
+      <button class="btn-cel" type="button" data-cel-lap>Read it again &#8635;</button>
       <a class="btn-cel" href="https://github.com/sponsors/kmay89" target="_blank" rel="noopener">Support the work</a>
     </div>
   </div>
@@ -4251,6 +4258,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
     if(saveT)clearTimeout(saveT);
     saveT=setTimeout(function(){save("et-progress",JSON.stringify(prog));renderTocMeta();},600);
   }
+  /* starting a new lap clears the in-memory progress too, so a pending scroll
+     save can't resurrect the finished state, and drops the saved scroll pos. */
+  window.ETProgressReset=function(){
+    for(var k in prog){ if(Object.prototype.hasOwnProperty.call(prog,k)) delete prog[k]; }
+    if(saveT){clearTimeout(saveT);saveT=null;}
+    if(store){try{store.removeItem("et-progress");store.removeItem("et-current");store.removeItem("pos");}catch(e){}}
+    renderTocMeta();
+  };
   var pTick=false;
   window.addEventListener("scroll",function(){if(!pTick){pTick=true;requestAnimationFrame(function(){recordProgress();pTick=false;});}},{passive:true});
   window.addEventListener("resize",function(){measure();});
@@ -4516,7 +4531,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
     if(!msEl)return;
     msTxt.textContent=(m.id==="finish")?"You finished the book. Thank you for reading.":(m.label+" â€” keep going.");
     msEl.style.display="flex"; requestAnimationFrame(function(){msEl.classList.add("show");});
-    if(msT)clearTimeout(msT); msT=setTimeout(function(){msEl.classList.remove("show");setTimeout(function(){msEl.style.display="none";},500);},4200);
+    if(msT)clearTimeout(msT); msT=setTimeout(function(){msEl.classList.remove("show");msT=setTimeout(function(){msEl.style.display="none";},500);},4200);
   }
   function checkMilestones(pm){
     var s=stateFrom(pm), got=jload("et-milestones",{})||{}, fresh=null, finished=false;
@@ -4547,6 +4562,8 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       st.done+" of "+chapters.length+" chapters finished &middot; about "+timeStr+" of reading"
       +(refl?(" &middot; "+refl+" reflection"+(refl>1?"s":"")+" kept"):"")
       +((window.ETCast&&window.ETCast.count()>0)?(" &middot; "+window.ETCast.count()+" minds met"):"");
+    var lp=document.getElementById("jp-lap");
+    if(lp){ var L=lapNum(); if(L>1){ lp.textContent="Youâ€™re on lap "+L+" â€” reading it again."; lp.hidden=false; } else { lp.hidden=true; } }
     var badges=document.getElementById("jp-badges"); badges.innerHTML="";
     var s=stateFrom(pm);
     MILES.forEach(function(m){
@@ -4588,6 +4605,42 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
   function celClose(){ if(!celEl)return; celEl.classList.remove("show"); document.removeEventListener("keydown",celKey); setTimeout(function(){celEl.hidden=true;},400); }
   function celKey(e){if(e.key==="Escape")celClose();}
   if(celEl)Array.prototype.forEach.call(celEl.querySelectorAll("[data-cel-close]"),function(b){b.addEventListener("click",celClose);});
+
+  /* ----- laps: read it again without losing your record ----- */
+  function lapNum(){ return parseInt(load("et-lap"),10)||1; }
+  function lapToast(lap){
+    if(!msEl||!msTxt)return;
+    msTxt.textContent="Lap "+lap+" â€” back to the beginning. Your flags and reflections are kept.";
+    msEl.style.display="flex"; requestAnimationFrame(function(){msEl.classList.add("show");});
+    if(msT)clearTimeout(msT); msT=setTimeout(function(){msEl.classList.remove("show");msT=setTimeout(function(){msEl.style.display="none";},500);},5600);
+  }
+  /* Reset only the engagement layer (progress, read-marks, milestones, the
+     celebration); keep flags, reflections, cast, hopes, and preferences. */
+  function startNewLap(opts){
+    opts=opts||{};
+    var lap=lapNum()+1; save("et-lap",String(lap));
+    for(var k in readSet){ if(Object.prototype.hasOwnProperty.call(readSet,k)) delete readSet[k]; }
+    save("et-read","{}");
+    if(store){try{store.removeItem("et-milestones");store.removeItem("et-celebrated");}catch(e){}}
+    if(window.ETProgressReset)window.ETProgressReset();
+    try{celClose();}catch(e){} try{closeJourney();}catch(e){}
+    refresh();
+    if(opts.toTop!==false){
+      /* Force an instant jump to the very top. Smooth-scrolling from the bottom
+         would fire recordProgress() mid-animation and re-save the finished
+         state; and a "#top" fragment scroll would land below the cover and can
+         out-race scrollTo(). Strip any hash and jump hard to 0. */
+      var de=document.documentElement, sb=de.style.scrollBehavior;
+      de.style.scrollBehavior="auto";
+      try{ history.replaceState(null,"",location.pathname+location.search); }catch(e){}
+      window.scrollTo(0, 0);
+      de.style.scrollBehavior=sb;
+    }
+    if(!opts.silent) lapToast(lap);
+  }
+  window.ETNewLap=startNewLap;
+  var celLap=celEl&&celEl.querySelector("[data-cel-lap]"); if(celLap)celLap.addEventListener("click",function(){startNewLap();});
+  var jpLap=jpEl&&jpEl.querySelector("[data-jp-lap]"); if(jpLap)jpLap.addEventListener("click",function(){startNewLap();});
 
   /* ----- end-of-chapter cards ----- */
   var CHEERS=["Nicely done.","Great job.","Onward.","Well read.","Thatâ€™s a chapter."];
@@ -4698,6 +4751,9 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
   function refresh(){var pm=progMap();updateSummary(pm);refreshCards(pm);renderJourney(pm);}
 
   buildSummary(); buildBeforeCards(); buildCards(); refresh(); checkMilestones(progMap());
+  /* the landing's "Start over" hands off here so a returning reader begins a fresh
+     lap â€” run it after the summary/cards are built so the reset renders cleanly. */
+  try{ if(sessionStorage.getItem("et-newlap")==="1"){ sessionStorage.removeItem("et-newlap"); startNewLap(); } }catch(e){}
   var last=0;
   window.addEventListener("scroll",function(){var now=Date.now();if(now-last>450){last=now;var pm=progMap();updateSummary(pm);refreshCards(pm);checkMilestones(pm);}},{passive:true});
   window.addEventListener("resize",function(){measure();});
@@ -5155,7 +5211,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
   var bmd=document.getElementById("mp-export-md"), bjson=document.getElementById("mp-export-json"),
       bimp=document.getElementById("mp-import"), fin=document.getElementById("mp-import-file");
   if(!bmd||!bjson||!bimp||!fin) return;
-  var KEYS=["marks","pos","sound","et-theme","et-textsize","et-leading","et-font","et-progress","et-current","et-read","et-before","et-after","et-notes","et-milestones","et-celebrated","et-cast","et-hopes","et-voice","et-rate","et-onboarded","et-tools-intro","et-tools-nudge","et-flag-used"];
+  var KEYS=["marks","pos","sound","et-theme","et-textsize","et-leading","et-font","et-progress","et-current","et-read","et-before","et-after","et-notes","et-milestones","et-celebrated","et-cast","et-hopes","et-lap","et-voice","et-rate","et-onboarded","et-tools-intro","et-tools-nudge","et-flag-used"];
   function g(k){try{return localStorage.getItem(k);}catch(e){return null;}}
   function j(k,dft){try{var r=g(k);return r?JSON.parse(r):dft;}catch(e){return dft;}}
   function dl(name,text,type){ var b=new Blob([text],{type:type||"text/plain"}), a=document.createElement("a");

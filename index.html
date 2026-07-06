@@ -799,7 +799,10 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
   resume.href="read.html#"+cur.id;
   resume.textContent="Continue — "+(cur.title||"reading");
   resume.hidden=false;
-  if(begin){ begin.textContent="Start over"; begin.classList.remove("btn-primary"); begin.classList.add("btn-ghost"); begin.href="read.html#top"; }
+  if(begin){ begin.textContent="Start over"; begin.classList.remove("btn-primary"); begin.classList.add("btn-ghost"); begin.href="read.html#top";
+    /* "Start over" begins a fresh lap in the reader — progress resets, flags & reflections are kept.
+       Ignore modified clicks (open-in-new-tab etc.) so we don't leave a stale flag in this tab. */
+    begin.addEventListener("click",function(e){ if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||(e.button&&e.button!==0)) return; try{sessionStorage.setItem("et-newlap","1");}catch(err){} }); }
 
   var totW=0, doneW=0;
   Object.keys(WORDS).forEach(function(id){ totW+=WORDS[id]; doneW += WORDS[id]*((prog[id]||0)/100); });

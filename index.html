@@ -843,7 +843,7 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
 <script>
 (function(){
   if(!('serviceWorker' in navigator)) return;
-  var BID='et-update-banner', updating=false;
+  var BID='et-update-banner', hadController=!!navigator.serviceWorker.controller, reloaded=false, wantReload=false, lastCheck=0;
   function banner(reg){
     if(document.getElementById(BID)) return;
     var s=document.createElement('style');
@@ -854,18 +854,26 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
     d.innerHTML='<span>A new version is available.</span><button class="r" type="button">Refresh</button><button class="x" type="button" aria-label="Dismiss">×</button>';
     (document.body||document.documentElement).appendChild(d);
     d.querySelector('.x').onclick=function(){ d.remove(); };
-    d.querySelector('.r').onclick=function(){ if(reg.waiting){ updating=true; reg.waiting.postMessage({type:'SKIP_WAITING'}); } else { location.reload(); } };
+    d.querySelector('.r').onclick=function(){ if(reg.waiting){ wantReload=true; reg.waiting.postMessage({type:'SKIP_WAITING'}); } else { location.reload(); } };
   }
-  navigator.serviceWorker.addEventListener('controllerchange',function(){ if(updating){ updating=false; location.reload(); } });
+  // Reload when the new worker takes control: the tab that asked (wantReload)
+  // plus every tab already controlled at load (hadController), so all tabs
+  // converge — but never on the first-install claim, when neither is set.
+  navigator.serviceWorker.addEventListener('controllerchange',function(){ if((hadController||wantReload) && !reloaded){ reloaded=true; location.reload(); } });
   window.addEventListener('load',function(){
     navigator.serviceWorker.register('/sw.js').then(function(reg){
+      // Watch a worker as it installs; show the banner once it's waiting. Cover
+      // a worker that was already installing when register() resolved (no
+      // updatefound will fire for it), plus future updates via updatefound.
+      function listen(nw){ if(!nw) return; nw.addEventListener('statechange',function(){ if(nw.state==='installed' && navigator.serviceWorker.controller) banner(reg); }); }
       if(reg.waiting && navigator.serviceWorker.controller) banner(reg);
-      reg.addEventListener('updatefound',function(){
-        var nw=reg.installing; if(!nw) return;
-        nw.addEventListener('statechange',function(){ if(nw.state==='installed' && navigator.serviceWorker.controller) banner(reg); });
-      });
-      setInterval(function(){ reg.update().catch(function(){}); }, 36e5);
-      document.addEventListener('visibilitychange',function(){ if(!document.hidden) reg.update().catch(function(){}); });
+      listen(reg.installing);
+      reg.addEventListener('updatefound',function(){ listen(reg.installing); });
+      // Check on an interval and when the tab regains focus, throttled to at
+      // most once every 5 min so frequent tab switches don't spam the network.
+      function check(){ var t=Date.now(); if(t-lastCheck>3e5){ lastCheck=t; reg.update().catch(function(){}); } }
+      setInterval(check, 36e5);
+      document.addEventListener('visibilitychange',function(){ if(!document.hidden) check(); });
     }).catch(function(){});
   });
 })();

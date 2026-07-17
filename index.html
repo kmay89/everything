@@ -840,7 +840,44 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
   });
 })();
 </script>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
+<script>
+(function(){
+  if(!('serviceWorker' in navigator)) return;
+  var BID='et-update-banner', hadController=!!navigator.serviceWorker.controller, reloaded=false, wantReload=false, lastCheck=0;
+  function banner(reg){
+    if(document.getElementById(BID)) return;
+    var s=document.createElement('style');
+    s.textContent="#"+BID+"{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);z-index:2147483000;display:flex;align-items:center;gap:.55rem;max-width:calc(100vw - 2rem);padding:.55rem .6rem .55rem 1rem;border-radius:.7rem;font-family:var(--sans,system-ui,-apple-system,sans-serif);font-size:.9rem;line-height:1.3;color:var(--paper,#fff);background:var(--accent,#3a4a63);box-shadow:0 6px 24px rgba(0,0,0,.28);animation:etUbIn .25s ease}#"+BID+" button{font:inherit;cursor:pointer;border:0;border-radius:.5rem}#"+BID+" .r{padding:.35rem .8rem;font-weight:600;color:var(--accent,#3a4a63);background:var(--paper,#fff)}#"+BID+" .r:hover{opacity:.9}#"+BID+" .x{padding:.1rem .45rem;font-size:1.2rem;line-height:1;color:var(--paper,#fff);background:transparent;opacity:.75}#"+BID+" .x:hover{opacity:1}@keyframes etUbIn{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}@media(prefers-reduced-motion:reduce){#"+BID+"{animation:none}}";
+    document.head.appendChild(s);
+    var d=document.createElement('div');
+    d.id=BID; d.setAttribute('role','status'); d.setAttribute('aria-live','polite');
+    d.innerHTML='<span>A new version is available.</span><button class="r" type="button">Refresh</button><button class="x" type="button" aria-label="Dismiss">×</button>';
+    (document.body||document.documentElement).appendChild(d);
+    d.querySelector('.x').onclick=function(){ d.remove(); };
+    d.querySelector('.r').onclick=function(){ if(reg.waiting){ wantReload=true; reg.waiting.postMessage({type:'SKIP_WAITING'}); } else { location.reload(); } };
+  }
+  // Reload when the new worker takes control: the tab that asked (wantReload)
+  // plus every tab already controlled at load (hadController), so all tabs
+  // converge — but never on the first-install claim, when neither is set.
+  navigator.serviceWorker.addEventListener('controllerchange',function(){ if((hadController||wantReload) && !reloaded){ reloaded=true; location.reload(); } });
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('/sw.js').then(function(reg){
+      // Watch a worker as it installs; show the banner once it's waiting. Cover
+      // a worker that was already installing when register() resolved (no
+      // updatefound will fire for it), plus future updates via updatefound.
+      function listen(nw){ if(!nw) return; nw.addEventListener('statechange',function(){ if(nw.state==='installed' && navigator.serviceWorker.controller) banner(reg); }); }
+      if(reg.waiting && navigator.serviceWorker.controller) banner(reg);
+      listen(reg.installing);
+      reg.addEventListener('updatefound',function(){ listen(reg.installing); });
+      // Check on an interval and when the tab regains focus, throttled to at
+      // most once every 5 min so frequent tab switches don't spam the network.
+      function check(){ var t=Date.now(); if(t-lastCheck>3e5){ lastCheck=t; reg.update().catch(function(){}); } }
+      setInterval(check, 36e5);
+      document.addEventListener('visibilitychange',function(){ if(!document.hidden) check(); });
+    }).catch(function(){});
+  });
+})();
+</script>
 <script>
 /* ---- theatrical entry / orientation ---- */
 (function(){

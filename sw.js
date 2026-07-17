@@ -1,6 +1,6 @@
 /* Service worker for Everything That Glows — offline reading.
    Bump CACHE when the published files change to refresh the offline copy. */
-const CACHE = 'etg-v22';
+const CACHE = 'etg-v23';
 const CORE = [
   '/', '/index.html', '/read.html', '/privacy.html', '/404.html',
   '/manifest.webmanifest', '/og-image.jpg', '/cover-web.jpg',
@@ -8,9 +8,17 @@ const CORE = [
 ];
 
 self.addEventListener('install', (e) => {
+  // Do NOT skipWaiting here: the new worker stays in "waiting" so the page can
+  // surface an "update available — Refresh" prompt and let the reader choose
+  // when to reload (see the SKIP_WAITING message below).
   e.waitUntil(
-    caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting())
+    caches.open(CACHE).then((c) => c.addAll(CORE))
   );
+});
+
+// The page posts this when the reader taps "Refresh" on the update banner.
+self.addEventListener('message', (e) => {
+  if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('activate', (e) => {

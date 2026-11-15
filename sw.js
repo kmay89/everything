@@ -1,6 +1,6 @@
 /* Service worker for Everything That Glows — offline reading.
    Bump CACHE when the published files change to refresh the offline copy. */
-const CACHE = 'etg-v23';
+const CACHE = 'etg-v24';
 const CORE = [
   '/', '/index.html', '/read.html', '/privacy.html', '/404.html',
   '/manifest.webmanifest', '/og-image.jpg', '/cover-web.jpg',
@@ -34,9 +34,10 @@ self.addEventListener('fetch', (e) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
-  // Let media (e.g. the welcome tone) go straight to the network so Range
-  // requests get a 206 — Safari/iOS refuse to play a cached 200.
-  if (url.pathname.endsWith('.mp3') || req.headers.has('range')) return;
+  // Let media (the welcome tone, the teaser film) go straight to the network so
+  // Range requests get a 206 — Safari/iOS refuse to play a cached 200 — and so
+  // the multi-megabyte video is never copied into the offline cache.
+  if (/\.(mp3|mp4|m4a|webm)$/i.test(url.pathname) || req.headers.has('range')) return;
 
   const isHTML = req.mode === 'navigate' || (req.headers.get('accept') || '').includes('text/html');
 

@@ -28,6 +28,12 @@ manager, and no dependencies.
   reveal on scroll (below the fold; honors `prefers-reduced-motion`). The orientation shows
   once (`et-onboarded`) and is reopenable via "How to read this".
 - `welcome.mp3` — a ~29s welcome tone played when the reader opts into sound during orientation.
+- `teaser.mp4` / `teaser-portrait.mp4` + `teaser-poster.jpg` / `teaser-poster-portrait.jpg` — the
+  38-second **teaser film** (H.264, 1080p, with its own ambient score) embedded at the top of the
+  landing page's About section as a click-to-play `<video>` (`preload="none"`, never autoplay).
+  The 16:9 cut is the default; a small inline script swaps in the 9:16 cut on narrow portrait
+  screens so the on-screen words stay legible. `sw.js` lets video bypass the offline cache so
+  Range requests reach the network (and the multi-MB file is never precached).
 - `read.html` — the whole book and its reader (~1.7 MB). The canonical book artifact.
   The reader chrome is consolidated behind a single **Menu** button in the topbar (a
   `#menusheet` that proxies to the still-present feature controls: Contents, Search, Journey,

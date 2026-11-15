@@ -227,6 +227,19 @@ ol.ch-list{list-style:none;margin:0;padding:0}
 .about p,.support p{margin:0 0 1.05rem;color:var(--ink)}
 .about{text-align:center}
 .about p{color:var(--muted)}
+/* the teaser film: framed like the hero cover, with the same soft spectral glow behind it */
+.teaser{position:relative;isolation:isolate;margin:0 auto 2.6rem;max-width:40rem}
+.teaser::before{content:"";position:absolute;inset:-10% -12%;z-index:-1;border-radius:50%;
+  background:radial-gradient(closest-side,color-mix(in srgb,var(--accent) 30%,transparent),transparent 72%);
+  filter:blur(26px);opacity:.42}
+@media (prefers-color-scheme: dark){.teaser::before{opacity:.7}}
+html[data-theme="dark"] .teaser::before{opacity:.7}
+html[data-theme="light"] .teaser::before,html[data-theme="warm"] .teaser::before{opacity:.42}
+.teaser-video{display:block;width:100%;height:auto;aspect-ratio:16/9;border-radius:12px;background:#0b0b10;
+  box-shadow:0 22px 60px rgba(0,0,0,.42),0 3px 10px rgba(0,0,0,.26)}
+.teaser-video.is-portrait{aspect-ratio:9/16;width:min(100%,22rem);margin:0 auto}
+.teaser figcaption{margin:1rem 0 0;font-family:var(--sans);font-size:.74rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--faint)}
 .support,.download{text-align:center}
 .support .panel,.download .panel{background:var(--note-bg);border:1px solid var(--rule);border-radius:16px;
   padding:2.2rem 1.8rem;max-width:40rem;margin:0 auto}
@@ -665,6 +678,25 @@ html[data-theme="light"] #ambient{--amb-g1:13%;--amb-g2:7%;--amb-op:.04;--amb-bl
 
   <section class="about wrap">
     <h2>About</h2>
+    <figure class="teaser">
+      <video id="teaser" class="teaser-video" controls preload="none" playsinline
+        poster="teaser-poster.jpg" width="1920" height="1080"
+        data-portrait="teaser-portrait.mp4" data-portrait-poster="teaser-poster-portrait.jpg"
+        aria-label="Everything That Glows &mdash; a 38-second teaser">
+        <source src="teaser.mp4" type="video/mp4">
+        <a href="teaser.mp4">Download the teaser (MP4)</a>
+      </video>
+      <figcaption>The book in 38 seconds &middot; sound on</figcaption>
+    </figure>
+    <script>
+    /* On a narrow portrait screen, swap in the vertical cut so the words stay legible. */
+    (function(){var v=document.getElementById("teaser");if(!v||!window.matchMedia)return;
+      if(matchMedia("(max-width: 40rem) and (orientation: portrait)").matches){
+        var s=v.querySelector("source");if(s)s.src=v.getAttribute("data-portrait");
+        v.poster=v.getAttribute("data-portrait-poster");v.width=1080;v.height=1920;
+        v.classList.add("is-portrait");v.preload="metadata";v.load();
+      }else{v.preload="metadata";}})();
+    </script>
     <p>I am not a physicist. I am someone who could never stop asking how the world works, and who found out, slowly, that the asking is open to anyone. I wrote this book to share that, and to argue that the deepest ideas in science belong to everyone willing to look.</p>
     <p style="color:var(--faint);font-family:var(--sans);font-size:.86rem;letter-spacing:.02em">&#8212; Karl Meves</p>
   </section>

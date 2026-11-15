@@ -49,6 +49,17 @@
   [headers.values]
     Cache-Control = "public, max-age=604800"
 
+# The teaser film and its poster frames change rarely too; cache them for a week.
+[[headers]]
+  for = "/*.mp4"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/teaser-poster*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
 # Service worker: never cache it, so clients pick up updates promptly; allow
 # root scope so it can control the whole site.
 [[headers]]
